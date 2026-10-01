@@ -1,0 +1,45 @@
+Screen { background: $surface; }
+#toolbar { height: 3; background: $panel; padding: 0 1; }
+#mode { width: 1fr; height: 3; content-align: left middle; }
+#toolbar Button { margin-left: 1; }
+#workspace { height: 1fr; }
+#main { width: 3fr; }
+#content { height: 1fr; padding: 1 2; }
+#content:focus { border-left: solid $accent; }
+#sidebar { width: 1fr; min-width: 25; border-left: solid $primary; }
+#search { margin: 0 1; }
+#artifacts { height: 1fr; }
+ArtifactItem { height: auto; min-height: 3; padding: 0 1; }
+ArtifactItem Label { width: 1fr; height: auto; }
+#inventory { height: auto; padding: 0 1; color: $text-muted; }
+#categories { height: 3; border-top: solid $primary; }
+#link-status { height: 2; padding: 0 1; background: $panel; }
+.document-title { height: auto; margin-bottom: 1; color: $accent; }
+.field-heading { height: auto; margin-top: 1; color: $text; text-style: bold; }
+.help { height: auto; color: $text-muted; }
+ReviewMarkdown { height: auto; margin: 0; padding: 0; }
+ReviewMarkdown .markdown--link { color: $accent; text-style: underline; }
+.active-link { border-left: thick $accent; background: $boost; }
+.source { height: auto; padding: 1; background: $panel; }
+.diagram-image { width: 100%; height: auto; max-height: 60; margin: 1 0; }
+.diff-row { height: auto; width: 1fr; }
+.diff-cell { width: 1fr; height: auto; padding: 0 1; }
+.diff-text { width: 1fr; }
+.diff-marker { width: 2; height: auto; }
+.removed { background: #472020; color: #ff9a9a; }
+.added { background: #153b28; color: #96efad; }
+.separator { color: $text-muted; }
+ModalScreen { align: center middle; background: $background 70%; }
+.dialog { width: 85%; max-width: 120; height: auto; max-height: 95%; padding: 1 2; border: thick $accent; background: $surface; }
+.dialog-title { text-style: bold; height: 2; color: $accent; }
+.commit-dialog { height: 85%; }
+#commit-list { height: 1fr; }
+#commit-values { height: auto; padding: 1 0; }
+.button-row { height: auto; min-height: 3; margin-top: 1; }
+.button-row Button { margin-right: 1; }
+.button-row Label { width: 1fr; padding-top: 1; }
+#page-number { width: 1fr; height: auto; padding-top: 1; }
+.options-dialog { max-width: 75; }
+.options-dialog > Label { height: auto; margin-top: 1; }
+.target-dialog { height: 65%; }
+#targets { height: 1fr; }
