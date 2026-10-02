@@ -14,6 +14,7 @@ from textual.binding import Binding
 from textual.containers import Horizontal, Vertical, VerticalScroll
 from textual.widgets import (
     Button,
+    Checkbox,
     Footer,
     Input,
     Label,
@@ -132,6 +133,7 @@ class SpecReviewApp(App):
         with Horizontal(id="workspace"):
             with Vertical(id="sidebar"):
                 yield Input(placeholder="Search ID or title…", id="search")
+                yield Checkbox("Changes only", id="changes-only", disabled=True)
                 yield ListView(id="artifacts")
                 yield Static("", id="inventory", markup=False)
             with Vertical(id="main"):
@@ -223,11 +225,14 @@ class SpecReviewApp(App):
 
     def entries(self):
         query = self.ui("#search", Input).value.casefold()
+        changes_only = self.ui("#changes-only", Checkbox).value
         found = []
         if self.comparison:
             for change in self.comparison.changes.values():
                 doc = change.new or change.old
                 if not doc:
+                    continue
+                if changes_only and change.status == "unchanged":
                     continue
                 members = [d for d in (change.old, change.new) if d]
                 if any(d.type == self.category for d in members):
@@ -275,6 +280,10 @@ class SpecReviewApp(App):
 
     @on(Input.Changed, "#search")
     def search_changed(self):
+        self.run_worker(self.update_list(), group="list")
+
+    @on(Checkbox.Changed, "#changes-only")
+    def changes_filter_changed(self):
         self.run_worker(self.update_list(), group="list")
 
     @on(Tabs.TabActivated, "#categories")
@@ -742,6 +751,7 @@ class SpecReviewApp(App):
             self.notify(str(exc), severity="error")
             return
         self.comparison = compare(base, target)
+        self.ui("#changes-only", Checkbox).disabled = False
         self.pinned_snapshot = None
         self.history.clear()
         self.view_key = None
@@ -763,6 +773,8 @@ class SpecReviewApp(App):
     @work(exclusive=True, group="working-tree")
     async def action_browse(self):
         self.comparison = None
+        self.ui("#changes-only", Checkbox).value = False
+        self.ui("#changes-only", Checkbox).disabled = True
         self.pinned_snapshot = None
         self.history.clear()
         self.view_key = None
