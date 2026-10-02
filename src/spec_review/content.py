@@ -67,6 +67,13 @@ def field_text(key: str, value, document: Document) -> str:
         file = value.get("file", "")
         section = value.get("section", "")
         return f"{file}#{section}" if section else str(file)
+    if key.casefold().replace("_", "").replace("-", "") in {
+        "precondition",
+        "preconditions",
+        "postcondition",
+        "postconditions",
+    } and isinstance(value, list):
+        return "\n".join(f"- {item}" for item in value) or "—"
     if key in RELATION_FIELDS and isinstance(value, list):
         return "\n".join(f"- [{v}]({v})" for v in value) or "—"
     if isinstance(value, str):
@@ -79,6 +86,13 @@ def field_text(key: str, value, document: Document) -> str:
 def field_blocks(key: str, value, doc: Document) -> list[Block]:
     text = field_text(key, value, doc)
     if key == "source":
+        return blocks(text)
+    if key.casefold().replace("_", "").replace("-", "") in {
+        "precondition",
+        "preconditions",
+        "postcondition",
+        "postconditions",
+    } and isinstance(value, list):
         return blocks(text)
     if key == "description":
         source = doc.fields.get("source", {})
