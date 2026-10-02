@@ -63,6 +63,10 @@ def _raw_plantuml(text: str) -> list[Block]:
 
 
 def field_text(key: str, value, document: Document) -> str:
+    if key == "source" and isinstance(value, dict):
+        file = value.get("file", "")
+        section = value.get("section", "")
+        return f"{file}#{section}" if section else str(file)
     if key in RELATION_FIELDS and isinstance(value, list):
         return "\n".join(f"- [{v}]({v})" for v in value) or "—"
     if isinstance(value, str):
@@ -74,6 +78,8 @@ def field_text(key: str, value, document: Document) -> str:
 
 def field_blocks(key: str, value, doc: Document) -> list[Block]:
     text = field_text(key, value, doc)
+    if key == "source":
+        return blocks(text)
     if key == "description":
         source = doc.fields.get("source", {})
         name = source.get("file", "") if isinstance(source, dict) else ""
