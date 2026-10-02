@@ -63,7 +63,7 @@ browsing
 
 ### Status
 
-specified
+superseded
 
 ### Statement
 
@@ -76,6 +76,10 @@ Display the individual artifacts in the selected category in a list on the right
 ### Related
 
 —
+
+### Superseded By
+
+REQ-029
 
 ### Source
 
