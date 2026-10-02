@@ -35,6 +35,8 @@ Regenerate its overviews after changing canonical artifacts with `uv run python 
 
 ## Specification format
 
+See the [artifact format and field display reference](docs/artifact-format.md) for supported keys, special rendering rules, comparison behavior, and validation.
+
 - `spec/artifacts/**/*.yaml` (or `.yml`): one artifact per file, with string `id`, `type`, and `title`. All other fields are retained. Stable IDs identify documents across revisions and file moves.
 - Supported types: `goal`, `actor`, `use_case`, `requirement`, `constraint`, `decision`, `design`, `test`, `risk`, `assumption`, and `question`. Additional types get their own category.
 - Relationship fields (`actors`, `goal_refs`, `derived_from`, `related`, `addresses`, `decisions`, `verifies`) contain artifact IDs and appear as navigable links.

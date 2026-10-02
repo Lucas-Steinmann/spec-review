@@ -29,3 +29,5 @@ The generator reads this repository's canonical artifacts, validates their IDs a
 ## Updating the specification
 
 Change the smallest relevant set of artifacts and regenerate the views. Keep requirement statements separate from design choices. Record new user decisions with their provenance; do not infer new product requirements from the current implementation.
+
+See [`AGENTS.md`](AGENTS.md) for the review checklist to follow when editing canonical specification artifacts. The user-facing [artifact format reference](../docs/artifact-format.md) documents how this tool displays fields.
