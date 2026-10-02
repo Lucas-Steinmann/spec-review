@@ -12,6 +12,10 @@ spec-review = "spec_review.cli:main"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[tool.hatch.build.targets.wheel]
+packages = ["src/spec_review"]
+include = ["src/spec_review/webui/**"]
+
 [dependency-groups]
 dev = ["pytest>=8", "pytest-asyncio>=0.24", "ruff>=0.9"]
 

@@ -9,6 +9,10 @@
 
 The first release reviews canonical artifacts and stored overviews. It does not edit specification content, implement a WebUI, or migrate the companion project’s legacy documents.
 
+### Superseded By
+
+REQ-034
+
 ### Related
 
 [REQ-001](../artifacts/requirements/REQ-001.yaml), [REQ-016](../artifacts/requirements/REQ-016.yaml), [REQ-020](../artifacts/requirements/REQ-020.yaml)

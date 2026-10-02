@@ -1,0 +1,10 @@
+id: TEST-011
+type: test
+title: Load selected local and GitHub revisions in the WebUI
+verifies:
+- REQ-034
+- REQ-035
+description: Start the WebUI against a repository with a working-tree specification and multiple commits. Confirm the initial document list loads, selecting a commit refreshes the list to that revision, and a local comparison displays changed, added, and deleted documents with base and target field content. With a configured GitHub App installation, select a repository and confirm its default branch, branch, pull request, and commit revisions can be loaded and compared.
+source:
+  file: spec/sources/chat.md
+  section: WebUI and GitHub support

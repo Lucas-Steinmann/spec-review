@@ -88,3 +88,9 @@ These are accepted implementation decisions and defaults. They do not expand the
 > Change the behaviour, that it by default inspects the parent dir. By default use ./spec/. Allow overwriting with --spec-dir.
 > Render Source as "{file}#{section}" in one line.
 > If preconditions or post conditions is a list, then render it as a bullet point list instead of a python verbatim list
+
+## WebUI and GitHub support
+
+> We should now extend this project with a WebUI (works with local folder similar to the TUI). Furthermore it should work with GitHub. Once connected as a GitHub app, we should be able to select a repo and review a specific version (defaults to main) or a diff (e.g. select PRs or compare branches/commits).
+
+The user clarified that specifications must be maintained alongside the project and reported that the WebUI did not populate documents after selecting a commit. This expands the former first-release TUI-only scope. The browser UI must load a selected revision and support local folders and GitHub App repositories, including single-version review and comparisons.

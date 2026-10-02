@@ -1,0 +1,14 @@
+id: REQ-035
+type: requirement
+title: Review GitHub repositories and revisions
+category: integrations
+status: specified
+statement: Allow a reviewer to select a repository accessible to the configured GitHub App, review a specific revision defaulting to the repository's default branch, and compare pull requests, branches, or commits.
+derived_from:
+- UC-008
+related:
+- REQ-023
+- REQ-026
+source:
+  file: spec/sources/chat.md
+  section: WebUI and GitHub support

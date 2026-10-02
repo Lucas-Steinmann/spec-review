@@ -1,0 +1,22 @@
+id: UC-008
+type: use_case
+title: Review a local or GitHub specification in a browser
+actors:
+- ACTOR-001
+goal_refs:
+- GOAL-001
+description: Browse a specification in the WebUI from a local repository folder or an installed GitHub App repository, and inspect a version or comparison.
+preconditions:
+- The local repository folder contains a specification, or a GitHub App is configured and installed for the desired repository.
+main_flow: |-
+  1. Start the WebUI for a local repository folder or choose GitHub App as the source.
+  2. For GitHub, select an installation and repository.
+  3. Review the default branch or select another branch, pull request, or commit.
+  4. Choose documents by category and inspect the selected version, or choose base and target revisions to compare.
+postconditions: The browser displays documents from the selected revision and comparison statuses and field content for the selected diff.
+addresses:
+- REQ-034
+- REQ-035
+source:
+  file: spec/sources/chat.md
+  section: WebUI and GitHub support

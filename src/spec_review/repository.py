@@ -187,74 +187,79 @@ class Repository:
 
     def load(self, revision: str | None = None) -> Snapshot:
         label, files = self._files(revision)
-        documents = []
-        diagnostics = []
-        for path, text in files:
-            try:
-                if text.startswith("\0READ ERROR:"):
-                    raise ValueError(text[1:])
-                if path.startswith(f"{self.spec_dir}/generated/"):
-                    name = str(
-                        PurePosixPath(path).relative_to(f"{self.spec_dir}/generated")
-                    )
-                    title = next(
-                        (
-                            line[2:].strip()
-                            for line in text.splitlines()
-                            if line.startswith("# ")
-                        ),
-                        name,
-                    )
-                    documents.append(
-                        Document(f"overview:{name}", "overview", title, path, text=text)
-                    )
-                    continue
-                fields = json_value(yaml.load(text, Loader=UniqueLoader))
-                if not isinstance(fields, dict):
-                    raise ValueError("Artifact must be a YAML mapping")
-                for key in ("id", "type", "title"):
-                    if not isinstance(fields.get(key), str) or not fields[key].strip():
-                        raise ValueError(f"Missing or invalid {key}")
-                documents.append(
-                    Document(
-                        fields["id"],
-                        fields["type"],
-                        fields["title"],
-                        path,
-                        fields,
-                        text,
-                    )
+        return snapshot_from_files(label, files, self.spec_dir)
+
+
+def snapshot_from_files(
+    label: str, files: list[tuple[str, str]], spec_dir: str = "spec"
+) -> Snapshot:
+    """Parse specification files supplied by a local tree or a remote provider."""
+    documents = []
+    diagnostics = []
+    for path, text in files:
+        try:
+            if text.startswith("\0READ ERROR:"):
+                raise ValueError(text[1:])
+            if path.startswith(f"{spec_dir}/generated/"):
+                name = str(PurePosixPath(path).relative_to(f"{spec_dir}/generated"))
+                title = next(
+                    (
+                        line[2:].strip()
+                        for line in text.splitlines()
+                        if line.startswith("# ")
+                    ),
+                    name,
                 )
-            except (yaml.YAMLError, ValueError, TypeError, RecursionError) as exc:
-                diagnostics.append(Diagnostic(path, str(exc)))
                 documents.append(
-                    Document(
-                        f"error:{path}",
-                        "diagnostic",
-                        PurePosixPath(path).name,
-                        path,
-                        text=text,
-                        error=str(exc),
-                    )
+                    Document(f"overview:{name}", "overview", title, path, text=text)
                 )
-        counts = Counter(d.id for d in documents)
-        duplicates = [ident for ident, count in counts.items() if count > 1]
-        result = {}
-        for doc in documents:
-            if doc.id in duplicates:
-                message = f"Duplicate artifact ID {doc.id}; link resolution disabled"
-                diagnostics.append(Diagnostic(doc.path, message))
-                doc = Document(
-                    f"error:{doc.path}",
+                continue
+            fields = json_value(yaml.load(text, Loader=UniqueLoader))
+            if not isinstance(fields, dict):
+                raise ValueError("Artifact must be a YAML mapping")
+            for key in ("id", "type", "title"):
+                if not isinstance(fields.get(key), str) or not fields[key].strip():
+                    raise ValueError(f"Missing or invalid {key}")
+            documents.append(
+                Document(
+                    fields["id"],
+                    fields["type"],
+                    fields["title"],
+                    path,
+                    fields,
+                    text,
+                )
+            )
+        except (yaml.YAMLError, ValueError, TypeError, RecursionError) as exc:
+            diagnostics.append(Diagnostic(path, str(exc)))
+            documents.append(
+                Document(
+                    f"error:{path}",
                     "diagnostic",
-                    doc.title,
-                    doc.path,
-                    doc.fields,
-                    doc.text,
-                    message,
+                    PurePosixPath(path).name,
+                    path,
+                    text=text,
+                    error=str(exc),
                 )
-            result[doc.id] = doc
-        return Snapshot(label, result, diagnostics, duplicates)
+            )
+    counts = Counter(d.id for d in documents)
+    duplicates = [ident for ident, count in counts.items() if count > 1]
+    result = {}
+    for doc in documents:
+        if doc.id in duplicates:
+            message = f"Duplicate artifact ID {doc.id}; link resolution disabled"
+            diagnostics.append(Diagnostic(doc.path, message))
+            doc = Document(
+                f"error:{doc.path}",
+                "diagnostic",
+                doc.title,
+                doc.path,
+                doc.fields,
+                doc.text,
+                message,
+            )
+        result[doc.id] = doc
+    return Snapshot(label, result, diagnostics, duplicates)
 
 
 def discover_repository(start: Path) -> Path:

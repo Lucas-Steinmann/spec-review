@@ -1,0 +1,14 @@
+id: REQ-034
+type: requirement
+title: Browse and compare specifications in a WebUI
+category: browsing
+status: specified
+statement: Provide a browser interface for reading specifications in a selected local repository folder using the same snapshot and comparison services as the terminal interface. Selecting a revision loads and displays that revision's documents.
+derived_from:
+- UC-008
+related:
+- REQ-016
+- REQ-023
+source:
+  file: spec/sources/chat.md
+  section: WebUI and GitHub support

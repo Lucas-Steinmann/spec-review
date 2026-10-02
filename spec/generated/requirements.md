@@ -864,3 +864,55 @@ Render list-valued preconditions and postconditions as Markdown bullet lists.
 ### Source
 
 `spec/sources/chat.md` — [Requested improvements, October 2, 2026](provenance.md#requested-improvements-october-2-2026)
+
+## [REQ-034](../artifacts/requirements/REQ-034.yaml) — Browse and compare specifications in a WebUI
+
+### Category
+
+browsing
+
+### Status
+
+specified
+
+### Statement
+
+Provide a browser interface for reading specifications in a selected local repository folder using the same snapshot and comparison services as the terminal interface. Selecting a revision loads and displays that revision's documents.
+
+### Derived From
+
+[UC-008](../artifacts/use-cases/UC-008.yaml)
+
+### Related
+
+[REQ-016](../artifacts/requirements/REQ-016.yaml), [REQ-023](../artifacts/requirements/REQ-023.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [WebUI and GitHub support](provenance.md#webui-and-github-support)
+
+## [REQ-035](../artifacts/requirements/REQ-035.yaml) — Review GitHub repositories and revisions
+
+### Category
+
+integrations
+
+### Status
+
+specified
+
+### Statement
+
+Allow a reviewer to select a repository accessible to the configured GitHub App, review a specific revision defaulting to the repository's default branch, and compare pull requests, branches, or commits.
+
+### Derived From
+
+[UC-008](../artifacts/use-cases/UC-008.yaml)
+
+### Related
+
+[REQ-023](../artifacts/requirements/REQ-023.yaml), [REQ-026](../artifacts/requirements/REQ-026.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [WebUI and GitHub support](provenance.md#webui-and-github-support)

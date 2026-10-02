@@ -142,3 +142,17 @@ Introduce malformed YAML and duplicate artifact IDs in a temporary specification
 ### Source
 
 `spec/sources/chat.md` — [Approved implementation plan](provenance.md#approved-implementation-plan)
+
+## [TEST-011](../artifacts/tests/TEST-011.yaml) — Load selected local and GitHub revisions in the WebUI
+
+### Verifies
+
+[REQ-034](../artifacts/requirements/REQ-034.yaml), [REQ-035](../artifacts/requirements/REQ-035.yaml)
+
+### Description
+
+Start the WebUI against a repository with a working-tree specification and multiple commits. Confirm the initial document list loads, selecting a commit refreshes the list to that revision, and a local comparison displays changed, added, and deleted documents with base and target field content. With a configured GitHub App installation, select a repository and confirm its default branch, branch, pull request, and commit revisions can be loaded and compared.
+
+### Source
+
+`spec/sources/chat.md` — [WebUI and GitHub support](provenance.md#webui-and-github-support)

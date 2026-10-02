@@ -13,6 +13,28 @@ uv sync --locked
 uv run spec-review
 ```
 
+Run the browser interface against the same local folder:
+
+```sh
+uv run spec-review --web --repo /path/to/project --spec-dir spec
+```
+
+It listens on `127.0.0.1:8765` by default. The WebUI is read-only and supports local working-tree browsing and Git comparisons. To expose it on another interface, pass `--host` and `--port`.
+
+### GitHub App access in the WebUI
+
+Configure a GitHub App with **Metadata: read**, **Contents: read**, and **Pull requests: read** repository permissions, install it on the organizations or accounts to review, and provide its App ID and private key to the server:
+
+```sh
+export SPEC_REVIEW_GITHUB_APP_ID=123456
+export SPEC_REVIEW_GITHUB_PRIVATE_KEY="$(cat /path/to/private-key.pem)"
+uv run spec-review --web
+```
+
+The private key is used only by the server to mint short-lived GitHub App JWTs and installation access tokens. The browser can select an installation and one of its repositories, review branches or pull requests, and compare refs. GitHub API requests are read-only; no branches are checked out and no repository files are written. Keep the server on a trusted network and protect its environment variables.
+
+The server needs OpenSSL available on `PATH` to sign App JWTs.
+
 The private submodule requires GitHub authentication. By default, the CLI uses the current directory as the repository and `./spec/` as the specification directory. Override the spec folder with `--spec-dir`, or select another repository with `--repo`:
 
 ```sh
@@ -115,7 +137,7 @@ Diagram PNG cache: `$XDG_CACHE_HOME/spec-review/diagrams/`, default `~/.cache/sp
 
 ## Backend API
 
-The backend imports independently of Textual. No HTTP server is included; a future WebUI can adapt these services:
+The backend imports independently of Textual. A small read-only HTTP server is available with `--web`; frontend code can also adapt these services directly:
 
 ```python
 from pathlib import Path

@@ -238,3 +238,40 @@ The tool can review its own requirements without switching to the parent project
 ### Source
 
 `spec/sources/chat.md` — [Dogfooding](provenance.md#dogfooding)
+
+## [UC-008](../artifacts/use-cases/UC-008.yaml) — Review a local or GitHub specification in a browser
+
+### Actors
+
+[ACTOR-001](../artifacts/actors/ACTOR-001.yaml)
+
+### Goal Refs
+
+[GOAL-001](../artifacts/goals/GOAL-001.yaml)
+
+### Description
+
+Browse a specification in the WebUI from a local repository folder or an installed GitHub App repository, and inspect a version or comparison.
+
+### Preconditions
+
+- The local repository folder contains a specification, or a GitHub App is configured and installed for the desired repository.
+
+### Main Flow
+
+1. Start the WebUI for a local repository folder or choose GitHub App as the source.
+2. For GitHub, select an installation and repository.
+3. Review the default branch or select another branch, pull request, or commit.
+4. Choose documents by category and inspect the selected version, or choose base and target revisions to compare.
+
+### Postconditions
+
+The browser displays documents from the selected revision and comparison statuses and field content for the selected diff.
+
+### Addresses
+
+[REQ-034](../artifacts/requirements/REQ-034.yaml), [REQ-035](../artifacts/requirements/REQ-035.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [WebUI and GitHub support](provenance.md#webui-and-github-support)

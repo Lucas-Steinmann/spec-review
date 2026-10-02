@@ -142,3 +142,22 @@ Maintain a separately versioned Python package and a real submodule gitlink. Sto
 ### Source
 
 `spec/sources/chat.md` — [Dogfooding](provenance.md#dogfooding)
+
+## [DES-007](../artifacts/design/DES-007.yaml) — Browser frontend and GitHub App repository provider
+
+### Description
+
+The WebUI runs as a read-only HTTP server and consumes the existing snapshot and comparison services. The local provider reads the selected folder and Git history. The GitHub provider uses server-side GitHub App credentials to enumerate installations and repositories, mint short-lived installation tokens, and read tree/blob snapshots through GitHub's API. The browser selects repository revisions and renders snapshots and comparison results.
+
+
+### Addresses
+
+[REQ-034](../artifacts/requirements/REQ-034.yaml), [REQ-035](../artifacts/requirements/REQ-035.yaml), [REQ-016](../artifacts/requirements/REQ-016.yaml)
+
+### Decisions
+
+—
+
+### Source
+
+`spec/sources/chat.md` — [WebUI and GitHub support](provenance.md#webui-and-github-support)
