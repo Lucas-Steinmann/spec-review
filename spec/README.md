@@ -16,7 +16,7 @@ From the `spec-review` directory:
 uv run spec-review --repo .
 ```
 
-The explicit `--repo .` selects this submodule's specification and commit history. Omitting it retains the default behavior of reviewing the parent project's specification.
+The explicit `--repo .` selects this submodule's specification and commit history. Without `--repo`, the current directory is used as the repository; `--spec-dir` selects a different relative spec folder.
 
 ## Regenerate overviews
 

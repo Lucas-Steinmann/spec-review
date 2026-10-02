@@ -130,6 +130,10 @@ class SpecReviewApp(App):
             yield Button("Diff", id="diff", compact=True)
             yield Button("Options", id="options", compact=True)
         with Horizontal(id="workspace"):
+            with Vertical(id="sidebar"):
+                yield Input(placeholder="Search ID or title…", id="search")
+                yield ListView(id="artifacts")
+                yield Static("", id="inventory", markup=False)
             with Vertical(id="main"):
                 yield VerticalScroll(id="content")
                 yield Static(
@@ -137,10 +141,6 @@ class SpecReviewApp(App):
                     id="link-status",
                     markup=False,
                 )
-            with Vertical(id="sidebar"):
-                yield Input(placeholder="Search ID or title…", id="search")
-                yield ListView(id="artifacts")
-                yield Static("", id="inventory", markup=False)
         yield Tabs(
             *(
                 Tab(label, id=f"cat-{i}")

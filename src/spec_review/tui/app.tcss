@@ -6,7 +6,7 @@ Screen { background: $surface; }
 #main { width: 3fr; }
 #content { height: 1fr; padding: 1 2; }
 #content:focus { border-left: solid $accent; }
-#sidebar { width: 1fr; min-width: 25; border-left: solid $primary; }
+#sidebar { width: 1fr; min-width: 25; border-right: solid $primary; }
 #search { margin: 0 1; }
 #artifacts { height: 1fr; }
 ArtifactItem { height: auto; min-height: 3; padding: 0 1; }

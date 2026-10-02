@@ -730,3 +730,133 @@ Run local renderers asynchronously without a shell and with a configurable timeo
 ### Source
 
 `spec/sources/chat.md` — [Approved implementation plan](provenance.md#approved-implementation-plan)
+
+## [REQ-029](../artifacts/requirements/REQ-029.yaml) — Place the artifact list on the left
+
+### Category
+
+browsing
+
+### Status
+
+specified
+
+### Statement
+
+Place the artifact list and search sidebar on the left side of the workspace, with selected artifact content on the right.
+
+### Derived From
+
+—
+
+### Related
+
+—
+
+### Source
+
+`spec/sources/chat.md` — [Requested improvements, October 2, 2026](provenance.md#requested-improvements-october-2-2026)
+
+## [REQ-030](../artifacts/requirements/REQ-030.yaml) — Filter the comparison list to changed artifacts
+
+### Category
+
+comparison
+
+### Status
+
+specified
+
+### Statement
+
+Let users filter the artifact list to added, changed, and deleted items while comparing revisions.
+
+### Derived From
+
+—
+
+### Related
+
+[REQ-012](../artifacts/requirements/REQ-012.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [Requested improvements, October 2, 2026](provenance.md#requested-improvements-october-2-2026)
+
+## [REQ-031](../artifacts/requirements/REQ-031.yaml) — Use the current directory and spec folder by default
+
+### Category
+
+cli
+
+### Status
+
+specified
+
+### Statement
+
+When --repo is omitted, use the current working directory as the repository and ./spec/ as the specification directory. Allow --spec-dir to override the specification directory.
+
+### Derived From
+
+—
+
+### Related
+
+—
+
+### Source
+
+`spec/sources/chat.md` — [Requested improvements, October 2, 2026](provenance.md#requested-improvements-october-2-2026)
+
+## [REQ-032](../artifacts/requirements/REQ-032.yaml) — Display source metadata on one line
+
+### Category
+
+browsing
+
+### Status
+
+specified
+
+### Statement
+
+Display source metadata as {file}#{section} on one line.
+
+### Derived From
+
+—
+
+### Related
+
+—
+
+### Source
+
+`spec/sources/chat.md` — [Requested improvements, October 2, 2026](provenance.md#requested-improvements-october-2-2026)
+
+## [REQ-033](../artifacts/requirements/REQ-033.yaml) — Render preconditions and postconditions as lists
+
+### Category
+
+browsing
+
+### Status
+
+specified
+
+### Statement
+
+Render list-valued preconditions and postconditions as Markdown bullet lists.
+
+### Derived From
+
+—
+
+### Related
+
+—
+
+### Source
+
+`spec/sources/chat.md` — [Requested improvements, October 2, 2026](provenance.md#requested-improvements-october-2-2026)

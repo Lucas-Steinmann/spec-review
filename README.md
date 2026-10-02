@@ -1,6 +1,6 @@
 # spec-review
 
-A read-only terminal browser and Git comparison tool for specifications stored as YAML artifacts and generated Markdown. The content pane is on the left, the artifact list on the right, and categories run along the bottom.
+A read-only terminal browser and Git comparison tool for specifications stored as YAML artifacts and generated Markdown. The artifact list is on the left, the content pane is on the right, and categories run along the bottom.
 
 ## Install and run
 
@@ -13,7 +13,7 @@ uv sync --locked
 uv run spec-review
 ```
 
-The private submodule requires GitHub authentication. The CLI selects the parent project's repository when launched from its submodule. From anywhere else, provide the specification repository explicitly:
+The private submodule requires GitHub authentication. By default, the CLI uses the current directory as the repository and `./spec/` as the specification directory. Override the spec folder with `--spec-dir`, or select another repository with `--repo`:
 
 ```sh
 uv run --project /path/to/spec-review spec-review --repo /path/to/project --spec-dir spec
@@ -91,7 +91,7 @@ The Diff modal lists commit SHA, date, and subject. Search subjects or enter a S
 
 Default revisions are `HEAD^` and `HEAD` (or `HEAD` twice for a repository with one commit). Reversed selections and identical commits are supported. A commit before the specification was introduced represents an empty specification.
 
-The right list retains deleted artifacts. Additions are green `+`, changes orange `~`, and deletions red `−`. Changed categories have a star. A type change is visible under both categories. YAML formatting, mapping order, and file relocation do not count as changes; field types, list order, and field content do. Generated Markdown uses textual comparisons.
+The artifact list retains deleted artifacts. Additions are green `+`, changes orange `~`, and deletions red `−`. Use **Changes only** to hide unchanged artifacts during a comparison. Changed categories have a star. A type change is visible under both categories. YAML formatting, mapping order, and file relocation do not count as changes; field types, list order, and field content do. Generated Markdown uses textual comparisons.
 
 Inline diffs show line hunks within named fields with unchanged context. Two-panel diffs align base and target rows in one shared scroll viewport. Links use the version from which they appear; following a removed link shows the base artifact explicitly. Alt+Left returns to the comparison.
 

@@ -13,7 +13,7 @@ A specification browser that uses its own artifact format to document its requir
 | Goals | 3 | [Goals](goals.md) |
 | Actors | 1 | [Actors](actors.md) |
 | Use Cases | 7 | [Use Cases](use-cases.md) |
-| Requirements | 28 | [Requirements](requirements.md) |
+| Requirements | 33 | [Requirements](requirements.md) |
 | Constraints | 3 | [Constraints](constraints.md) |
 | Decisions | 8 | [Decisions](decisions.md) |
 | Design | 6 | [Design](architecture.md) |

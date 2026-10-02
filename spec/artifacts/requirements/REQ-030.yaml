@@ -1,0 +1,12 @@
+id: REQ-030
+type: requirement
+title: Filter the comparison list to changed artifacts
+category: comparison
+status: specified
+statement: Let users filter the artifact list to added, changed, and deleted items while comparing revisions.
+derived_from: []
+related:
+- REQ-012
+source:
+  file: spec/sources/chat.md
+  section: Requested improvements, October 2, 2026

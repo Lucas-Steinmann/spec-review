@@ -19,11 +19,7 @@ Inspect the plan by artifact category and select a document to read.
 
 ### Preconditions
 
-```json
-[
-  "The selected repository contains a specification, or selected historical revisions are available locally."
-]
-```
+- The selected repository contains a specification, or selected historical revisions are available locally.
 
 ### Main Flow
 
@@ -57,11 +53,7 @@ Navigate to related artifacts using mouse or keyboard.
 
 ### Preconditions
 
-```json
-[
-  "The selected repository contains a specification, or selected historical revisions are available locally."
-]
-```
+- The selected repository contains a specification, or selected historical revisions are available locally.
 
 ### Main Flow
 
@@ -94,11 +86,7 @@ Review a description containing prose and one or more Mermaid or PlantUML diagra
 
 ### Preconditions
 
-```json
-[
-  "The selected repository contains a specification, or selected historical revisions are available locally."
-]
-```
+- The selected repository contains a specification, or selected historical revisions are available locally.
 
 ### Main Flow
 
@@ -131,11 +119,7 @@ Adjust rendering and diff layout through Options.
 
 ### Preconditions
 
-```json
-[
-  "The selected repository contains a specification, or selected historical revisions are available locally."
-]
-```
+- The selected repository contains a specification, or selected historical revisions are available locally.
 
 ### Main Flow
 
@@ -169,11 +153,7 @@ Choose a base revision and a target revision from Git history.
 
 ### Preconditions
 
-```json
-[
-  "The selected repository contains a specification, or selected historical revisions are available locally."
-]
-```
+- The selected repository contains a specification, or selected historical revisions are available locally.
 
 ### Main Flow
 
@@ -206,11 +186,7 @@ Review differences in artifact content and diagrams.
 
 ### Preconditions
 
-```json
-[
-  "The selected repository contains a specification, or selected historical revisions are available locally."
-]
-```
+- The selected repository contains a specification, or selected historical revisions are available locally.
 
 ### Main Flow
 
@@ -245,11 +221,7 @@ Use this repository as a concrete example of the format and review workflow.
 
 ### Preconditions
 
-```json
-[
-  "The selected repository contains a specification, or selected historical revisions are available locally."
-]
-```
+- The selected repository contains a specification, or selected historical revisions are available locally.
 
 ### Main Flow
 

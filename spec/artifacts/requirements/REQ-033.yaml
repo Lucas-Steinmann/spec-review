@@ -1,0 +1,11 @@
+id: REQ-033
+type: requirement
+title: Render preconditions and postconditions as lists
+category: browsing
+status: specified
+statement: Render list-valued preconditions and postconditions as Markdown bullet lists.
+derived_from: []
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Requested improvements, October 2, 2026

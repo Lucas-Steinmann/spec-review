@@ -1,0 +1,12 @@
+id: REQ-031
+type: requirement
+title: Use the current directory and spec folder by default
+category: cli
+status: specified
+statement: When --repo is omitted, use the current working directory as the repository and ./spec/ as
+  the specification directory. Allow --spec-dir to override the specification directory.
+derived_from: []
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Requested improvements, October 2, 2026

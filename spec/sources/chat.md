@@ -80,3 +80,11 @@ These are accepted implementation decisions and defaults. They do not expand the
 ## Dogfooding
 
 > Please dogfood the spec-review project by creating a spec folder and adding the specs I gave to you here in the chat.
+
+## Requested improvements, October 2, 2026
+
+> Move the sidebar on the right (with the list of items to the left)
+> Allow the user to filter only changed/added/deleted items.
+> Change the behaviour, that it by default inspects the parent dir. By default use ./spec/. Allow overwriting with --spec-dir.
+> Render Source as "{file}#{section}" in one line.
+> If preconditions or post conditions is a list, then render it as a bullet point list instead of a python verbatim list

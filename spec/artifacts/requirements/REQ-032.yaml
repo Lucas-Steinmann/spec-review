@@ -1,0 +1,11 @@
+id: REQ-032
+type: requirement
+title: Display source metadata on one line
+category: browsing
+status: specified
+statement: Display source metadata as {file}#{section} on one line.
+derived_from: []
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Requested improvements, October 2, 2026
