@@ -1,0 +1,14 @@
+id: REQ-025
+type: requirement
+title: Support focused navigation, search, and history
+category: navigation
+status: specified
+statement: Support focus cycling, list and category navigation, content scrolling, artifact search by
+  ID/title, selected-link activation, and a return to previous documents and versions.
+derived_from:
+- UC-001
+- UC-002
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Approved implementation plan

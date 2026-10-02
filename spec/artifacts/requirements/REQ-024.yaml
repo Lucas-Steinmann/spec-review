@@ -1,0 +1,15 @@
+id: REQ-024
+type: requirement
+title: Keep reviewing when images are unavailable
+category: diagrams
+status: specified
+statement: Show diagram source and diagnostics when the terminal cannot display images, a local renderer
+  is missing, rendering fails, or a renderer times out. Keep unrelated navigation available and clean
+  up images when navigating or resizing.
+derived_from:
+- UC-003
+- UC-004
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Approved implementation plan

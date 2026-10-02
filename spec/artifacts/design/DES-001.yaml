@@ -1,0 +1,43 @@
+id: DES-001
+type: design
+title: Reusable review backend and frontend boundary
+description: |
+  The backend owns repository snapshots, canonical document models, relationship/link resolution, field comparisons, and diagram rendering. The terminal frontend owns layout, focus, selection, colors, dialogs, and Kitty image presentation. A future WebUI can adapt the same backend services without importing Textual into the backend.
+
+  ```mermaid
+  flowchart LR
+    TUI[Textual frontend] --> Backend[Review services]
+    Web[Future WebUI] -.-> Backend
+    Backend --> Snapshots[Working tree and Git snapshots]
+    Backend --> Links[Snapshot-specific link resolution]
+    Backend --> Diff[Artifact and overview comparison]
+    Backend --> Diagrams[Local renderer and PNG cache]
+  ```
+
+  The following sequence shows a commit comparison through the same boundary.
+
+  ```plantuml
+  @startuml
+  actor Reviewer
+  participant "TUI" as TUI
+  participant "Backend" as Backend
+  participant "Git objects" as Git
+  Reviewer -> TUI: choose base and target
+  TUI -> Backend: load snapshots and compare
+  Backend -> Git: read base and target blobs
+  Git --> Backend: YAML and Markdown
+  Backend --> TUI: documents, differences, provenance
+  TUI --> Reviewer: categories, statuses, content diff
+  @enduml
+  ```
+addresses:
+- REQ-016
+- REQ-022
+- REQ-023
+- REQ-027
+- REQ-028
+decisions:
+- ADR-001
+source:
+  file: spec/sources/chat.md
+  section: Approved implementation plan

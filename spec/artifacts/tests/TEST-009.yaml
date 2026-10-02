@@ -1,0 +1,12 @@
+id: TEST-009
+type: test
+title: Review and regenerate the tool’s own specification
+verifies:
+- REQ-026
+description: From spec-review, launch uv run spec-review --repo . and browse the requirements from this
+  conversation. Follow use-case, decision, design, and test links. Regenerate views twice and confirm
+  deterministic output and valid references. Compare the commit introducing this spec/ with its predecessor
+  and confirm additions appear in every populated category.
+source:
+  file: spec/sources/chat.md
+  section: Dogfooding

@@ -1,0 +1,11 @@
+id: TEST-008
+type: test
+title: Initialize the private Git submodule
+verifies:
+- REQ-017
+description: From an authenticated fresh clone of a consuming project, initialize spec-review at its pinned
+  commit, install locked dependencies, and launch it. Confirm it has independent Git history and defaults
+  to the parent project’s specification.
+source:
+  file: spec/sources/chat.md
+  section: Approved implementation plan

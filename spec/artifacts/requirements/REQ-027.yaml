@@ -1,0 +1,14 @@
+id: REQ-027
+type: requirement
+title: Preserve fields and diagnose invalid artifacts
+category: browsing
+status: specified
+statement: Safely parse YAML and retain unknown fields, source provenance, and embedded code. Report malformed
+  files and duplicate IDs without blocking unaffected documents or silently selecting a duplicate link
+  target.
+derived_from:
+- UC-001
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Approved implementation plan

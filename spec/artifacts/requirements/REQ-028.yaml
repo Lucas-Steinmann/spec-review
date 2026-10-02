@@ -1,0 +1,14 @@
+id: REQ-028
+type: requirement
+title: Run and cache local renderers asynchronously
+category: diagrams
+status: specified
+statement: Run local renderers asynchronously without a shell and with a configurable timeout. Cache PNGs
+  using diagram source, language, renderer identity/version, and rendering configuration.
+derived_from:
+- UC-003
+- UC-004
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Approved implementation plan

@@ -1,0 +1,14 @@
+id: ADR-001
+type: decision
+title: Python and Textual terminal frontend
+status: accepted
+context: Decision selected or approved during the project conversation.
+decision: Use Python with Textual, Rich, and textual-image for terminal presentation, with frontend-independent
+  Python backend services.
+addresses:
+- REQ-006
+- REQ-008
+- REQ-016
+source:
+  file: spec/sources/chat.md
+  section: Toolkit

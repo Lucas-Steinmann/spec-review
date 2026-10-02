@@ -1,0 +1,13 @@
+id: REQ-010
+type: requirement
+title: Disable rendering through Options
+category: configuration
+status: specified
+statement: Expose diagram rendering in Options. When rendering is disabled, show readable source, cancel
+  active rendering jobs, and invoke no new renderers or image displays.
+derived_from:
+- UC-004
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Initial request

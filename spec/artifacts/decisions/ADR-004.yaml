@@ -1,0 +1,12 @@
+id: ADR-004
+type: decision
+title: Keep diagrams inside descriptions
+status: accepted
+context: Decision selected or approved during the project conversation.
+decision: Use multiple fenced Mermaid/PlantUML blocks in descriptions and support existing standalone
+  PlantUML blocks. Historical rendered_diagram is retained as generic text, without special rendering.
+addresses:
+- REQ-009
+source:
+  file: spec/sources/chat.md
+  section: Diagram clarification

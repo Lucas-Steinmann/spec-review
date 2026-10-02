@@ -1,0 +1,13 @@
+id: REQ-009
+type: requirement
+title: Support multiple diagrams in descriptions
+category: diagrams
+status: specified
+statement: Treat diagrams as part of an artifact’s description. Support multiple diagram blocks interspersed
+  with prose in one description. Do not introduce a separate rendered_diagram rendering contract.
+derived_from:
+- UC-003
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Diagram clarification

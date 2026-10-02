@@ -1,0 +1,46 @@
+> GENERATED FILE — DO NOT EDIT.
+> Source: spec/artifacts/. Regenerate with `uv run python scripts/generate_spec_views.py`.
+
+# Constraints
+
+## [CON-001](../artifacts/constraints/CON-001.yaml) — First release is a read-only TUI
+
+### Statement
+
+The first release reviews canonical artifacts and stored overviews. It does not edit specification content, implement a WebUI, or migrate the companion project’s legacy documents.
+
+### Related
+
+[REQ-001](../artifacts/requirements/REQ-001.yaml), [REQ-016](../artifacts/requirements/REQ-016.yaml), [REQ-020](../artifacts/requirements/REQ-020.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [Confirmed scope](provenance.md#confirmed-scope)
+
+## [CON-002](../artifacts/constraints/CON-002.yaml) — Render with local installations
+
+### Statement
+
+Diagram rendering uses local PlantUML and mmdc installations. A remote rendering service is outside scope.
+
+### Related
+
+[REQ-008](../artifacts/requirements/REQ-008.yaml), [REQ-028](../artifacts/requirements/REQ-028.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [Initial request](provenance.md#initial-request)
+
+## [CON-003](../artifacts/constraints/CON-003.yaml) — Keep user state outside reviewed repositories
+
+### Statement
+
+Persist options and cache images in user directories, without writing configuration or rendering artifacts into the reviewed specification repository.
+
+### Related
+
+[REQ-021](../artifacts/requirements/REQ-021.yaml), [REQ-023](../artifacts/requirements/REQ-023.yaml), [REQ-028](../artifacts/requirements/REQ-028.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [Settings](provenance.md#settings)

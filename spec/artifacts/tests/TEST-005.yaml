@@ -1,0 +1,12 @@
+id: TEST-005
+type: test
+title: Select revisions without changing the checkout
+verifies:
+- REQ-011
+- REQ-023
+description: Open Diff, search/page through local commits, select base and target, and cancel once before
+  activating a comparison. Compare normal, identical, and reversed revisions. Compare a commit before
+  spec/ existed with the introducing commit. Confirm the checkout and working files remain unchanged.
+source:
+  file: spec/sources/chat.md
+  section: Approved implementation plan

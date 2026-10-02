@@ -1,0 +1,14 @@
+id: REQ-003
+type: requirement
+title: List individual artifacts on the right
+category: browsing
+status: specified
+statement: Display the individual artifacts in the selected category in a list on the right side, allowing
+  the reviewer to select an artifact.
+derived_from:
+- UC-001
+- UC-006
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Initial request

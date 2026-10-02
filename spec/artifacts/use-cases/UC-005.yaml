@@ -1,0 +1,19 @@
+id: UC-005
+type: use_case
+title: Select two commits for comparison
+actors:
+- ACTOR-001
+goal_refs:
+- GOAL-002
+description: Choose a base revision and a target revision from Git history.
+preconditions:
+- The selected repository contains a specification, or selected historical revisions are available locally.
+main_flow: |-
+  1. Select Diff in the bottom panel or toolbar.
+  2. Review commit history in the modal and search or page through it.
+  3. Select the base and target commits separately.
+  4. Activate Compare, or Cancel without changing the current review.
+postconditions: The tool displays a comparison without checking out either commit.
+source:
+  file: spec/sources/chat.md
+  section: Initial request

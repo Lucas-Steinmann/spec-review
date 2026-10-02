@@ -1,0 +1,25 @@
+id: DES-004
+type: design
+title: Description blocks and local diagram images
+description: Extract interleaved prose, code, fenced Mermaid/PlantUML blocks, and raw standalone PlantUML
+  blocks from descriptions. Read overview fences in the same way. Run local executables asynchronously
+  with timeouts and cache PNG results by source, renderer identity/version, and configuration. Present
+  them through Kitty graphics support and release uploaded images when content leaves the view. Disabled
+  rendering shows source and invokes no renderers. Failed or unsupported rendering produces local diagnostics
+  instead of stopping navigation. Persist rendering preferences in the user configuration directory and
+  keep generated image caches outside the repository.
+addresses:
+- REQ-008
+- REQ-009
+- REQ-010
+- REQ-015
+- REQ-021
+- REQ-024
+- REQ-028
+decisions:
+- ADR-001
+- ADR-004
+- ADR-006
+source:
+  file: spec/sources/chat.md
+  section: Approved implementation plan

@@ -1,0 +1,14 @@
+id: TEST-004
+type: test
+title: Disable rendering and retain settings
+verifies:
+- REQ-010
+- REQ-014
+- REQ-021
+- REQ-028
+description: Use Options to disable rendering and select two-panel diff. Confirm existing jobs are canceled,
+  no new renderer runs, and no images remain. Restart and confirm settings persist. Inspect user directories
+  to confirm configuration and cached PNGs are outside the reviewed repository.
+source:
+  file: spec/sources/chat.md
+  section: Approved implementation plan

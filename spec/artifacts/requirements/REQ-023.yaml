@@ -1,0 +1,15 @@
+id: REQ-023
+type: requirement
+title: Read Git snapshots without changing the checkout
+category: comparison
+status: specified
+statement: Read selected Git objects without changing the working tree or branch. Support identical commits
+  and reversed chronology. A revision without spec/ represents an empty specification, so introducing
+  the specification appears as additions.
+derived_from:
+- UC-005
+- UC-006
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Approved implementation plan

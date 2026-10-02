@@ -1,0 +1,15 @@
+id: TEST-002
+type: test
+title: Follow direct, legacy, and ambiguous links
+verifies:
+- REQ-007
+- REQ-019
+- REQ-022
+- REQ-025
+description: Follow artifact IDs, canonical relative paths, overview links, and anchors using click and
+  keyboard activation. Follow a legacy link that maps to one artifact and another that maps to several.
+  Confirm the chooser, unresolved-target explanation, snapshot provenance, and navigation history work
+  without reading legacy files.
+source:
+  file: spec/sources/chat.md
+  section: Approved implementation plan

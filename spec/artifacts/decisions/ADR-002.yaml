@@ -1,0 +1,12 @@
+id: ADR-002
+type: decision
+title: Semantic YAML comparison
+status: accepted
+context: Decision selected or approved during the project conversation.
+decision: Compare parsed field values by permanent artifact ID; ignore formatting, mapping order, and
+  file moves, while preserving list order and scalar types.
+addresses:
+- REQ-018
+source:
+  file: spec/sources/chat.md
+  section: Diff semantics

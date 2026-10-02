@@ -1,0 +1,19 @@
+id: UC-003
+type: use_case
+title: Read diagrams inside descriptions
+actors:
+- ACTOR-001
+goal_refs:
+- GOAL-001
+description: Review a description containing prose and one or more Mermaid or PlantUML diagrams in Kitty.
+preconditions:
+- The selected repository contains a specification, or selected historical revisions are available locally.
+main_flow: |-
+  1. Select an artifact containing diagram blocks in its description, or an overview containing such blocks.
+  2. Keep diagram rendering enabled.
+  3. Render diagram source using local mmdc or PlantUML.
+  4. Read the images alongside the surrounding prose and source.
+postconditions: Every supported diagram block is available for review without a remote rendering service.
+source:
+  file: spec/sources/chat.md
+  section: Diagram clarification

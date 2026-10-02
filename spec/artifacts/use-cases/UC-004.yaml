@@ -1,0 +1,21 @@
+id: UC-004
+type: use_case
+title: Configure presentation and rendering
+actors:
+- ACTOR-001
+goal_refs:
+- GOAL-001
+description: Adjust rendering and diff layout through Options.
+preconditions:
+- The selected repository contains a specification, or selected historical revisions are available locally.
+main_flow: |-
+  1. Open Options.
+  2. Enable or disable diagram rendering.
+  3. Select inline or two-panel comparison.
+  4. Save preferences and continue reviewing.
+  5. Reopen the tool and retain saved preferences.
+postconditions: The chosen presentation applies and persistent settings remain outside the specification
+  repository.
+source:
+  file: spec/sources/chat.md
+  section: Initial request

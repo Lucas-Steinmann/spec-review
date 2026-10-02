@@ -1,0 +1,18 @@
+id: REQ-016
+type: requirement
+title: Separate backend and frontend
+category: architecture
+status: specified
+statement: Keep parsing, snapshot access, link resolution, comparison, content blocks, and diagram rendering
+  separate from terminal presentation so a future WebUI can reuse the backend. Backend modules import
+  without Textual and expose JSON-serializable models.
+derived_from:
+- UC-001
+- UC-002
+- UC-003
+- UC-005
+- UC-007
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Initial request

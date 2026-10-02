@@ -1,0 +1,14 @@
+id: REQ-018
+type: requirement
+title: Compare parsed artifact content by stable ID
+category: comparison
+status: specified
+statement: Identify artifacts by stable ID and compare parsed YAML fields. Ignore serialization formatting,
+  mapping order, and file relocation. Preserve list-order significance and distinguish changes in scalar
+  types.
+derived_from:
+- UC-006
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Diff semantics

@@ -1,0 +1,12 @@
+id: REQ-004
+type: requirement
+title: Read selected content on the left
+category: presentation
+status: specified
+statement: Display the selected artifact’s content in the main view on the left side.
+derived_from:
+- UC-001
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Initial request

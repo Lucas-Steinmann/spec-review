@@ -1,0 +1,15 @@
+id: ADR-006
+type: decision
+title: Persist settings with explicit defaults
+status: accepted
+context: Decision selected or approved during the project conversation.
+decision: Persist options in XDG configuration and PNGs in XDG cache directories. Default to rendering
+  enabled, inline diff, and a 30-second timeout.
+addresses:
+- REQ-010
+- REQ-014
+- REQ-021
+- REQ-028
+source:
+  file: spec/sources/chat.md
+  section: Settings

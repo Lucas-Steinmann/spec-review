@@ -1,0 +1,13 @@
+id: REQ-020
+type: requirement
+title: Compare stored overview Markdown
+category: comparison
+status: specified
+statement: Compare the generated Markdown stored at each selected revision. Mark changed, added, and deleted
+  overview rows and star the Overviews category. Do not regenerate overviews during review.
+derived_from:
+- UC-006
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Overview diffs

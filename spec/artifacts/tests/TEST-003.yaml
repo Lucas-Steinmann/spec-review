@@ -1,0 +1,15 @@
+id: TEST-003
+type: test
+title: Render several diagrams in one description
+verifies:
+- REQ-008
+- REQ-009
+- REQ-024
+- REQ-028
+description: Review DES-001 in Kitty. Its description contains prose, a Mermaid diagram, more prose, and
+  a PlantUML diagram. Confirm local renderers produce both images and preserve their surrounding text
+  and source. Resize and scroll, then select another artifact and confirm image cleanup. Also review diagram
+  fences in the generated architecture overview.
+source:
+  file: spec/sources/chat.md
+  section: Approved implementation plan

@@ -1,0 +1,14 @@
+id: REQ-026
+type: requirement
+title: Maintain a specification for the tool itself
+category: dogfooding
+status: specified
+statement: Create a spec/ folder in the spec-review repository containing the requirements supplied in
+  the conversation, their clarifications and accepted decisions, linked artifacts, and readable generated
+  overviews.
+derived_from:
+- UC-007
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Dogfooding

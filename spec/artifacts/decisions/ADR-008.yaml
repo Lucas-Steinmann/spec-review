@@ -1,0 +1,15 @@
+id: ADR-008
+type: decision
+title: Explicit repository selection and commit defaults
+status: accepted
+context: Decision selected or approved during the project conversation.
+decision: Expose --repo PATH and --spec-dir spec. When launched from the submodule without --repo, select
+  the parent repository; use --repo . to review the tool itself. Default commit selections to HEAD^ and
+  HEAD, or HEAD twice when no parent exists. Require Compare to activate them.
+addresses:
+- REQ-011
+- REQ-023
+- REQ-026
+source:
+  file: spec/sources/chat.md
+  section: Approved implementation plan

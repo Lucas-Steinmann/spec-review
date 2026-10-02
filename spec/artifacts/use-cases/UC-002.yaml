@@ -1,0 +1,19 @@
+id: UC-002
+type: use_case
+title: Follow relationships and document links
+actors:
+- ACTOR-001
+goal_refs:
+- GOAL-001
+description: Navigate to related artifacts using mouse or keyboard.
+preconditions:
+- The selected repository contains a specification, or selected historical revisions are available locally.
+main_flow: |-
+  1. Read an artifact or overview containing links.
+  2. Click a link, or select it using keyboard navigation and activate it.
+  3. If a legacy source reference matches several artifacts, choose the intended artifact.
+  4. Read the destination and return to the previous document when needed.
+postconditions: Navigation uses canonical artifacts and preserves the relevant document version.
+source:
+  file: spec/sources/chat.md
+  section: Initial request

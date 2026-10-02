@@ -1,0 +1,11 @@
+id: CON-002
+type: constraint
+title: Render with local installations
+statement: Diagram rendering uses local PlantUML and mmdc installations. A remote rendering service is
+  outside scope.
+related:
+- REQ-008
+- REQ-028
+source:
+  file: spec/sources/chat.md
+  section: Initial request

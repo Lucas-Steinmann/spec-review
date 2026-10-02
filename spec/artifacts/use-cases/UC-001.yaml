@@ -1,0 +1,20 @@
+id: UC-001
+type: use_case
+title: Browse artifacts and overviews
+actors:
+- ACTOR-001
+goal_refs:
+- GOAL-001
+description: Inspect the plan by artifact category and select a document to read.
+preconditions:
+- The selected repository contains a specification, or selected historical revisions are available locally.
+main_flow: |-
+  1. Open the specification repository in spec-review.
+  2. Choose Goals, Use Cases, or another category in the bottom panel.
+  3. Select an artifact from the list on the right.
+  4. Read its content in the main pane on the left.
+  5. Choose Overviews and read a generated Markdown document.
+postconditions: The selected document is readable with headings and links highlighted.
+source:
+  file: spec/sources/chat.md
+  section: Initial request

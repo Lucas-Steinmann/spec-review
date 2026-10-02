@@ -1,0 +1,13 @@
+id: REQ-021
+type: requirement
+title: Persist user options across launches
+category: configuration
+status: specified
+statement: Persist presentation and rendering preferences in the user configuration directory. Store diagram
+  caches outside the specification repository.
+derived_from:
+- UC-004
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Settings

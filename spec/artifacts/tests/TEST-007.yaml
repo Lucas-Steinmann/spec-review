@@ -1,0 +1,11 @@
+id: TEST-007
+type: test
+title: Reuse the backend without the TUI
+verifies:
+- REQ-016
+description: Import snapshot, parsing, link, comparison, content-block, and diagram services in a process
+  that does not import Textual. Serialize snapshot and comparison models to JSON and confirm document
+  provenance and statuses are retained.
+source:
+  file: spec/sources/chat.md
+  section: Approved implementation plan

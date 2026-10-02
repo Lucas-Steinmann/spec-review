@@ -1,0 +1,14 @@
+id: ADR-003
+type: decision
+title: Map legacy links through source metadata
+status: accepted
+context: Decision selected or approved during the project conversation.
+decision: Resolve migrated links against artifact source metadata, using an ambiguity chooser or an unresolved-target
+  explanation instead of opening legacy files.
+addresses:
+- REQ-001
+- REQ-007
+- REQ-019
+source:
+  file: spec/sources/chat.md
+  section: Legacy links

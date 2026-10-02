@@ -1,0 +1,13 @@
+id: REQ-017
+type: requirement
+title: Distribute spec-review as a Git submodule
+category: distribution
+status: specified
+statement: Name the tool spec-review, maintain it in a separate Git repository, and integrate it into
+  the consuming project at ./spec-review as an actual Git submodule pinned to a committed revision.
+derived_from:
+- UC-007
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Initial request

@@ -1,0 +1,12 @@
+id: TEST-010
+type: test
+title: Recover from invalid documents and renderer failures
+verifies:
+- REQ-024
+- REQ-027
+description: Introduce malformed YAML and duplicate artifact IDs in a temporary specification, then remove
+  a renderer or trigger its timeout. Confirm affected documents and diagrams have visible diagnostics,
+  duplicate targets are not silently selected, and unrelated browsing remains available.
+source:
+  file: spec/sources/chat.md
+  section: Approved implementation plan

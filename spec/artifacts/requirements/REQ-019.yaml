@@ -1,0 +1,13 @@
+id: REQ-019
+type: requirement
+title: Resolve legacy references into canonical artifacts
+category: navigation
+status: specified
+statement: Use source metadata to resolve legacy document links into canonical artifacts. Offer a chooser
+  for multiple matches and a visible explanation for unresolved targets. Do not read legacy source files.
+derived_from:
+- UC-002
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Legacy links

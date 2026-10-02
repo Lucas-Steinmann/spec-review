@@ -1,0 +1,21 @@
+id: UC-006
+type: use_case
+title: Inspect changed artifacts and categories
+actors:
+- ACTOR-001
+goal_refs:
+- GOAL-002
+description: Review differences in artifact content and diagrams.
+preconditions:
+- The selected repository contains a specification, or selected historical revisions are available locally.
+main_flow: |-
+  1. Inspect orange changed items, green additions, and red deletions in the right-hand list.
+  2. Use stars on the bottom categories to locate affected artifact groups.
+  3. Select an artifact or overview.
+  4. Read an inline diff or aligned two-panel comparison.
+  5. When inline images are enabled, review the target version of each diagram.
+  6. Follow links using the version from which they appear.
+postconditions: The reviewer can distinguish changes, additions, and removals and understand their content.
+source:
+  file: spec/sources/chat.md
+  section: Initial request

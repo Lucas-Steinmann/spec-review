@@ -1,0 +1,8 @@
+id: GOAL-003
+type: goal
+title: Review spec-review with spec-review
+statement: Document the tool using its own specification format and browse its requirements, decisions,
+  and generated overviews using the tool itself.
+source:
+  file: spec/sources/chat.md
+  section: Dogfooding

@@ -1,0 +1,13 @@
+id: REQ-007
+type: requirement
+title: Activate links with mouse and keyboard
+category: navigation
+status: specified
+statement: Let the reviewer follow artifact and document links by clicking or by selecting and activating
+  them with the keyboard.
+derived_from:
+- UC-002
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Initial request

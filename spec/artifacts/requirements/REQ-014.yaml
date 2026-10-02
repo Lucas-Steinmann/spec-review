@@ -1,0 +1,15 @@
+id: REQ-014
+type: requirement
+title: Offer inline and two-panel diffs
+category: comparison
+status: specified
+statement: Provide an option to choose an inline diff or a two-panel comparison. Show field and prose
+  differences with unchanged context; align base and target rows with synchronized scrolling in the two-panel
+  view.
+derived_from:
+- UC-004
+- UC-006
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Initial request

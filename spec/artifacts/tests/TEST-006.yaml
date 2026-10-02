@@ -1,0 +1,20 @@
+id: TEST-006
+type: test
+title: Inspect statuses, semantic changes, and both diff layouts
+verifies:
+- REQ-012
+- REQ-013
+- REQ-014
+- REQ-015
+- REQ-018
+- REQ-020
+- REQ-022
+- REQ-023
+description: Compare revisions containing additions, changes, deletions, and a type change. Confirm row
+  colors/markers, category stars, and deleted-item visibility. Confirm formatting-only edits, key reordering,
+  and moves do not count as YAML changes, while scalar types and list order do. Confirm stored overview
+  changes are marked. Inspect inline and two-panel diffs, including old-side links, target-only inline
+  images, removed diagram source, and synchronized scrolling.
+source:
+  file: spec/sources/chat.md
+  section: Approved implementation plan

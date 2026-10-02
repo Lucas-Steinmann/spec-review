@@ -21,6 +21,18 @@ uv run --project /path/to/spec-review spec-review --repo /path/to/project --spec
 
 For a standalone installation, `uv tool install /path/to/spec-review` exposes `spec-review` on your PATH. Use `--repo` when invoking that installation outside the specification repository.
 
+## Review spec-review itself
+
+The tool's own [specification](spec/README.md) captures the original requirements and decisions from the project conversation, with linked artifacts, acceptance scenarios, and generated overviews.
+
+From the `spec-review` directory, select this repository explicitly:
+
+```sh
+uv run spec-review --repo .
+```
+
+Regenerate its overviews after changing canonical artifacts with `uv run python scripts/generate_spec_views.py`.
+
 ## Specification format
 
 - `spec/artifacts/**/*.yaml` (or `.yml`): one artifact per file, with string `id`, `type`, and `title`. All other fields are retained. Stable IDs identify documents across revisions and file moves.

@@ -1,0 +1,13 @@
+id: REQ-005
+type: requirement
+title: Browse generated overviews
+category: browsing
+status: specified
+statement: Make generated Markdown overviews readable under a separate Overviews category in the bottom
+  panel.
+derived_from:
+- UC-001
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Initial request

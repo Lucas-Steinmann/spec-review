@@ -1,0 +1,13 @@
+id: REQ-008
+type: requirement
+title: Render diagram images locally in Kitty
+category: diagrams
+status: specified
+statement: Display Mermaid and PlantUML diagrams as terminal images in Kitty, using locally installed
+  mmdc and PlantUML to render their source.
+derived_from:
+- UC-003
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Initial request

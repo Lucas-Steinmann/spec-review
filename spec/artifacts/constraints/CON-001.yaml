@@ -1,0 +1,12 @@
+id: CON-001
+type: constraint
+title: First release is a read-only TUI
+statement: The first release reviews canonical artifacts and stored overviews. It does not edit specification
+  content, implement a WebUI, or migrate the companion project’s legacy documents.
+related:
+- REQ-001
+- REQ-016
+- REQ-020
+source:
+  file: spec/sources/chat.md
+  section: Confirmed scope

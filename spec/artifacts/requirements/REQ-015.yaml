@@ -1,0 +1,14 @@
+id: REQ-015
+type: requirement
+title: Use target diagram images in inline diffs
+category: diagrams
+status: specified
+statement: When rendering is enabled in inline comparison, display only diagram images from the target
+  version. Deleted diagram blocks remain source text. Keep diagram source differences visible; two-panel
+  comparison may display each side’s diagrams.
+derived_from:
+- UC-006
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Initial request

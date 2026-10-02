@@ -1,0 +1,20 @@
+id: UC-007
+type: use_case
+title: Review the tool’s own specification
+actors:
+- ACTOR-001
+goal_refs:
+- GOAL-003
+description: Use this repository as a concrete example of the format and review workflow.
+preconditions:
+- The selected repository contains a specification, or selected historical revisions are available locally.
+main_flow: |-
+  1. Enter the spec-review repository.
+  2. Launch uv run spec-review --repo . to select this repository explicitly.
+  3. Browse its goals, use cases, requirements, decisions, designs, and acceptance scenarios.
+  4. Read the generated overviews and follow traceability links.
+  5. Compare commits containing changes to this specification.
+postconditions: The tool can review its own requirements without switching to the parent project’s specification.
+source:
+  file: spec/sources/chat.md
+  section: Dogfooding

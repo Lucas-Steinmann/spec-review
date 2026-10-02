@@ -1,0 +1,8 @@
+id: ACTOR-001
+type: actor
+title: Specification author or reviewer
+description: A person who maintains or reviews structured engineering plans in a terminal, uses Kitty
+  for diagram images, and wants to follow relationships and inspect changes over Git history.
+source:
+  file: spec/sources/chat.md
+  section: Initial request

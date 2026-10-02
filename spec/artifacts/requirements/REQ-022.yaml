@@ -1,0 +1,15 @@
+id: REQ-022
+type: requirement
+title: Preserve snapshot provenance when following links
+category: navigation
+status: specified
+statement: Resolve a link against the revision supplying its content. In inline diffs, unchanged and added
+  content uses the target snapshot, while removed content uses the base. Do not silently substitute another
+  revision.
+derived_from:
+- UC-002
+- UC-006
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Approved implementation plan

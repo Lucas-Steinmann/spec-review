@@ -1,0 +1,12 @@
+id: CON-003
+type: constraint
+title: Keep user state outside reviewed repositories
+statement: Persist options and cache images in user directories, without writing configuration or rendering
+  artifacts into the reviewed specification repository.
+related:
+- REQ-021
+- REQ-023
+- REQ-028
+source:
+  file: spec/sources/chat.md
+  section: Settings

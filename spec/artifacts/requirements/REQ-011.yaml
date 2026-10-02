@@ -1,0 +1,13 @@
+id: REQ-011
+type: requirement
+title: Select two Git commits in a modal
+category: comparison
+status: specified
+statement: Selecting Diff opens a modal where the reviewer can choose two commits from the repository’s
+  history and then inspect a comparison of the document.
+derived_from:
+- UC-005
+related: []
+source:
+  file: spec/sources/chat.md
+  section: Initial request
