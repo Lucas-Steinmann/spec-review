@@ -17,6 +17,7 @@ postconditions: The browser displays documents from the selected revision and co
 addresses:
 - REQ-034
 - REQ-035
+- REQ-036
 source:
   file: spec/sources/chat.md
   section: WebUI and GitHub support

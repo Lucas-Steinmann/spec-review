@@ -94,3 +94,9 @@ These are accepted implementation decisions and defaults. They do not expand the
 > We should now extend this project with a WebUI (works with local folder similar to the TUI). Furthermore it should work with GitHub. Once connected as a GitHub app, we should be able to select a repo and review a specific version (defaults to main) or a diff (e.g. select PRs or compare branches/commits).
 
 The user clarified that specifications must be maintained alongside the project and reported that the WebUI did not populate documents after selecting a commit. This expands the former first-release TUI-only scope. The browser UI must load a selected revision and support local folders and GitHub App repositories, including single-version review and comparisons.
+
+## Svelte frontend
+
+> Then start using svelte as frontend, show crosslinks, diagrams, source, lists rendered same as TUI.
+
+The accepted implementation uses Svelte for the browser frontend and reuses the backend's content-block formatter, snapshot-aware link resolver, and local diagram renderer so document rendering matches the terminal interface.

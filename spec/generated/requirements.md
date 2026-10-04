@@ -885,7 +885,7 @@ Provide a browser interface for reading specifications in a selected local repos
 
 ### Related
 
-[REQ-016](../artifacts/requirements/REQ-016.yaml), [REQ-023](../artifacts/requirements/REQ-023.yaml)
+[REQ-016](../artifacts/requirements/REQ-016.yaml), [REQ-023](../artifacts/requirements/REQ-023.yaml), [REQ-036](../artifacts/requirements/REQ-036.yaml)
 
 ### Source
 
@@ -916,3 +916,29 @@ Allow a reviewer to select a repository accessible to the configured GitHub App,
 ### Source
 
 `spec/sources/chat.md` — [WebUI and GitHub support](provenance.md#webui-and-github-support)
+
+## [REQ-036](../artifacts/requirements/REQ-036.yaml) — Preserve TUI document rendering in the WebUI
+
+### Category
+
+browsing
+
+### Status
+
+specified
+
+### Statement
+
+Render browser documents with the same field formatting and content semantics as the TUI, including navigable crosslinks, Markdown and code blocks, Mermaid and PlantUML source with locally rendered images, source metadata, and list-valued preconditions and postconditions.
+
+### Derived From
+
+[UC-008](../artifacts/use-cases/UC-008.yaml)
+
+### Related
+
+[REQ-006](../artifacts/requirements/REQ-006.yaml), [REQ-008](../artifacts/requirements/REQ-008.yaml), [REQ-009](../artifacts/requirements/REQ-009.yaml), [REQ-032](../artifacts/requirements/REQ-032.yaml), [REQ-033](../artifacts/requirements/REQ-033.yaml), [REQ-034](../artifacts/requirements/REQ-034.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [Svelte frontend](provenance.md#svelte-frontend)

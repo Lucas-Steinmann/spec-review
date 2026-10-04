@@ -1,0 +1,13 @@
+id: ADR-009
+type: decision
+title: Build the WebUI with Svelte
+status: accepted
+context: The browser frontend needs reusable components for browsing snapshots, navigating crosslinks, rendering diagrams, and comparing revisions while keeping the Python review services shared with the TUI.
+decision: Implement the browser frontend in Svelte and build it to static assets served by the Python WebUI. Reuse the backend content-block, link-resolution, snapshot, comparison, and diagram-rendering services.
+addresses:
+- REQ-034
+- REQ-035
+- REQ-036
+source:
+  file: spec/sources/chat.md
+  section: Svelte frontend

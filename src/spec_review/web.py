@@ -1,20 +1,46 @@
 """Small read-only HTTP and browser frontend for spec-review."""
 
+import asyncio
+import base64
 import json
 import mimetypes
+from collections import OrderedDict
+from dataclasses import asdict
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from .content import compare
+from .content import compare, document_blocks
+from .diagrams import DiagramRenderer
 from .github import GitHubApp
+from .links import LinkResolver
+from .models import Block
 from .repository import Repository, RepositoryError, git
+from .settings import Settings
 
 WEB_ROOT = Path(__file__).with_name("webui")
 
 
 def serve(repository: Repository, host="127.0.0.1", port=8765):
     github = GitHubApp()
+    snapshot_cache = OrderedDict()
+
+    def load_snapshot(remote, q):
+        if not remote:
+            return repository.load(q.get("ref", [None])[0] or None)
+        key = tuple(q[name][0] for name in ("installation", "owner", "repo", "ref"))
+        if key not in snapshot_cache:
+            snapshot_cache[key] = github.snapshot(*key, repository.spec_dir)
+            if len(snapshot_cache) > 8:
+                snapshot_cache.popitem(last=False)
+        snapshot_cache.move_to_end(key)
+        return snapshot_cache[key]
+
+    def sections(document):
+        return [
+            {"heading": heading, "blocks": [asdict(block) for block in blocks]}
+            for heading, blocks in document_blocks(document)
+        ]
 
     class Handler(BaseHTTPRequestHandler):
         def send_json(self, data, status=200):
@@ -81,6 +107,34 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
                     return self.send_json(
                         repository.load(q.get("ref", [None])[0] or None).to_dict()
                     )
+                if parsed.path in {"/api/local/document", "/api/github/document"}:
+                    remote = parsed.path.startswith("/api/github/")
+                    snapshot = load_snapshot(remote, q)
+                    doc = snapshot.documents.get(q["id"][0])
+                    if not doc:
+                        return self.send_json(
+                            {"error": "Document not found in this revision"}, 404
+                        )
+                    return self.send_json(
+                        {
+                            "document": asdict(doc),
+                            "revision": snapshot.revision,
+                            "sections": sections(doc),
+                        }
+                    )
+                if parsed.path in {"/api/local/link", "/api/github/link"}:
+                    remote = parsed.path.startswith("/api/github/")
+                    snapshot = load_snapshot(remote, q)
+                    doc = snapshot.documents.get(q["id"][0])
+                    if not doc:
+                        return self.send_json(
+                            {
+                                "kind": "unresolved",
+                                "message": "Source document is unavailable",
+                            }
+                        )
+                    result = LinkResolver(snapshot).resolve(doc, q["href"][0])
+                    return self.send_json(asdict(result))
                 if parsed.path == "/api/local/compare":
                     before = repository.load(q.get("base", ["HEAD^"])[0])
                     after = repository.load(q.get("target", ["HEAD"])[0])
@@ -150,29 +204,13 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
                         ]
                     )
                 if parsed.path == "/api/github/snapshot":
-                    snap = github.snapshot(
-                        q["installation"][0],
-                        q["owner"][0],
-                        q["repo"][0],
-                        q["ref"][0],
-                        repository.spec_dir,
-                    )
+                    snap = load_snapshot(True, q)
                     return self.send_json(snap.to_dict())
                 if parsed.path == "/api/github/compare":
-                    base = github.snapshot(
-                        q["installation"][0],
-                        q["owner"][0],
-                        q["repo"][0],
-                        q["base"][0],
-                        repository.spec_dir,
-                    )
-                    target = github.snapshot(
-                        q["installation"][0],
-                        q["owner"][0],
-                        q["repo"][0],
-                        q["target"][0],
-                        repository.spec_dir,
-                    )
+                    base_query = {**q, "ref": q["base"]}
+                    target_query = {**q, "ref": q["target"]}
+                    base = load_snapshot(True, base_query)
+                    target = load_snapshot(True, target_query)
                     return self.send_json(compare(base, target).to_dict())
                 asset = WEB_ROOT / (
                     "index.html" if parsed.path == "/" else parsed.path.lstrip("/")
@@ -197,6 +235,24 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
 
         def log_message(self, fmt, *args):
             print("spec-review web: " + fmt % args)
+
+        def do_POST(self):
+            if urlparse(self.path).path != "/api/render":
+                self.send_error(404)
+                return
+            try:
+                length = int(self.headers.get("Content-Length", "0"))
+                if length > 2_000_000:
+                    return self.send_json({"error": "Diagram source is too large"}, 413)
+                payload = json.loads(self.rfile.read(length))
+                block = Block("diagram", payload["text"], payload["language"])
+                result = asyncio.run(DiagramRenderer(Settings.load()).render(block))
+                if result.error:
+                    return self.send_json({"error": result.error}, 400)
+                data = base64.b64encode(Path(result.path).read_bytes()).decode("ascii")
+                return self.send_json({"data_url": f"data:image/png;base64,{data}"})
+            except (KeyError, ValueError, OSError, TypeError) as exc:
+                return self.send_json({"error": str(exc)}, 400)
 
     server = ThreadingHTTPServer((host, port), Handler)
     print(f"spec-review WebUI: http://{host}:{port}")

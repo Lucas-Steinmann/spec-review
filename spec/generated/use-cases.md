@@ -270,7 +270,7 @@ The browser displays documents from the selected revision and comparison statuse
 
 ### Addresses
 
-[REQ-034](../artifacts/requirements/REQ-034.yaml), [REQ-035](../artifacts/requirements/REQ-035.yaml)
+[REQ-034](../artifacts/requirements/REQ-034.yaml), [REQ-035](../artifacts/requirements/REQ-035.yaml), [REQ-036](../artifacts/requirements/REQ-036.yaml)
 
 ### Source
 

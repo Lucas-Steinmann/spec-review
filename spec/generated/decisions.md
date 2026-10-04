@@ -178,3 +178,25 @@ Expose --repo PATH and --spec-dir spec. When launched from the submodule without
 ### Source
 
 `spec/sources/chat.md` — [Approved implementation plan](provenance.md#approved-implementation-plan)
+
+## [ADR-009](../artifacts/decisions/ADR-009.yaml) — Build the WebUI with Svelte
+
+### Status
+
+accepted
+
+### Context
+
+The browser frontend needs reusable components for browsing snapshots, navigating crosslinks, rendering diagrams, and comparing revisions while keeping the Python review services shared with the TUI.
+
+### Decision
+
+Implement the browser frontend in Svelte and build it to static assets served by the Python WebUI. Reuse the backend content-block, link-resolution, snapshot, comparison, and diagram-rendering services.
+
+### Addresses
+
+[REQ-034](../artifacts/requirements/REQ-034.yaml), [REQ-035](../artifacts/requirements/REQ-035.yaml), [REQ-036](../artifacts/requirements/REQ-036.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [Svelte frontend](provenance.md#svelte-frontend)

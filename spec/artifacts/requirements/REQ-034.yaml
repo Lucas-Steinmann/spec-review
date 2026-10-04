@@ -9,6 +9,7 @@ derived_from:
 related:
 - REQ-016
 - REQ-023
+- REQ-036
 source:
   file: spec/sources/chat.md
   section: WebUI and GitHub support

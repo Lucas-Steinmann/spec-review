@@ -1,6 +1,6 @@
 # spec-review
 
-A read-only terminal browser and Git comparison tool for specifications stored as YAML artifacts and generated Markdown. The artifact list is on the left, the content pane is on the right, and categories run along the bottom.
+A read-only terminal and browser application for reviewing and comparing specifications stored as YAML artifacts and generated Markdown, from local folders or GitHub repositories.
 
 ## Install and run
 
@@ -20,6 +20,8 @@ uv run spec-review --web --repo /path/to/project --spec-dir spec
 ```
 
 It listens on `127.0.0.1:8765` by default. The WebUI is read-only and supports local working-tree browsing and Git comparisons. To expose it on another interface, pass `--host` and `--port`.
+
+The browser frontend is implemented in Svelte. Its compiled static assets are served by the Python server; the document API reuses the TUI's field formatting, link resolver, and local diagram renderer. Markdown links and relationship IDs navigate within the selected snapshot, while source metadata and pre/postcondition lists keep their TUI formatting.
 
 ### GitHub App access in the WebUI
 
@@ -165,6 +167,14 @@ uv sync --locked
 uv run pytest
 uv run ruff check src tests
 uv run ruff format --check src tests
+```
+
+Rebuild the bundled Svelte frontend after changing `frontend/`:
+
+```sh
+cd frontend
+npm ci
+npm run build
 ```
 
 Tests use temporary Git repositories, Textual Pilot, and renderer doubles. For image QA, launch in Kitty and inspect multi-diagram descriptions and generated overviews while scrolling, resizing, following links, opening dialogs, disabling rendering, and switching diff layouts. Verify that removed inline diagrams have source only, and that images disappear when navigating away.

@@ -156,3 +156,17 @@ Start the WebUI against a repository with a working-tree specification and multi
 ### Source
 
 `spec/sources/chat.md` — [WebUI and GitHub support](provenance.md#webui-and-github-support)
+
+## [TEST-012](../artifacts/tests/TEST-012.yaml) — Render WebUI documents with TUI content semantics
+
+### Verifies
+
+[REQ-036](../artifacts/requirements/REQ-036.yaml)
+
+### Description
+
+Open artifacts and generated overviews in the Svelte WebUI. Confirm relationships and Markdown links navigate through the snapshot-aware resolver, ambiguous links present choices, unresolved links explain the target, and external links open externally. Confirm fenced and standalone diagrams retain readable source and show local-rendered images or diagnostics. Confirm source metadata is displayed on one line and list-valued preconditions and postconditions appear as bullets.
+
+### Source
+
+`spec/sources/chat.md` — [Svelte frontend](provenance.md#svelte-frontend)

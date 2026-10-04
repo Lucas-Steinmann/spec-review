@@ -147,16 +147,16 @@ Maintain a separately versioned Python package and a real submodule gitlink. Sto
 
 ### Description
 
-The WebUI runs as a read-only HTTP server and consumes the existing snapshot and comparison services. The local provider reads the selected folder and Git history. The GitHub provider uses server-side GitHub App credentials to enumerate installations and repositories, mint short-lived installation tokens, and read tree/blob snapshots through GitHub's API. The browser selects repository revisions and renders snapshots and comparison results.
+The Svelte WebUI is built to static assets and served by the read-only Python HTTP server. It consumes the existing snapshot and comparison services. The local provider reads the selected folder and Git history. The GitHub provider uses server-side GitHub App credentials to enumerate installations and repositories, mint short-lived installation tokens, and read tree/blob snapshots through GitHub's API. The browser selects repository revisions and renders snapshots and comparison results.
 
 
 ### Addresses
 
-[REQ-034](../artifacts/requirements/REQ-034.yaml), [REQ-035](../artifacts/requirements/REQ-035.yaml), [REQ-016](../artifacts/requirements/REQ-016.yaml)
+[REQ-034](../artifacts/requirements/REQ-034.yaml), [REQ-035](../artifacts/requirements/REQ-035.yaml), [REQ-016](../artifacts/requirements/REQ-016.yaml), [REQ-036](../artifacts/requirements/REQ-036.yaml)
 
 ### Decisions
 
-—
+[ADR-009](../artifacts/decisions/ADR-009.yaml)
 
 ### Source
 
