@@ -146,7 +146,6 @@
   }
 
   async function compareRevisions() {
-    if (!base || !revision) { error = 'Choose both a base and target revision.'; return; }
     busy = true;
     error = '';
     clearView();
@@ -164,6 +163,17 @@
       context = currentContext();
     } catch (problem) { showError(problem); }
     finally { busy = false; }
+  }
+
+  function changedCategories() {
+    if (!comparison) return new Set();
+    const changed = new Set();
+    for (const item of Object.values(comparison.changes)) {
+      if (item.status === 'unchanged') continue;
+      if (item.old) changed.add(item.old.type);
+      if (item.new) changed.add(item.new.type);
+    }
+    return changed;
   }
 
   function entries() {
@@ -323,7 +333,7 @@
     </div>
     <div class="category-list">
       {#each Object.entries(categories) as [key, label]}
-        <button class:active={category === key} on:click={() => category = key}>{label}</button>
+        <button class:active={category === key} on:click={() => category = key}>{label}{#if changedCategories().has(key)} ★{/if}</button>
       {/each}
     </div>
     <div class="document-list">

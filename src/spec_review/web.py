@@ -84,7 +84,7 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
 
         def do_GET(self):
             parsed = urlparse(self.path)
-            q = parse_qs(parsed.query)
+            q = parse_qs(parsed.query, keep_blank_values=True)
             try:
                 if parsed.path == "/api/status":
                     return self.send_json(

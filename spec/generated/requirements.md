@@ -877,7 +877,7 @@ specified
 
 ### Statement
 
-Provide a browser interface for reading specifications in a selected local repository folder using the same snapshot and comparison services as the terminal interface. Selecting a revision loads and displays that revision's documents.
+Provide a browser interface for reading specifications in a selected local repository folder using the same snapshot and comparison services as the terminal interface. Selecting a revision loads and displays that revision's documents. Allow comparisons between any selected local revisions, including the working tree, and mark each category that contains changed, added, or deleted documents.
 
 ### Derived From
 

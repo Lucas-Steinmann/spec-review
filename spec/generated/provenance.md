@@ -103,3 +103,9 @@ The user clarified that specifications must be maintained alongside the project 
 > Then start using svelte as frontend, show crosslinks, diagrams, source, lists rendered same as TUI.
 
 The accepted implementation uses Svelte for the browser frontend and reuses the backend's content-block formatter, snapshot-aware link resolver, and local diagram renderer so document rendering matches the terminal interface.
+
+## Working tree comparisons and WebUI diff presentation, October 4, 2026
+
+> Comparing should also work with "working tree vs. commit". Currently the app shows an error, that the user should select two version for comparison when working tree is one of the versions.
+> Highlight the categories which have changes in the diff view as in the TUI.
+> Highlight the differing lines in the WebView markdown diff viewer. Maybe as a green/red bar to the left of the lines and as background of the text.
