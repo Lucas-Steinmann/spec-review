@@ -358,9 +358,9 @@
     {:else if compareDocuments}
       <div class="doc-heading"><div><h1>{selectedId} · {(compareDocuments.target || compareDocuments.base).document.title}</h1><p>{compareDocuments.status} · base {comparison.base.revision.slice(0, 10)} → target {comparison.target.revision.slice(0, 10)}</p></div></div>
       <div class="diff-columns">
-        {#each [['Base', compareDocuments.base, compareDocuments.baseContext], ['Target', compareDocuments.target, compareDocuments.targetContext]] as [label, side, sideContext]}
+        {#each [['Base', compareDocuments.base, compareDocuments.target, compareDocuments.baseContext], ['Target', compareDocuments.target, compareDocuments.base, compareDocuments.targetContext]] as [label, side, otherSide, sideContext]}
           <section class="diff-side"><h2>{label}{#if side}<small>{side.revision.slice(0, 10)}</small>{/if}</h2>
-            {#if side}<DocumentBody sections={side.sections} on:follow={(event) => followLink(sideContext, side.document.id, event.detail.href)} />{:else}<p class="absent">Document absent in this revision.</p>{/if}
+            {#if side}<DocumentBody sections={side.sections} diffAgainst={otherSide?.sections || []} on:follow={(event) => followLink(sideContext, side.document.id, event.detail.href)} />{:else}<p class="absent">Document absent in this revision.</p>{/if}
           </section>
         {/each}
       </div>

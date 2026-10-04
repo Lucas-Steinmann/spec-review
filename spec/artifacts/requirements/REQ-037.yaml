@@ -1,0 +1,14 @@
+id: REQ-037
+type: requirement
+title: Highlight changed Markdown lines in WebUI comparisons
+category: presentation
+status: specified
+statement: In the WebUI comparison view, visually distinguish Markdown lines that differ between the base and target documents, using side-specific colors and a visible marker beside each changed line.
+derived_from:
+- UC-008
+related:
+- REQ-034
+- REQ-036
+source:
+  file: spec/sources/chat.md
+  section: Working tree comparisons and WebUI diff presentation, October 4, 2026

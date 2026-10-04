@@ -942,3 +942,29 @@ Render browser documents with the same field formatting and content semantics as
 ### Source
 
 `spec/sources/chat.md` — [Svelte frontend](provenance.md#svelte-frontend)
+
+## [REQ-037](../artifacts/requirements/REQ-037.yaml) — Highlight changed Markdown lines in WebUI comparisons
+
+### Category
+
+presentation
+
+### Status
+
+specified
+
+### Statement
+
+In the WebUI comparison view, visually distinguish Markdown lines that differ between the base and target documents, using side-specific colors and a visible marker beside each changed line.
+
+### Derived From
+
+[UC-008](../artifacts/use-cases/UC-008.yaml)
+
+### Related
+
+[REQ-034](../artifacts/requirements/REQ-034.yaml), [REQ-036](../artifacts/requirements/REQ-036.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [Working tree comparisons and WebUI diff presentation, October 4, 2026](provenance.md#working-tree-comparisons-and-webui-diff-presentation-october-4-2026)

@@ -170,3 +170,17 @@ Open artifacts and generated overviews in the Svelte WebUI. Confirm relationship
 ### Source
 
 `spec/sources/chat.md` — [Svelte frontend](provenance.md#svelte-frontend)
+
+## [TEST-013](../artifacts/tests/TEST-013.yaml) — Highlight differing Markdown lines in WebUI comparisons
+
+### Verifies
+
+[REQ-037](../artifacts/requirements/REQ-037.yaml)
+
+### Description
+
+Compare two revisions of a document containing Markdown with unchanged and differing lines. Confirm unchanged lines keep normal styling and changed lines receive a red marker and background in the base view and a green marker and background in the target view.
+
+### Source
+
+`spec/sources/chat.md` — [Working tree comparisons and WebUI diff presentation, October 4, 2026](provenance.md#working-tree-comparisons-and-webui-diff-presentation-october-4-2026)

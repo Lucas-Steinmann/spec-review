@@ -1,0 +1,9 @@
+id: TEST-013
+type: test
+title: Highlight differing Markdown lines in WebUI comparisons
+verifies:
+- REQ-037
+description: Compare two revisions of a document containing Markdown with unchanged and differing lines. Confirm unchanged lines keep normal styling and changed lines receive a red marker and background in the base view and a green marker and background in the target view.
+source:
+  file: spec/sources/chat.md
+  section: Working tree comparisons and WebUI diff presentation, October 4, 2026
