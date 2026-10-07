@@ -903,7 +903,7 @@ specified
 
 ### Statement
 
-Allow a reviewer to select a repository accessible to the configured GitHub App, review a specific revision defaulting to the repository's default branch, and compare pull requests, branches, or commits.
+Allow a reviewer to select a repository accessible through either a configured GitHub App or the authenticated GitHub CLI account, review a specific revision defaulting to the repository's default branch, and compare pull requests, branches, or commits.
 
 ### Derived From
 

@@ -21,13 +21,19 @@ def main():
     parser.add_argument("--web", action="store_true", help="Run the browser interface")
     parser.add_argument("--host", default="127.0.0.1", help="Web server host")
     parser.add_argument("--port", type=int, default=8765, help="Web server port")
+    parser.add_argument(
+        "--github-auth",
+        choices=("app", "gh"),
+        default="app",
+        help="GitHub WebUI authentication: GitHub App credentials or existing `gh` login (default: app)",
+    )
     args = parser.parse_args()
     try:
         repo = Repository(args.repo or Path.cwd(), args.spec_dir)
         if args.web:
             from .web import serve
 
-            serve(repo, args.host, args.port)
+            serve(repo, args.host, args.port, args.github_auth)
             return
         from .tui.app import SpecReviewApp
 

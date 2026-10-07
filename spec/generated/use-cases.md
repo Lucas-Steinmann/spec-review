@@ -251,16 +251,16 @@ The tool can review its own requirements without switching to the parent project
 
 ### Description
 
-Browse a specification in the WebUI from a local repository folder or an installed GitHub App repository, and inspect a version or comparison.
+Browse a specification in the WebUI from a local repository folder or a GitHub repository accessed through a configured GitHub App or authenticated GitHub CLI account, and inspect a version or comparison.
 
 ### Preconditions
 
-- The local repository folder contains a specification, or a GitHub App is configured and installed for the desired repository.
+- The local repository folder contains a specification, or GitHub access is configured through an App installation or an authenticated GitHub CLI account with access to the desired repository.
 
 ### Main Flow
 
-1. Start the WebUI for a local repository folder or choose GitHub App as the source.
-2. For GitHub, select an installation and repository.
+1. Start the WebUI for a local repository folder or choose GitHub as the source and select App or GitHub CLI authentication.
+2. For GitHub App access, select an installation; for CLI access, use the account authenticated by `gh auth login`. Then select a repository.
 3. Review the default branch or select another branch, pull request, or commit.
 4. Choose documents by category and inspect the selected version, or choose base and target revisions to compare.
 

@@ -37,6 +37,12 @@ The private key is used only by the server to mint short-lived GitHub App JWTs a
 
 The server needs OpenSSL available on `PATH` to sign App JWTs.
 
+#### Use your GitHub CLI login instead
+
+For personal use, the WebUI can also use the account already authenticated with the GitHub CLI. Install `gh`, sign in with `gh auth login`, and start the WebUI with `uv run spec-review --web --github-auth gh`. The CLI account can access only repositories available to that user. This avoids configuring a GitHub App; the App option remains useful for installation-scoped access on a shared server.
+
+The WebUI reads the CLI token from `gh auth token` on the server and keeps it server-side. Do not expose a CLI-authenticated server to untrusted users.
+
 The private submodule requires GitHub authentication. By default, the CLI uses the current directory as the repository and `./spec/` as the specification directory. Override the spec folder with `--spec-dir`, or select another repository with `--repo`:
 
 ```sh

@@ -95,6 +95,12 @@ These are accepted implementation decisions and defaults. They do not expand the
 
 The user clarified that specifications must be maintained alongside the project and reported that the WebUI did not populate documents after selecting a commit. This expands the former first-release TUI-only scope. The browser UI must load a selected revision and support local folders and GitHub App repositories, including single-version review and comparisons.
 
+## GitHub CLI authentication alternative
+
+> Please add the gh usage as an alternative approach to access github.
+
+The WebUI supports GitHub access through either a configured GitHub App or the GitHub CLI's existing authenticated account (`gh auth login`). The CLI-authenticated account can select repositories that the user can access; the App remains available for installation-scoped access.
+
 ## Svelte frontend
 
 > Then start using svelte as frontend, show crosslinks, diagrams, source, lists rendered same as TUI.
@@ -106,3 +112,5 @@ The accepted implementation uses Svelte for the browser frontend and reuses the 
 > Comparing should also work with "working tree vs. commit". Currently the app shows an error, that the user should select two version for comparison when working tree is one of the versions.
 > Highlight the categories which have changes in the diff view as in the TUI.
 > Highlight the differing lines in the WebView markdown diff viewer. Maybe as a green/red bar to the left of the lines and as background of the text.
+
+The user reported that the local WebUI comparison still fails when Target is Working tree and Base is a commit. Preserve this concrete reproduction as a regression case at the HTTP API boundary, including both working-tree/base directions, and add project guidance to require regression coverage at the boundary where future behavior defects occur.

@@ -143,11 +143,11 @@ Maintain a separately versioned Python package and a real submodule gitlink. Sto
 
 `spec/sources/chat.md` — [Dogfooding](provenance.md#dogfooding)
 
-## [DES-007](../artifacts/design/DES-007.yaml) — Browser frontend and GitHub App repository provider
+## [DES-007](../artifacts/design/DES-007.yaml) — Browser frontend and GitHub repository providers
 
 ### Description
 
-The Svelte WebUI is built to static assets and served by the read-only Python HTTP server. It consumes the existing snapshot and comparison services. The local provider reads the selected folder and Git history. The GitHub provider uses server-side GitHub App credentials to enumerate installations and repositories, mint short-lived installation tokens, and read tree/blob snapshots through GitHub's API. The browser selects repository revisions and renders snapshots and comparison results.
+The Svelte WebUI is built to static assets and served by the read-only Python HTTP server. It consumes the existing snapshot and comparison services. The local provider reads the selected folder and Git history. GitHub access supports server-side GitHub App credentials (enumerating installations and minting short-lived installation tokens) or an existing authenticated GitHub CLI account (`gh auth login`). Both providers enumerate accessible repositories and read tree/blob snapshots through GitHub's API. The browser selects repository revisions and renders snapshots and comparison results.
 
 
 ### Addresses

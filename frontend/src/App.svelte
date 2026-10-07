@@ -294,10 +294,10 @@
   <div class="local-path">{status?.repo || ''} <span>{status?.spec_dir || ''}</span></div>
   <label class="sr-only" for="source">Review source</label>
   <select id="source" bind:value={source} on:change={changeSource}>
-    <option value="local">Local folder</option><option value="github">GitHub App</option>
+    <option value="local">Local folder</option><option value="github">GitHub</option>
   </select>
   {#if source === 'github'}
-    <select aria-label="GitHub App installation" bind:value={installation} on:change={loadRepos}>
+    <select aria-label="GitHub account" bind:value={installation} on:change={loadRepos}>
       {#each installations as item}<option value={item.id}>{item.account} ({item.type})</option>{/each}
     </select>
     <select aria-label="GitHub repository" bind:value={repo} on:change={repoChanged}>

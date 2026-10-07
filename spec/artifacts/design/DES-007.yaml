@@ -1,8 +1,8 @@
 id: DES-007
 type: design
-title: Browser frontend and GitHub App repository provider
+title: Browser frontend and GitHub repository providers
 description: |
-  The Svelte WebUI is built to static assets and served by the read-only Python HTTP server. It consumes the existing snapshot and comparison services. The local provider reads the selected folder and Git history. The GitHub provider uses server-side GitHub App credentials to enumerate installations and repositories, mint short-lived installation tokens, and read tree/blob snapshots through GitHub's API. The browser selects repository revisions and renders snapshots and comparison results.
+  The Svelte WebUI is built to static assets and served by the read-only Python HTTP server. It consumes the existing snapshot and comparison services. The local provider reads the selected folder and Git history. GitHub access supports server-side GitHub App credentials (enumerating installations and minting short-lived installation tokens) or an existing authenticated GitHub CLI account (`gh auth login`). Both providers enumerate accessible repositories and read tree/blob snapshots through GitHub's API. The browser selects repository revisions and renders snapshots and comparison results.
 addresses:
 - REQ-034
 - REQ-035

@@ -18,7 +18,8 @@ API = "https://api.github.com"
 
 
 class GitHubApp:
-    def __init__(self):
+    def __init__(self, auth="app"):
+        self.auth = auth
         self.app_id = os.getenv("SPEC_REVIEW_GITHUB_APP_ID", "")
         self.private_key = os.getenv("SPEC_REVIEW_GITHUB_PRIVATE_KEY", "").replace(
             "\\n", "\n"
@@ -27,7 +28,24 @@ class GitHubApp:
 
     @property
     def configured(self):
-        return bool(self.app_id and self.private_key)
+        return (self.auth == "gh" and bool(self._gh_token())) or bool(
+            self.app_id and self.private_key
+        )
+
+    def _gh_token(self):
+        if not hasattr(self, "_cli_token"):
+            try:
+                result = subprocess.run(
+                    ["gh", "auth", "token"],
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                    timeout=10,
+                )
+                self._cli_token = result.stdout.strip()
+            except (OSError, subprocess.SubprocessError):
+                self._cli_token = ""
+        return self._cli_token
 
     def _jwt(self):
         if not self.configured:
@@ -93,9 +111,24 @@ class GitHubApp:
             raise RepositoryError(f"GitHub request failed: {exc}") from exc
 
     def installations(self):
+        if self.auth == "gh":
+            user = self._request("/user", self._gh_token())
+            return [
+                {
+                    "id": "gh",
+                    "account": {"login": user["login"], "type": "GitHub CLI"},
+                }
+            ]
         return self._request("/app/installations", self._jwt())
 
     def token(self, installation_id):
+        if self.auth == "gh":
+            token = self._gh_token()
+            if not token:
+                raise RepositoryError(
+                    "GitHub CLI is not authenticated; run `gh auth login`"
+                )
+            return token
         cached = self._tokens.get(str(installation_id))
         if cached and cached[1] > time.time() + 60:
             return cached[0]
@@ -119,12 +152,17 @@ class GitHubApp:
     def repos(self, installation_id):
         result, page = [], 1
         while True:
-            data = self.get(
-                installation_id, f"/installation/repositories?per_page=100&page={page}"
+            path = (
+                f"/user/repos?affiliation=owner%2Ccollaborator%2Corganization_member&sort=full_name&per_page=100&page={page}"
+                if self.auth == "gh"
+                else f"/installation/repositories?per_page=100&page={page}"
             )
-            result.extend(data.get("repositories", []))
-            if len(result) >= data.get("total_count", 0) or not data.get(
-                "repositories"
+            data = self.get(installation_id, path)
+            rows = data if isinstance(data, list) else data.get("repositories", [])
+            result.extend(rows)
+            if not rows or (
+                not isinstance(data, list)
+                and len(result) >= data.get("total_count", 0)
             ):
                 return result
             page += 1

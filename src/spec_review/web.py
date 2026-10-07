@@ -21,8 +21,8 @@ from .settings import Settings
 WEB_ROOT = Path(__file__).with_name("webui")
 
 
-def serve(repository: Repository, host="127.0.0.1", port=8765):
-    github = GitHubApp()
+def serve(repository: Repository, host="127.0.0.1", port=8765, github_auth="app"):
+    github = GitHubApp(github_auth)
     snapshot_cache = OrderedDict()
 
     def load_snapshot(remote, q):
