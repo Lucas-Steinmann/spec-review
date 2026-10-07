@@ -136,8 +136,10 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
                     result = LinkResolver(snapshot).resolve(doc, q["href"][0])
                     return self.send_json(asdict(result))
                 if parsed.path == "/api/local/compare":
-                    before = repository.load(q.get("base", ["HEAD^"])[0])
-                    after = repository.load(q.get("target", ["HEAD"])[0])
+                    base_ref = q.get("base", ["HEAD^"])[0] or None
+                    target_ref = q.get("target", ["HEAD"])[0] or None
+                    before = repository.load(base_ref)
+                    after = repository.load(target_ref)
                     return self.send_json(compare(before, after).to_dict())
                 if parsed.path == "/api/github/installations":
                     rows = github.installations()
