@@ -161,8 +161,7 @@ class GitHubApp:
             rows = data if isinstance(data, list) else data.get("repositories", [])
             result.extend(rows)
             if not rows or (
-                not isinstance(data, list)
-                and len(result) >= data.get("total_count", 0)
+                not isinstance(data, list) and len(result) >= data.get("total_count", 0)
             ):
                 return result
             page += 1
