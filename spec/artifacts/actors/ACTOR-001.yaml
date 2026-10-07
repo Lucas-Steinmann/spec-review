@@ -1,8 +1,9 @@
 id: ACTOR-001
 type: actor
 title: Specification author or reviewer
-description: A person who maintains or reviews structured engineering plans in a terminal, uses Kitty
-  for diagram images, and wants to follow relationships and inspect changes over Git history.
+description: A person who maintains or reviews structured engineering plans in a terminal or browser,
+  follows relationships, and inspects changes across local or gh-accessible repositories. The terminal reviewer
+  may use Kitty for diagram images.
 source:
   file: spec/sources/chat.md
-  section: Initial request
+  section: GitHub CLI scope correction, October 7, 2026

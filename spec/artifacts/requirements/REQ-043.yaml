@@ -1,0 +1,15 @@
+id: REQ-043
+type: requirement
+title: Keep browser navigation usable during comparison loading
+category: responsiveness
+status: specified
+statement: While repository metadata, a local or GitHub revision, or a comparison request is pending, show a perceivable loading status and keep the rest of the browser available for navigation and interaction. The request may disable its own repeat action until completion.
+derived_from:
+- UC-008
+- UC-009
+related:
+- REQ-034
+- REQ-041
+source:
+  file: spec/sources/chat.md
+  section: Local-only browser scope and accessibility, October 7, 2026

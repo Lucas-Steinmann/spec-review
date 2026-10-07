@@ -1,0 +1,10 @@
+id: CON-004
+type: constraint
+title: Review without editing or migrating specifications
+statement: Terminal and browser review do not edit specification content or migrate the companion project's legacy documents. The first release was terminal-only; the later browser interface is in scope.
+related:
+- REQ-001
+- REQ-034
+source:
+  file: spec/sources/chat.md
+  section: Specification review corrections, October 7, 2026

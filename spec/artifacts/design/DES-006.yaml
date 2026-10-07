@@ -4,14 +4,15 @@ title: Standalone package and self specification
 description: Maintain a separately versioned Python package and a real submodule gitlink. Store this tool’s
   own canonical artifacts in spec/artifacts, provenance in spec/sources/chat.md, and derived review views
   in spec/generated. Regenerate those views explicitly using scripts/generate_spec_views.py. Launch with
-  --repo . from the submodule to review its own specification; the default target remains the parent project.
+  --repo . from the submodule to review its own specification; without --repo the current directory is selected.
   Trace requirements to use cases, decisions, designs, and acceptance scenarios.
 addresses:
 - REQ-017
 - REQ-026
+- REQ-031
 decisions:
 - ADR-007
-- ADR-008
+- ADR-010
 source:
   file: spec/sources/chat.md
   section: Dogfooding

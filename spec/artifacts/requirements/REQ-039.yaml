@@ -1,0 +1,14 @@
+id: REQ-039
+type: requirement
+title: Access GitHub revisions for review
+category: integrations
+status: specified
+statement: Through the server's authenticated gh CLI account, list accessible GitHub repositories and review their default branch, other branches, pull requests, and commits. Support comparisons between selected GitHub revisions in the detailed review view. Show a useful sign-in error when gh is unavailable or unauthenticated.
+derived_from:
+- UC-009
+related:
+- REQ-023
+- REQ-035
+source:
+  file: spec/sources/chat.md
+  section: GitHub CLI scope correction, October 7, 2026

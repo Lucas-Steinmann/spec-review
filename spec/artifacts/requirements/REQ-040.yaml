@@ -1,0 +1,14 @@
+id: REQ-040
+type: requirement
+title: Show open pull requests and available Actions state
+category: integrations
+status: specified
+statement: Show open pull requests for the selected GitHub repository on the browser overview, including GitHub Actions state when available. Show unavailable when checks cannot be read. Selecting a pull request opens its base and head comparison in the detailed review view.
+derived_from:
+- UC-009
+related:
+- REQ-035
+- REQ-039
+source:
+  file: spec/sources/chat.md
+  section: Multi-repository overview and pull request navigation, October 7, 2026

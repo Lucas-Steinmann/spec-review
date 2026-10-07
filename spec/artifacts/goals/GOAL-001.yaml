@@ -2,7 +2,7 @@ id: GOAL-001
 type: goal
 title: Navigate and analyze structured specifications
 statement: Make a YAML specification, requirements, traceability, and planning document easier to navigate
-  and analyze through a terminal application.
+  and analyze through terminal and browser applications.
 source:
   file: spec/sources/chat.md
-  section: Initial request
+  section: WebUI and GitHub support

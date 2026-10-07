@@ -5,14 +5,16 @@ import base64
 import json
 import mimetypes
 from collections import OrderedDict
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from threading import Lock
 from urllib.parse import parse_qs, urlparse
 
 from .content import compare, document_blocks
 from .diagrams import DiagramRenderer
-from .github import GitHubApp
+from .github import GitHubCLI
 from .links import LinkResolver
 from .models import Block
 from .repository import Repository, RepositoryError, git
@@ -27,23 +29,27 @@ WEB_ROOT = (
 )
 
 
-def serve(repository: Repository, host="127.0.0.1", port=8765, github_auth="app"):
-    github = GitHubApp(github_auth)
+def serve(repository: Repository, host="127.0.0.1", port=8765):
+    github = GitHubCLI()
     snapshot_cache = OrderedDict()
+    cache_lock = Lock()
 
     def load_snapshot(remote, q):
+        revision = q.get("ref", [None])[0] or None
         if not remote:
-            revision = q.get("ref", [None])[0] or None
             if revision == "working tree":
                 revision = None
             return repository.load(revision)
-        key = tuple(q[name][0] for name in ("installation", "owner", "repo", "ref"))
-        if key not in snapshot_cache:
-            snapshot_cache[key] = github.snapshot(*key, repository.spec_dir)
-            if len(snapshot_cache) > 8:
-                snapshot_cache.popitem(last=False)
-        snapshot_cache.move_to_end(key)
-        return snapshot_cache[key]
+        key = (q["owner"][0], q["repo"][0], revision)
+        if not revision:
+            raise RepositoryError("GitHub revision is required")
+        with cache_lock:
+            if key not in snapshot_cache:
+                snapshot_cache[key] = github.snapshot(*key, repository.spec_dir)
+                if len(snapshot_cache) > 8:
+                    snapshot_cache.popitem(last=False)
+            snapshot_cache.move_to_end(key)
+            return snapshot_cache[key]
 
     def sections(document):
         return [
@@ -100,7 +106,6 @@ def serve(repository: Repository, host="127.0.0.1", port=8765, github_auth="app"
                         {
                             "repo": str(repository.root),
                             "spec_dir": repository.spec_dir,
-                            "github_configured": github.configured,
                         }
                     )
                 if parsed.path == "/api/local/commits":
@@ -116,9 +121,8 @@ def serve(repository: Repository, host="127.0.0.1", port=8765, github_auth="app"
                     return self.send_json(
                         repository.load(q.get("ref", [None])[0] or None).to_dict()
                     )
-                if parsed.path in {"/api/local/document", "/api/github/document"}:
-                    remote = parsed.path.startswith("/api/github/")
-                    snapshot = load_snapshot(remote, q)
+                if parsed.path in {"/api/local/document", "/api/gh/document"}:
+                    snapshot = load_snapshot(parsed.path.startswith("/api/gh/"), q)
                     doc = snapshot.documents.get(q["id"][0])
                     if not doc:
                         return self.send_json(
@@ -131,9 +135,8 @@ def serve(repository: Repository, host="127.0.0.1", port=8765, github_auth="app"
                             "sections": sections(doc),
                         }
                     )
-                if parsed.path in {"/api/local/link", "/api/github/link"}:
-                    remote = parsed.path.startswith("/api/github/")
-                    snapshot = load_snapshot(remote, q)
+                if parsed.path in {"/api/local/link", "/api/gh/link"}:
+                    snapshot = load_snapshot(parsed.path.startswith("/api/gh/"), q)
                     doc = snapshot.documents.get(q["id"][0])
                     if not doc:
                         return self.send_json(
@@ -150,135 +153,70 @@ def serve(repository: Repository, host="127.0.0.1", port=8765, github_auth="app"
                     before = repository.load(base_ref)
                     after = repository.load(target_ref)
                     return self.send_json(compare(before, after).to_dict())
-                if parsed.path == "/api/github/installations":
-                    rows = github.installations()
+                if parsed.path == "/api/gh/account":
+                    return self.send_json({"login": github.account()})
+                if parsed.path == "/api/gh/repos":
                     return self.send_json(
                         [
                             {
-                                "id": x["id"],
-                                "account": x.get("account", {}).get("login", ""),
-                                "type": x.get("account", {}).get("type", ""),
+                                "full_name": row["full_name"],
+                                "default_branch": row["default_branch"],
+                                "private": row["private"],
                             }
-                            for x in rows
+                            for row in github.repos()
                         ]
                     )
-                if parsed.path == "/api/github/repos":
-                    rows = github.repos(q["installation"][0])
-                    return self.send_json(
-                        [
-                            {
-                                "full_name": x["full_name"],
-                                "default_branch": x["default_branch"],
-                                "private": x["private"],
-                            }
-                            for x in rows
-                        ]
-                    )
-                if parsed.path in {
-                    "/api/github/branches",
-                    "/api/github/pulls",
-                    "/api/github/commits",
-                }:
-                    inst, owner, name = (
-                        q["installation"][0],
-                        q["owner"][0],
-                        q["repo"][0],
-                    )
+                if parsed.path in {"/api/gh/branches", "/api/gh/pulls", "/api/gh/commits"}:
+                    owner, name = q["owner"][0], q["repo"][0]
                     if parsed.path.endswith("branches"):
-                        rows = github.branches(inst, owner, name)
                         return self.send_json(
-                            [
-                                {"name": x["name"], "sha": x["commit"]["sha"]}
-                                for x in rows
-                            ]
+                            [{"name": row["name"], "sha": row["commit"]["sha"]} for row in github.branches(owner, name)]
                         )
                     if parsed.path.endswith("pulls"):
-                        rows = github.pull_requests(inst, owner, name)
                         return self.send_json(
                             [
-                                {
-                                    "number": x["number"],
-                                    "title": x["title"],
-                                    "state": x["state"],
-                                    "head": x["head"]["sha"],
-                                    "base": x["base"]["sha"],
-                                }
-                                for x in rows
+                                {"number": row["number"], "title": row["title"],
+                                 "state": row["state"], "head": row["head"]["sha"],
+                                 "base": row["base"]["sha"]}
+                                for row in github.pull_requests(owner, name)
                             ]
                         )
                     return self.send_json(
-                        [
-                            c.__dict__
-                            for c in github.commits(
-                                inst, owner, name, q.get("ref", [""])[0]
-                            )
-                        ]
+                        [item.__dict__ for item in github.commits(owner, name, q.get("ref", [""])[0])]
                     )
-                if parsed.path == "/api/github/overview":
-                    inst, owner, name = (
-                        q["installation"][0],
-                        q["owner"][0],
-                        q["repo"][0],
-                    )
-                    pulls = github.open_pull_requests(inst, owner, name)
-                    rows = []
-                    for pull in pulls:
+                if parsed.path == "/api/gh/overview":
+                    owner, name = q["owner"][0], q["repo"][0]
+                    pulls = github.open_pull_requests(owner, name)
+
+                    def summary(pull):
                         checks_state = "unavailable"
                         try:
-                            check_data = github.check_runs(
-                                inst, owner, name, pull["head"]["sha"]
-                            )
-                            checks = check_data.get("check_runs", [])
+                            checks = github.check_runs(owner, name, pull["head"]["sha"]).get("check_runs", [])
                             if checks:
-                                statuses = [
-                                    check.get("conclusion") or check.get("status")
-                                    for check in checks
-                                ]
+                                statuses = [check.get("conclusion") or check.get("status") for check in checks]
                                 checks_state = (
-                                    "failure"
-                                    if any(
-                                        s
-                                        in {
-                                            "failure",
-                                            "timed_out",
-                                            "cancelled",
-                                            "action_required",
-                                        }
-                                        for s in statuses
-                                    )
-                                    else "in_progress"
-                                    if any(
-                                        s in {"queued", "in_progress", "pending"}
-                                        for s in statuses
-                                    )
-                                    else "success"
-                                    if all(s == "success" for s in statuses)
+                                    "failure" if any(s in {"failure", "timed_out", "cancelled", "action_required"} for s in statuses)
+                                    else "in_progress" if any(s in {"queued", "in_progress", "pending"} for s in statuses)
+                                    else "success" if all(s == "success" for s in statuses)
                                     else "neutral"
                                 )
                         except RepositoryError:
                             pass
-                        rows.append(
-                            {
-                                "number": pull["number"],
-                                "title": pull["title"],
-                                "head": pull["head"]["sha"],
-                                "head_ref": pull["head"].get("ref", ""),
-                                "base": pull["base"]["sha"],
-                                "base_ref": pull["base"].get("ref", ""),
-                                "html_url": pull.get("html_url", ""),
-                                "checks": checks_state,
-                            }
-                        )
-                    return self.send_json(rows)
-                if parsed.path == "/api/github/snapshot":
-                    snap = load_snapshot(True, q)
-                    return self.send_json(snap.to_dict())
-                if parsed.path == "/api/github/compare":
-                    base_query = {**q, "ref": q["base"]}
-                    target_query = {**q, "ref": q["target"]}
-                    base = load_snapshot(True, base_query)
-                    target = load_snapshot(True, target_query)
-                    return self.send_json(compare(base, target).to_dict())
+                        return {
+                            "number": pull["number"], "title": pull["title"],
+                            "head": pull["head"]["sha"], "head_ref": pull["head"].get("ref", ""),
+                            "base": pull["base"]["sha"], "base_ref": pull["base"].get("ref", ""),
+                            "html_url": pull.get("html_url", ""), "checks": checks_state,
+                        }
+
+                    with ThreadPoolExecutor(max_workers=8) as pool:
+                        return self.send_json(list(pool.map(summary, pulls)))
+                if parsed.path == "/api/gh/snapshot":
+                    return self.send_json(load_snapshot(True, q).to_dict())
+                if parsed.path == "/api/gh/compare":
+                    before = load_snapshot(True, {**q, "ref": q["base"]})
+                    after = load_snapshot(True, {**q, "ref": q["target"]})
+                    return self.send_json(compare(before, after).to_dict())
                 asset = WEB_ROOT / (
                     "index.html" if parsed.path == "/" else parsed.path.lstrip("/")
                 )

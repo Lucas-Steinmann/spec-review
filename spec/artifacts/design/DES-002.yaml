@@ -1,14 +1,14 @@
 id: DES-002
 type: design
 title: Terminal review workspace
-description: Use a main content pane on the left (approximately 75% width), an artifact list on the right,
+description: Use an artifact list and search sidebar on the left and a main content pane on the right,
   and scrollable category tabs along the bottom. Include Overviews, Diff, and Options. Render prose and
   headings with terminal Markdown styling. Support mouse selection, Tab and F6 focus movement, arrows,
   content scrolling, ID/title search, previous/next link selection, Enter activation, and navigation history.
   Status colors are supplemented by +, ~, and − markers.
 addresses:
 - REQ-002
-- REQ-003
+- REQ-029
 - REQ-004
 - REQ-005
 - REQ-006
@@ -16,8 +16,11 @@ addresses:
 - REQ-012
 - REQ-013
 - REQ-025
+- REQ-030
+- REQ-032
+- REQ-033
 decisions:
 - ADR-001
 source:
   file: spec/sources/chat.md
-  section: Approved implementation plan
+  section: Requested improvements, October 2, 2026

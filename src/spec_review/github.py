@@ -1,220 +1,109 @@
-"""Read-only GitHub App access for repository review."""
+"""GitHub review through the authenticated gh CLI and a local Git mirror."""
 
 import base64
 import hashlib
 import json
 import os
+import re
 import subprocess
-import tempfile
-import time
-import urllib.error
 import urllib.parse
-import urllib.request
-from datetime import datetime
 from pathlib import Path
 
 from .models import Commit
 from .repository import Repository, RepositoryError
 
-API = "https://api.github.com"
 
-
-class GitHubApp:
-    def __init__(self, auth="app"):
-        self.auth = auth
-        self.app_id = os.getenv("SPEC_REVIEW_GITHUB_APP_ID", "")
-        self.private_key = os.getenv("SPEC_REVIEW_GITHUB_PRIVATE_KEY", "").replace(
-            "\\n", "\n"
-        )
-        self._tokens = {}
-
+class GitHubCLI:
     @property
     def configured(self):
-        return (self.auth == "gh" and bool(self._gh_token())) or bool(
-            self.app_id and self.private_key
-        )
+        return bool(self._gh_token())
 
     def _gh_token(self):
-        if not hasattr(self, "_cli_token"):
+        if not getattr(self, "_cli_token", ""):
             try:
                 result = subprocess.run(
                     ["gh", "auth", "token"],
-                    capture_output=True,
-                    text=True,
-                    check=True,
-                    timeout=10,
+                    capture_output=True, text=True, check=True, timeout=10,
                 )
                 self._cli_token = result.stdout.strip()
             except (OSError, subprocess.SubprocessError):
                 self._cli_token = ""
         return self._cli_token
 
-    def _jwt(self):
-        if not self.configured:
-            raise RepositoryError(
-                "GitHub App is not configured (set SPEC_REVIEW_GITHUB_APP_ID and SPEC_REVIEW_GITHUB_PRIVATE_KEY)"
+    def token(self):
+        token = self._gh_token()
+        if not token:
+            raise RepositoryError("GitHub CLI is not authenticated; run `gh auth login`")
+        return token
+
+    def _request(self, path):
+        self.token()
+        try:
+            result = subprocess.run(
+                ["gh", "api", path],
+                capture_output=True, text=True, check=True, timeout=30,
             )
-        now = int(time.time())
-
-        def enc(value):
-            return base64.urlsafe_b64encode(value).rstrip(b"=").decode()
-
-        head = enc(
-            json.dumps({"alg": "RS256", "typ": "JWT"}, separators=(",", ":")).encode()
-        )
-        body = enc(
-            json.dumps(
-                {"iat": now - 30, "exp": now + 540, "iss": self.app_id},
-                separators=(",", ":"),
-            ).encode()
-        )
-        message = f"{head}.{body}".encode()
-        try:
-            with tempfile.NamedTemporaryFile(
-                mode="w", encoding="utf-8", prefix="spec-review-github-"
-            ) as key_file:
-                key_file.write(self.private_key)
-                key_file.flush()
-                signed = subprocess.run(
-                    ["openssl", "dgst", "-sha256", "-sign", key_file.name],
-                    input=message,
-                    capture_output=True,
-                    check=True,
-                    timeout=10,
-                )
-                signature = signed.stdout
-        except (OSError, subprocess.SubprocessError) as exc:
+            return json.loads(result.stdout)
+        except subprocess.CalledProcessError as exc:
             raise RepositoryError(
-                f"Unable to sign GitHub App JWT (OpenSSL required): {exc}"
+                f"GitHub CLI request failed: {exc.stderr.strip()[:500]}"
             ) from exc
-        return f"{head}.{body}.{enc(signature)}"
+        except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError) as exc:
+            raise RepositoryError(f"GitHub CLI request failed: {exc}") from exc
 
-    def _request(self, path, token=None, method="GET", payload=None):
-        headers = {
-            "Accept": "application/vnd.github+json",
-            "X-GitHub-Api-Version": "2022-11-28",
-            "User-Agent": "spec-review",
-        }
-        if payload is not None:
-            headers["Content-Type"] = "application/json"
-        if token:
-            headers["Authorization"] = f"Bearer {token}"
-        data = json.dumps(payload).encode() if payload is not None else None
-        req = urllib.request.Request(
-            API + path, data=data, headers=headers, method=method
-        )
-        try:
-            with urllib.request.urlopen(req, timeout=30) as response:
-                return json.loads(response.read())
-        except urllib.error.HTTPError as exc:
-            detail = exc.read().decode(errors="replace")
-            raise RepositoryError(f"GitHub API {exc.code}: {detail[:500]}") from exc
-        except (urllib.error.URLError, TimeoutError) as exc:
-            raise RepositoryError(f"GitHub request failed: {exc}") from exc
+    def account(self):
+        return self._request("/user")["login"]
 
-    def installations(self):
-        if self.auth == "gh":
-            user = self._request("/user", self._gh_token())
-            return [
-                {
-                    "id": "gh",
-                    "account": {"login": user["login"], "type": "GitHub CLI"},
-                }
-            ]
-        return self._request("/app/installations", self._jwt())
-
-    def token(self, installation_id):
-        if self.auth == "gh":
-            token = self._gh_token()
-            if not token:
-                raise RepositoryError(
-                    "GitHub CLI is not authenticated; run `gh auth login`"
-                )
-            return token
-        cached = self._tokens.get(str(installation_id))
-        if cached and cached[1] > time.time() + 60:
-            return cached[0]
-        result = self._request(
-            f"/app/installations/{urllib.parse.quote(str(installation_id))}/access_tokens",
-            self._jwt(),
-            "POST",
-            {},
-        )
-        self._tokens[str(installation_id)] = (
-            result["token"],
-            datetime.fromisoformat(
-                result["expires_at"].replace("Z", "+00:00")
-            ).timestamp(),
-        )
-        return result["token"]
-
-    def get(self, installation_id, path):
-        return self._request(path, self.token(installation_id))
-
-    def repos(self, installation_id):
+    def repos(self):
         result, page = [], 1
         while True:
-            path = (
+            rows = self._request(
                 f"/user/repos?affiliation=owner%2Ccollaborator%2Corganization_member&sort=full_name&per_page=100&page={page}"
-                if self.auth == "gh"
-                else f"/installation/repositories?per_page=100&page={page}"
             )
-            data = self.get(installation_id, path)
-            rows = data if isinstance(data, list) else data.get("repositories", [])
             result.extend(rows)
-            if not rows or (
-                not isinstance(data, list) and len(result) >= data.get("total_count", 0)
-            ):
+            if len(rows) < 100:
                 return result
             page += 1
 
-    def branches(self, installation_id, owner, repo):
-        return self.get(
-            installation_id,
-            f"/repos/{urllib.parse.quote(owner)}/{urllib.parse.quote(repo)}/branches?per_page=100",
+    @staticmethod
+    def _repo_path(owner, repo):
+        if not all(re.fullmatch(r"[A-Za-z0-9_.-]+", part) for part in (owner, repo)):
+            raise RepositoryError("Invalid GitHub repository name")
+        return f"/repos/{owner}/{repo}"
+
+    def branches(self, owner, repo):
+        return self._request(f"{self._repo_path(owner, repo)}/branches?per_page=100")
+
+    def pull_requests(self, owner, repo):
+        return self._request(f"{self._repo_path(owner, repo)}/pulls?state=all&per_page=100")
+
+    def open_pull_requests(self, owner, repo):
+        return self._request(f"{self._repo_path(owner, repo)}/pulls?state=open&per_page=100")
+
+    def check_runs(self, owner, repo, ref):
+        return self._request(
+            f"{self._repo_path(owner, repo)}/commits/{urllib.parse.quote(ref, safe='')}/check-runs?per_page=100"
         )
 
-    def pull_requests(self, installation_id, owner, repo):
-        return self.get(
-            installation_id,
-            f"/repos/{urllib.parse.quote(owner)}/{urllib.parse.quote(repo)}/pulls?state=all&per_page=100",
-        )
-
-    def open_pull_requests(self, installation_id, owner, repo):
-        return self.get(
-            installation_id,
-            f"/repos/{urllib.parse.quote(owner)}/{urllib.parse.quote(repo)}/pulls?state=open&per_page=100",
-        )
-
-    def check_runs(self, installation_id, owner, repo, ref):
-        return self.get(
-            installation_id,
-            f"/repos/{urllib.parse.quote(owner)}/{urllib.parse.quote(repo)}/commits/{urllib.parse.quote(ref, safe='')}/check-runs?per_page=100",
-        )
-
-    def commits(self, installation_id, owner, repo, ref=""):
-        query = urllib.parse.urlencode(
-            {"per_page": 100, **({"sha": ref} if ref else {})}
-        )
-        rows = self.get(
-            installation_id,
-            f"/repos/{urllib.parse.quote(owner)}/{urllib.parse.quote(repo)}/commits?{query}",
-        )
+    def commits(self, owner, repo, ref=""):
+        query = urllib.parse.urlencode({"per_page": 100, **({"sha": ref} if ref else {})})
+        rows = self._request(f"{self._repo_path(owner, repo)}/commits?{query}")
         return [
             Commit(
                 row["sha"],
-                (
-                    row["commit"].get("author") or row["commit"].get("committer") or {}
-                ).get("date", "")[:10],
+                (row["commit"].get("author") or row["commit"].get("committer") or {}).get("date", "")[:10],
                 row["commit"]["message"].splitlines()[0],
             )
             for row in rows
         ]
 
-    def snapshot(self, installation_id, owner, repo, revision, spec_dir="spec"):
+    def snapshot(self, owner, repo, revision, spec_dir="spec"):
         # Git's pack protocol transfers all needed objects in a small number of
         # requests. The former tree + one-blob-request-per-file approach made
         # opening large specifications take many seconds.
+        self._repo_path(owner, repo)
+        if not re.fullmatch(r"[0-9a-fA-F]{40}|[0-9a-fA-F]{64}|[A-Za-z0-9_./-]+", revision) or revision.startswith("-") or ".." in revision:
+            raise RepositoryError("Invalid GitHub revision")
         cache_root = Path(os.getenv("XDG_CACHE_HOME", Path.home() / ".cache"))
         identity = hashlib.sha256(f"{owner}/{repo}".encode()).hexdigest()[:24]
         mirror = cache_root / "spec-review" / "github" / f"{identity}.git"
@@ -255,7 +144,7 @@ class GitHubApp:
             except RepositoryError:
                 pass
         if not cached:
-            token = self.token(installation_id)
+            token = self.token()
             auth = base64.b64encode(f"x-access-token:{token}".encode()).decode()
             try:
                 subprocess.run(

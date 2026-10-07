@@ -1,0 +1,12 @@
+id: CON-005
+type: constraint
+title: Use the GitHub CLI for the current GitHub integration
+statement: The current browser may review local repositories and GitHub repositories accessible to the server's authenticated `gh` CLI account. Do not expose a direct GitHub App or Python HTTP client integration. A hosted version with multiple user accounts requires a separate access model before it is introduced.
+related:
+- REQ-034
+- REQ-035
+- REQ-039
+- REQ-040
+source:
+  file: spec/sources/chat.md
+  section: GitHub CLI scope correction, October 7, 2026

@@ -4,7 +4,8 @@ title: Filter the comparison list to changed artifacts
 category: comparison
 status: specified
 statement: Let users filter the artifact list to added, changed, and deleted items while comparing revisions.
-derived_from: []
+derived_from:
+- UC-006
 related:
 - REQ-012
 source:

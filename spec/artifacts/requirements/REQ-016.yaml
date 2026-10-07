@@ -4,7 +4,7 @@ title: Separate backend and frontend
 category: architecture
 status: specified
 statement: Keep parsing, snapshot access, link resolution, comparison, content blocks, and diagram rendering
-  separate from terminal presentation so a future WebUI can reuse the backend. Backend modules import
+  separate from terminal presentation so the WebUI can reuse the backend. Backend modules import
   without Textual and expose JSON-serializable models.
 derived_from:
 - UC-001

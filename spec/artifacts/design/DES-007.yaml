@@ -1,14 +1,19 @@
 id: DES-007
 type: design
-title: Browser frontend and GitHub repository providers
+title: Browser review workspace and repository overview
 description: |
-  The Svelte WebUI is built to static assets and served by the read-only Python HTTP server. It consumes the existing snapshot and comparison services. The local provider reads the selected folder and Git history. GitHub access supports server-side GitHub App credentials (enumerating installations and minting short-lived installation tokens) or an existing authenticated GitHub CLI account (`gh auth login`). Both providers enumerate accessible repositories. GitHub revisions are fetched with complete Git objects through Git's pack protocol into a persistent local bare mirror in the user cache; snapshots are parsed from cached Git objects so comparisons avoid one API request per specification blob and do not trigger slow lazy blob fetches. Existing incomplete mirrors are refreshed once before use. The browser opens on a repository overview with a saved repository sidebar and an Add action. The overview presents open pull requests and available Actions checks. Selecting a repository or pull request opens the existing revision and comparison workspace. Saved repository selections are stored in browser-local settings. The browser selects repository revisions and renders snapshots and comparison results. Frontend source and development tooling live in the frontend project. Vite serves Svelte with hot reload and proxies API requests to the Python server. Playwright tests exercise the rendered browser interface. Production assets are generated into an ignored build directory and included in Python distributions after a frontend build.
+  The Svelte WebUI consumes the existing snapshot, comparison, content-block, link-resolution, and diagram services through the read-only Python HTTP server. The local provider reads the selected folder and Git history. The browser opens on an overview with local and saved gh-accessible repositories in the list on the left. Selecting a repository opens the detailed revision and comparison workspace. The workspace displays documents, categories, snapshot-aware links, diagrams, and field or Markdown differences. Changed Markdown lines use side-specific markers and light backgrounds, with darker backgrounds on changed words. Keep the comparison filter and category buttons usable within the sidebar at narrow widths. Keep the workspace interactive and show a loading status while metadata or comparison requests are pending. Name controls and dialogs, show keyboard focus, and restore focus when a dialog closes. GitHub retrieval is specified by DES-008; development and distribution are specified by DES-009.
 addresses:
 - REQ-034
 - REQ-035
+- REQ-040
 - REQ-016
 - REQ-036
 - REQ-038
+- REQ-037
+- REQ-041
+- REQ-042
+- REQ-043
 decisions:
 - ADR-009
 source:

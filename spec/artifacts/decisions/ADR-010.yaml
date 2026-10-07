@@ -1,0 +1,12 @@
+id: ADR-010
+type: decision
+title: Use the current directory as the default repository
+status: accepted
+context: The reviewer requested that omitted --repo select the working directory, including when launched from the spec-review submodule.
+decision: Resolve an omitted --repo to the process current working directory and use ./spec/ by default. Use --repo and --spec-dir for explicit selection.
+addresses:
+- REQ-031
+- REQ-026
+source:
+  file: spec/sources/chat.md
+  section: Specification review corrections, October 7, 2026

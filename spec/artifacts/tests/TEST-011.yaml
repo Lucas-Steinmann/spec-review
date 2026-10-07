@@ -1,10 +1,9 @@
 id: TEST-011
 type: test
-title: Load selected local and GitHub revisions in the WebUI
+title: Load selected local revisions in the WebUI
 verifies:
 - REQ-034
-- REQ-035
-description: Start the WebUI against a repository with a working-tree specification and multiple commits. Confirm the initial document list loads, selecting a commit refreshes the list to that revision, and local comparisons display changed, added, and deleted documents with base and target field content. Confirm the local compare API accepts the WebUI's empty revision value for the working tree as either base or target, and categories containing changes are marked. With either a configured GitHub App installation or an authenticated GitHub CLI account, select an accessible repository and confirm its default branch, branch, pull request, and commit revisions can be loaded and compared. Confirm GitHub snapshots are read from a persistent local bare mirror populated through Git fetch with complete objects, without per-blob GitHub API requests or lazy blob fetches; existing incomplete mirrors are refreshed before use.
+description: Start the WebUI against a repository with a working-tree specification and multiple commits. Confirm its local overview appears with the repository list on the left and opens the detailed review without first contacting gh. Confirm the initial document list loads, selecting a commit refreshes the list to that revision, and local comparisons display changed, added, and deleted documents with base and target field content. Confirm the local compare API accepts the WebUI's empty revision value for the working tree as either base or target, and categories containing changes are marked. Confirm the removed /api/github routes are absent.
 source:
   file: spec/sources/chat.md
   section: WebUI and GitHub support

@@ -161,7 +161,7 @@ Host the tool in the private GitHub repository Lucas-Steinmann/spec-review and r
 
 ### Status
 
-accepted
+superseded
 
 ### Context
 
@@ -179,6 +179,10 @@ Expose --repo PATH and --spec-dir spec. When launched from the submodule without
 
 `spec/sources/chat.md` — [Approved implementation plan](provenance.md#approved-implementation-plan)
 
+### Superseded By
+
+ADR-010
+
 ## [ADR-009](../artifacts/decisions/ADR-009.yaml) — Build the WebUI with Svelte
 
 ### Status
@@ -195,8 +199,52 @@ Implement the browser frontend in Svelte and build it to static assets served by
 
 ### Addresses
 
-[REQ-034](../artifacts/requirements/REQ-034.yaml), [REQ-035](../artifacts/requirements/REQ-035.yaml), [REQ-036](../artifacts/requirements/REQ-036.yaml)
+[REQ-034](../artifacts/requirements/REQ-034.yaml), [REQ-036](../artifacts/requirements/REQ-036.yaml), [REQ-037](../artifacts/requirements/REQ-037.yaml)
 
 ### Source
 
 `spec/sources/chat.md` — [Svelte frontend](provenance.md#svelte-frontend)
+
+## [ADR-010](../artifacts/decisions/ADR-010.yaml) — Use the current directory as the default repository
+
+### Status
+
+accepted
+
+### Context
+
+The reviewer requested that omitted --repo select the working directory, including when launched from the spec-review submodule.
+
+### Decision
+
+Resolve an omitted --repo to the process current working directory and use ./spec/ by default. Use --repo and --spec-dir for explicit selection.
+
+### Addresses
+
+[REQ-031](../artifacts/requirements/REQ-031.yaml), [REQ-026](../artifacts/requirements/REQ-026.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [Specification review corrections, October 7, 2026](provenance.md#specification-review-corrections-october-7-2026)
+
+## [ADR-011](../artifacts/decisions/ADR-011.yaml) — Default commit selections in the diff modal
+
+### Status
+
+accepted
+
+### Context
+
+The repository default changed, while the approved modal commit defaults remain applicable.
+
+### Decision
+
+Default commit selections to HEAD^ and HEAD, or HEAD twice when no parent exists. Require Compare to activate the selection.
+
+### Addresses
+
+[REQ-011](../artifacts/requirements/REQ-011.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [Approved implementation plan](provenance.md#approved-implementation-plan)

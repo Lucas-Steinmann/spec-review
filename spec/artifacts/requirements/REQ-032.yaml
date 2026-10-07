@@ -4,7 +4,8 @@ title: Display source metadata on one line
 category: browsing
 status: specified
 statement: Display source metadata as {file}#{section} on one line.
-derived_from: []
+derived_from:
+- UC-001
 related: []
 source:
   file: spec/sources/chat.md

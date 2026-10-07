@@ -7,11 +7,11 @@
 
 ### Statement
 
-Make a YAML specification, requirements, traceability, and planning document easier to navigate and analyze through a terminal application.
+Make a YAML specification, requirements, traceability, and planning document easier to navigate and analyze through terminal and browser applications.
 
 ### Source
 
-`spec/sources/chat.md` — [Initial request](provenance.md#initial-request)
+`spec/sources/chat.md` — [WebUI and GitHub support](provenance.md#webui-and-github-support)
 
 ## [GOAL-002](../artifacts/goals/GOAL-002.yaml) — Review specification changes across Git history
 

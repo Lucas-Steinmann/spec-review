@@ -4,16 +4,18 @@ title: Browse categories, artifacts, and overviews
 verifies:
 - REQ-001
 - REQ-002
-- REQ-003
+- REQ-029
 - REQ-004
 - REQ-005
 - REQ-006
 - REQ-025
 - REQ-027
+- REQ-032
+- REQ-033
 description: Open a repository containing all supported artifact types, an unknown type, an empty category,
   Markdown overviews, and multiline fields. Choose categories and select artifacts by mouse and keyboard.
-  Check the bottom/right/left layout, bold headings, highlighted links, ID/title search, and faithful
+  Check the bottom categories, left artifact list, right content pane, bold headings, highlighted links, ID/title search, and faithful
   unknown-field presentation. Confirm no ignored legacy documents are loaded.
 source:
   file: spec/sources/chat.md
-  section: Approved implementation plan
+  section: Requested improvements, October 2, 2026

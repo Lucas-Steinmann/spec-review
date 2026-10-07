@@ -152,3 +152,32 @@ Use the Vite development server with hot reload and an API proxy to the Python s
 ## GitHub mirror blob timeout, October 7, 2026
 
 The user reported that selecting a GitHub snapshot timed out after 30 seconds in `git cat-file --batch`. The partial clone had omitted blob objects, causing the local snapshot reader to trigger unavailable or slow lazy fetches. Ensure mirrors contain complete objects, refresh older incomplete mirrors, and return a repository diagnostic instead of an uncaught request-thread traceback if object reading times out.
+
+## Specification review corrections, October 7, 2026
+
+> 1. list should be on the left. Update wrong artifacts
+> 2. Superseed the decision of using the parent dir.
+> 3. Please fix it.
+> 4. Add missing tests.
+> 5. Accepted target time when selecting a new repo/version which has to be downloaded should be time to clone/pull + <1s for computing diffs/caches. Switching between artifacts should feel instant.
+> 6. Split them up.
+
+The current working directory is the default repository, including from the submodule. The terminal list is on the left and the content pane is on the right. Preserve the former first-release constraint and CLI decision as superseded historical artifacts. Separate browser overview, GitHub revision access, pull request status, performance, and development design so they can be traced and verified independently. For the qualitative artifact-switching target, use a 200-millisecond display threshold under a local test workload; measure transfer time separately from local parsing and comparison.
+
+During browser regression testing, the overview's asynchronous repository refresh cleared a local-folder selection made while that refresh was pending. Preserve the local selection through the refresh so its Open review action remains available.
+The local selection must also bypass GitHub pull-request loading; otherwise the pending refresh raises a spurious repository error.
+
+## Local-only browser scope and accessibility, October 7, 2026
+
+> 1. Let's remove the GitHub API routes completely for now. I would only start using that when we have an actual hosted versions with multiple user accounts.
+> 2. I guess a 1s target would be acceptable. But the rest of the page should not wait while it is loading.
+> 3. Add accessibility excpectations and keyboard-focused browser coverage requirements.
+> 4. I guess local mirrors would be o.k. if we consider, that the we said, the 200ms should not include clone/pull. The 1s for new versions, I added since, I want to allow a bit higher for recomputing diffs between different versions.
+
+This request was initially interpreted as removing all GitHub review. The correction below narrows it to the direct API integration. Local comparison computation has a one-second target after required files are available, while artifact display from a loaded revision has a 200-millisecond target; clone or pull time is excluded from that latter target. Keep the rest of the browser interactive while comparison data loads. Provide named controls and dialogs, keyboard access, visible focus, and browser coverage of keyboard journeys.
+
+## GitHub CLI scope correction, October 7, 2026
+
+> Sorry. I think there was a misunderstanding. Did you remove the whole GitHub bakcend? I meant only remove the interface via API and keep the interface via gh.
+
+The local browser must retain GitHub repository, revision, pull-request, and Actions review through the authenticated `gh` CLI. Remove the direct GitHub App and Python HTTP client path, including App credentials. The browser may use its own local server endpoints to invoke `gh`; these are distinct from a direct GitHub API integration. Keep complete local Git mirrors for revision data and the previously agreed latency and nonblocking-loading expectations. A hosted, multiuser access model remains future work.

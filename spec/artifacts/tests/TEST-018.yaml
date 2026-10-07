@@ -1,0 +1,10 @@
+id: TEST-018
+type: test
+title: Load and compare GitHub revisions
+status: specified
+verifies:
+- REQ-039
+description: With gh authenticated, select an accessible repository and confirm its default branch, another branch, a pull request, and a commit can each be loaded. Compare selected GitHub revisions and confirm the displayed base and target match the selection. Verify the server invokes gh rather than a direct Python GitHub HTTP client, and returns a sign-in diagnostic when gh is unauthenticated.
+source:
+  file: spec/sources/chat.md
+  section: Specification review corrections, October 7, 2026

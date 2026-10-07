@@ -1,9 +1,11 @@
 id: TEST-014
 type: test
 title: Navigate saved repositories and review open pull requests
+status: specified
 verifies:
 - REQ-035
-description: With GitHub access configured, open the overview and add a repository using the top-right Add action. Confirm it appears in the left repository sidebar and remains after reload. Select it and confirm open pull requests are shown with available GitHub Actions state; absent checks are presented as unavailable without preventing navigation. Open a repository and a pull request and confirm each enters the detailed review view with the expected default branch or PR base and head comparison.
+- REQ-040
+description: With gh authenticated, add an accessible repository and confirm it remains in the left sidebar across reloads. Confirm pull requests and available Actions state, including unavailable checks, and open a repository or pull request in the detailed review view. Select the local folder while a GitHub overview request is pending and confirm the local selection remains available.
 source:
   file: spec/sources/chat.md
   section: Multi-repository overview and pull request navigation, October 7, 2026

@@ -1,0 +1,15 @@
+id: DES-008
+type: design
+title: GitHub CLI access and cached snapshots
+status: specified
+description: |
+  Invoke the authenticated gh CLI for the current account's repository, revision, pull-request, and available Actions metadata. Do not use GitHub App credentials or a direct Python HTTP client. Fetch revisions through Git's pack protocol into a persistent local bare mirror in the user cache. Fetch complete objects and refresh existing incomplete mirrors before reading them. Parse snapshots from the mirror and reuse cached snapshots for document selection and comparisons. Convert object-read timeouts into repository diagnostics at the HTTP boundary. Measure clone or fetch separately from local parsing and comparison. A hosted multiuser version needs a separate account-scoped access design.
+addresses:
+- REQ-039
+- REQ-040
+- REQ-041
+- REQ-043
+decisions: []
+source:
+  file: spec/sources/chat.md
+  section: GitHub CLI scope correction, October 7, 2026

@@ -10,6 +10,7 @@ verifies:
 - REQ-020
 - REQ-022
 - REQ-023
+- REQ-030
 description: Compare revisions containing additions, changes, deletions, and a type change. Confirm row
   colors/markers, category stars, and deleted-item visibility. Confirm formatting-only edits, key reordering,
   and moves do not count as YAML changes, while scalar types and list order do. Confirm stored overview

@@ -2,7 +2,7 @@ import asyncio
 from unittest.mock import Mock
 
 from conftest import write_artifact
-from textual.widgets import Input, ListView, Tabs
+from textual.widgets import Checkbox, Input, ListView, Tabs
 
 from spec_review.models import RenderResult
 from spec_review.settings import Settings
@@ -40,6 +40,50 @@ async def test_browse_search_link_keyboard_and_back(history):
         await settle(app, pilot)
         assert app.selected_id == "UC-001"
         await pilot.press("f6")
+
+
+async def test_left_artifact_list_right_content_and_changed_filter(history):
+    repo, _, base, target = history
+    app = SpecReviewApp(repo, Settings(rendering=False))
+    async with app.run_test(size=(140, 45)) as pilot:
+        await settle(app, pilot)
+        sidebar = app.query_one("#sidebar")
+        content = app.query_one("#content")
+        assert sidebar.region.x < content.region.x
+        assert sidebar.region.right <= content.region.x
+
+        app.begin_comparison((base, target))
+        await settle(app, pilot)
+        app.query_one("#categories", Tabs).active = "cat-2"  # unchanged use cases
+        await settle(app, pilot)
+        listing = app.query_one("#artifacts", ListView)
+        assert len(listing.children) == 1
+        app.query_one("#changes-only", Checkbox).value = True
+        await settle(app, pilot)
+        assert len(listing.children) == 0
+        app.query_one("#categories", Tabs).active = "cat-0"  # changed goal
+        await settle(app, pilot)
+        assert len(listing.children) == 1
+
+
+async def test_source_and_condition_lists_render_in_terminal(repo):
+    write_artifact(
+        repo,
+        "UC-001",
+        "use_case",
+        source={"file": "spec/sources/chat.md", "section": "Initial request"},
+        preconditions=["First condition", "Second condition"],
+        postconditions=["Completed"],
+    )
+    app = SpecReviewApp(repo, Settings(rendering=False))
+    async with app.run_test(size=(140, 45)) as pilot:
+        await settle(app, pilot)
+        app.query_one("#categories", Tabs).active = "cat-2"
+        await settle(app, pilot)
+        rendered = "\n".join(widget.source_text for widget in app.query(ReviewMarkdown))
+        assert "spec/sources/chat.md#Initial request" in rendered
+        assert "- First condition\n- Second condition" in rendered
+        assert "- Completed" in rendered
 
 
 async def test_rapid_category_navigation_keeps_content_in_sync(history):

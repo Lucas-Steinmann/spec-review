@@ -5,13 +5,17 @@
 
 ## [CON-001](../artifacts/constraints/CON-001.yaml) — First release is a read-only TUI
 
+### Status
+
+superseded
+
 ### Statement
 
 The first release reviews canonical artifacts and stored overviews. It does not edit specification content, implement a WebUI, or migrate the companion project’s legacy documents.
 
 ### Superseded By
 
-REQ-034
+CON-004
 
 ### Related
 
@@ -48,3 +52,31 @@ Persist options and cache images in user directories, without writing configurat
 ### Source
 
 `spec/sources/chat.md` — [Settings](provenance.md#settings)
+
+## [CON-004](../artifacts/constraints/CON-004.yaml) — Review without editing or migrating specifications
+
+### Statement
+
+Terminal and browser review do not edit specification content or migrate the companion project's legacy documents. The first release was terminal-only; the later browser interface is in scope.
+
+### Related
+
+[REQ-001](../artifacts/requirements/REQ-001.yaml), [REQ-034](../artifacts/requirements/REQ-034.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [Specification review corrections, October 7, 2026](provenance.md#specification-review-corrections-october-7-2026)
+
+## [CON-005](../artifacts/constraints/CON-005.yaml) — Use the GitHub CLI for the current GitHub integration
+
+### Statement
+
+The current browser may review local repositories and GitHub repositories accessible to the server's authenticated `gh` CLI account. Do not expose a direct GitHub App or Python HTTP client integration. A hosted version with multiple user accounts requires a separate access model before it is introduced.
+
+### Related
+
+[REQ-034](../artifacts/requirements/REQ-034.yaml), [REQ-035](../artifacts/requirements/REQ-035.yaml), [REQ-039](../artifacts/requirements/REQ-039.yaml), [REQ-040](../artifacts/requirements/REQ-040.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [GitHub CLI scope correction, October 7, 2026](provenance.md#github-cli-scope-correction-october-7-2026)

@@ -6,8 +6,8 @@ context: The browser frontend needs reusable components for browsing snapshots, 
 decision: Implement the browser frontend in Svelte and build it to static assets served by the Python WebUI. Reuse the backend content-block, link-resolution, snapshot, comparison, and diagram-rendering services.
 addresses:
 - REQ-034
-- REQ-035
 - REQ-036
+- REQ-037
 source:
   file: spec/sources/chat.md
   section: Svelte frontend

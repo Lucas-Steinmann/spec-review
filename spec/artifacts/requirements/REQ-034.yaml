@@ -3,13 +3,16 @@ type: requirement
 title: Browse and compare specifications in a WebUI
 category: browsing
 status: specified
-statement: Provide a browser interface for reading specifications in a selected local repository folder using the same snapshot and comparison services as the terminal interface. Selecting a revision loads and displays that revision's documents. Allow comparisons between any selected local revisions, including the working tree, and mark each category that contains changed, added, or deleted documents.
+statement: Provide a browser overview with the selected local repository in a left sidebar and an action to open its detailed review. Use the same snapshot and comparison services as the terminal interface. Selecting a revision loads and displays that revision's documents. Allow comparisons between any selected local revisions, including the working tree, and mark each category that contains changed, added, or deleted documents.
 derived_from:
 - UC-008
 related:
 - REQ-016
 - REQ-023
 - REQ-036
+- REQ-041
+- REQ-042
+- REQ-043
 source:
   file: spec/sources/chat.md
   section: WebUI and GitHub support

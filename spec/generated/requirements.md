@@ -71,7 +71,7 @@ Display the individual artifacts in the selected category in a list on the right
 
 ### Derived From
 
-[UC-001](../artifacts/use-cases/UC-001.yaml), [UC-006](../artifacts/use-cases/UC-006.yaml)
+—
 
 ### Related
 
@@ -85,7 +85,7 @@ REQ-029
 
 `spec/sources/chat.md` — [Initial request](provenance.md#initial-request)
 
-## [REQ-004](../artifacts/requirements/REQ-004.yaml) — Read selected content on the left
+## [REQ-004](../artifacts/requirements/REQ-004.yaml) — Read selected content in the main pane
 
 ### Category
 
@@ -97,7 +97,7 @@ specified
 
 ### Statement
 
-Display the selected artifact’s content in the main view on the left side.
+Display the selected artifact’s content in the main view on the right side.
 
 ### Derived From
 
@@ -109,7 +109,7 @@ Display the selected artifact’s content in the main view on the left side.
 
 ### Source
 
-`spec/sources/chat.md` — [Initial request](provenance.md#initial-request)
+`spec/sources/chat.md` — [Requested improvements, October 2, 2026](provenance.md#requested-improvements-october-2-2026)
 
 ## [REQ-005](../artifacts/requirements/REQ-005.yaml) — Browse generated overviews
 
@@ -409,7 +409,7 @@ specified
 
 ### Statement
 
-Keep parsing, snapshot access, link resolution, comparison, content blocks, and diagram rendering separate from terminal presentation so a future WebUI can reuse the backend. Backend modules import without Textual and expose JSON-serializable models.
+Keep parsing, snapshot access, link resolution, comparison, content blocks, and diagram rendering separate from terminal presentation so the WebUI can reuse the backend. Backend modules import without Textual and expose JSON-serializable models.
 
 ### Derived From
 
@@ -751,7 +751,7 @@ Place the artifact list and search sidebar on the left side of the workspace, wi
 
 ### Derived From
 
-—
+[UC-001](../artifacts/use-cases/UC-001.yaml), [UC-006](../artifacts/use-cases/UC-006.yaml)
 
 ### Related
 
@@ -777,7 +777,7 @@ Let users filter the artifact list to added, changed, and deleted items while co
 
 ### Derived From
 
-—
+[UC-006](../artifacts/use-cases/UC-006.yaml)
 
 ### Related
 
@@ -803,7 +803,7 @@ When --repo is omitted, use the current working directory as the repository and 
 
 ### Derived From
 
-—
+[UC-007](../artifacts/use-cases/UC-007.yaml)
 
 ### Related
 
@@ -829,7 +829,7 @@ Display source metadata as {file}#{section} on one line.
 
 ### Derived From
 
-—
+[UC-001](../artifacts/use-cases/UC-001.yaml)
 
 ### Related
 
@@ -855,7 +855,7 @@ Render list-valued preconditions and postconditions as Markdown bullet lists.
 
 ### Derived From
 
-—
+[UC-001](../artifacts/use-cases/UC-001.yaml)
 
 ### Related
 
@@ -877,7 +877,7 @@ specified
 
 ### Statement
 
-Provide a browser interface for reading specifications in a selected local repository folder using the same snapshot and comparison services as the terminal interface. Selecting a revision loads and displays that revision's documents. Allow comparisons between any selected local revisions, including the working tree, and mark each category that contains changed, added, or deleted documents.
+Provide a browser overview with the selected local repository in a left sidebar and an action to open its detailed review. Use the same snapshot and comparison services as the terminal interface. Selecting a revision loads and displays that revision's documents. Allow comparisons between any selected local revisions, including the working tree, and mark each category that contains changed, added, or deleted documents.
 
 ### Derived From
 
@@ -885,13 +885,13 @@ Provide a browser interface for reading specifications in a selected local repos
 
 ### Related
 
-[REQ-016](../artifacts/requirements/REQ-016.yaml), [REQ-023](../artifacts/requirements/REQ-023.yaml), [REQ-036](../artifacts/requirements/REQ-036.yaml)
+[REQ-016](../artifacts/requirements/REQ-016.yaml), [REQ-023](../artifacts/requirements/REQ-023.yaml), [REQ-036](../artifacts/requirements/REQ-036.yaml), [REQ-041](../artifacts/requirements/REQ-041.yaml), [REQ-042](../artifacts/requirements/REQ-042.yaml), [REQ-043](../artifacts/requirements/REQ-043.yaml)
 
 ### Source
 
 `spec/sources/chat.md` — [WebUI and GitHub support](provenance.md#webui-and-github-support)
 
-## [REQ-035](../artifacts/requirements/REQ-035.yaml) — Navigate multiple GitHub repositories and pull requests
+## [REQ-035](../artifacts/requirements/REQ-035.yaml) — Navigate saved repositories from the browser overview
 
 ### Category
 
@@ -903,19 +903,19 @@ specified
 
 ### Statement
 
-Provide an overview as the browser application's main page. Let reviewers add repositories accessible through a configured GitHub App or authenticated GitHub CLI account with an Add button at the top-right, retain them in a left sidebar repository list, and select a repository to open its detailed review view. Show open pull requests for the selected repository and include their GitHub Actions state when available. The review view defaults to the repository's default branch and supports comparisons of pull requests, branches, or commits. Selecting a pull request opens its comparison in the detailed review view.
+Provide an overview with the local folder and saved GitHub repositories in a left sidebar. Let reviewers add a repository accessible through the server's gh CLI login using the top-right Add action, retain saved repositories across reloads, and open a selected repository in its detailed review view. Keep the local selection available while GitHub data loads.
 
 ### Derived From
 
-[UC-008](../artifacts/use-cases/UC-008.yaml)
+[UC-009](../artifacts/use-cases/UC-009.yaml)
 
 ### Related
 
-[REQ-023](../artifacts/requirements/REQ-023.yaml), [REQ-026](../artifacts/requirements/REQ-026.yaml)
+[REQ-034](../artifacts/requirements/REQ-034.yaml), [REQ-039](../artifacts/requirements/REQ-039.yaml)
 
 ### Source
 
-`spec/sources/chat.md` — [Multi-repository overview and pull request navigation, October 7, 2026](provenance.md#multi-repository-overview-and-pull-request-navigation-october-7-2026)
+`spec/sources/chat.md` — [GitHub CLI scope correction, October 7, 2026](provenance.md#github-cli-scope-correction-october-7-2026)
 
 ## [REQ-036](../artifacts/requirements/REQ-036.yaml) — Preserve TUI document rendering in the WebUI
 
@@ -994,3 +994,133 @@ In the WebUI review sidebar, keep the Changes only checkbox adjacent to its labe
 ### Source
 
 `spec/sources/chat.md` — [WebUI sidebar usability, October 7, 2026](provenance.md#webui-sidebar-usability-october-7-2026)
+
+## [REQ-039](../artifacts/requirements/REQ-039.yaml) — Access GitHub revisions for review
+
+### Category
+
+integrations
+
+### Status
+
+specified
+
+### Statement
+
+Through the server's authenticated gh CLI account, list accessible GitHub repositories and review their default branch, other branches, pull requests, and commits. Support comparisons between selected GitHub revisions in the detailed review view. Show a useful sign-in error when gh is unavailable or unauthenticated.
+
+### Derived From
+
+[UC-009](../artifacts/use-cases/UC-009.yaml)
+
+### Related
+
+[REQ-023](../artifacts/requirements/REQ-023.yaml), [REQ-035](../artifacts/requirements/REQ-035.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [GitHub CLI scope correction, October 7, 2026](provenance.md#github-cli-scope-correction-october-7-2026)
+
+## [REQ-040](../artifacts/requirements/REQ-040.yaml) — Show open pull requests and available Actions state
+
+### Category
+
+integrations
+
+### Status
+
+specified
+
+### Statement
+
+Show open pull requests for the selected GitHub repository on the browser overview, including GitHub Actions state when available. Show unavailable when checks cannot be read. Selecting a pull request opens its base and head comparison in the detailed review view.
+
+### Derived From
+
+[UC-009](../artifacts/use-cases/UC-009.yaml)
+
+### Related
+
+[REQ-035](../artifacts/requirements/REQ-035.yaml), [REQ-039](../artifacts/requirements/REQ-039.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [Multi-repository overview and pull request navigation, October 7, 2026](provenance.md#multi-repository-overview-and-pull-request-navigation-october-7-2026)
+
+## [REQ-041](../artifacts/requirements/REQ-041.yaml) — Keep comparison and document switching responsive
+
+### Category
+
+performance
+
+### Status
+
+specified
+
+### Statement
+
+Once the required Git objects are locally available, loading two revisions and computing their comparison should take less than one second under a representative local test workload. A new GitHub repository or revision may add clone or fetch time before this target begins. Once a revision is loaded, switching between its artifacts should feel instant, with document content displayed within 200 milliseconds under a local browser test workload. Exclude clone, pull, or fetch transfer time from these local targets. If an object read times out, show a repository diagnostic at the HTTP boundary.
+
+### Derived From
+
+[UC-008](../artifacts/use-cases/UC-008.yaml), [UC-009](../artifacts/use-cases/UC-009.yaml)
+
+### Related
+
+[REQ-034](../artifacts/requirements/REQ-034.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [Specification review corrections, October 7, 2026](provenance.md#specification-review-corrections-october-7-2026)
+
+## [REQ-042](../artifacts/requirements/REQ-042.yaml) — Make browser review keyboard accessible
+
+### Category
+
+accessibility
+
+### Status
+
+specified
+
+### Statement
+
+Provide accessible names for browser controls and dialogs, visible focus for keyboard users, and keyboard-only navigation through the overview, revision controls, categories, artifact list, document links, and link-choice dialog. Return focus to the invoking link when the dialog is dismissed, and move focus to the destination heading when a choice navigates.
+
+### Derived From
+
+[UC-008](../artifacts/use-cases/UC-008.yaml), [UC-009](../artifacts/use-cases/UC-009.yaml)
+
+### Related
+
+[REQ-034](../artifacts/requirements/REQ-034.yaml), [REQ-036](../artifacts/requirements/REQ-036.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [Local-only browser scope and accessibility, October 7, 2026](provenance.md#local-only-browser-scope-and-accessibility-october-7-2026)
+
+## [REQ-043](../artifacts/requirements/REQ-043.yaml) — Keep browser navigation usable during comparison loading
+
+### Category
+
+responsiveness
+
+### Status
+
+specified
+
+### Statement
+
+While repository metadata, a local or GitHub revision, or a comparison request is pending, show a perceivable loading status and keep the rest of the browser available for navigation and interaction. The request may disable its own repeat action until completion.
+
+### Derived From
+
+[UC-008](../artifacts/use-cases/UC-008.yaml), [UC-009](../artifacts/use-cases/UC-009.yaml)
+
+### Related
+
+[REQ-034](../artifacts/requirements/REQ-034.yaml), [REQ-041](../artifacts/requirements/REQ-041.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [Local-only browser scope and accessibility, October 7, 2026](provenance.md#local-only-browser-scope-and-accessibility-october-7-2026)

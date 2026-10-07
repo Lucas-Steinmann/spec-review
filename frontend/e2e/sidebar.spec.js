@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 test('comparison controls and categories fit the sidebar at desktop and mobile widths', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: /Local folder/ }).click();
+  await expect(page.locator('.repo-sidebar button').first()).toContainText('spec-review');
   await page.getByRole('button', { name: 'Open review' }).click();
   await expect(page.getByRole('combobox', { name: 'Target revision' })).toBeVisible();
   await page.getByRole('button', { name: 'Compare', exact: true }).click();

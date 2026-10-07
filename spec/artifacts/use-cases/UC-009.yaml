@@ -1,0 +1,24 @@
+id: UC-009
+type: use_case
+title: Review GitHub repositories through gh
+status: specified
+actors:
+- ACTOR-001
+goal_refs:
+- GOAL-001
+- GOAL-002
+description: Review a repository accessible to the server's authenticated gh CLI account and its pull requests in the browser.
+preconditions:
+- The server has an authenticated gh CLI account with access to the selected repository.
+main_flow: |-
+  1. Add an accessible repository to the reviewer's overview.
+  2. Select a branch, commit, or pull request to inspect.
+  3. Compare selected revisions and inspect available Actions state.
+postconditions: The reviewer sees the selected GitHub specification and comparison without changing a checkout.
+addresses:
+- REQ-035
+- REQ-039
+- REQ-040
+source:
+  file: spec/sources/chat.md
+  section: GitHub CLI scope correction, October 7, 2026

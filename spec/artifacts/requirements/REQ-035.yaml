@@ -1,14 +1,14 @@
 id: REQ-035
 type: requirement
-title: Navigate multiple GitHub repositories and pull requests
+title: Navigate saved repositories from the browser overview
 category: integrations
 status: specified
-statement: Provide an overview as the browser application's main page. Let reviewers add repositories accessible through a configured GitHub App or authenticated GitHub CLI account with an Add button at the top-right, retain them in a left sidebar repository list, and select a repository to open its detailed review view. Show open pull requests for the selected repository and include their GitHub Actions state when available. The review view defaults to the repository's default branch and supports comparisons of pull requests, branches, or commits. Selecting a pull request opens its comparison in the detailed review view.
+statement: Provide an overview with the local folder and saved GitHub repositories in a left sidebar. Let reviewers add a repository accessible through the server's gh CLI login using the top-right Add action, retain saved repositories across reloads, and open a selected repository in its detailed review view. Keep the local selection available while GitHub data loads.
 derived_from:
-- UC-008
+- UC-009
 related:
-- REQ-023
-- REQ-026
+- REQ-034
+- REQ-039
 source:
   file: spec/sources/chat.md
-  section: Multi-repository overview and pull request navigation, October 7, 2026
+  section: GitHub CLI scope correction, October 7, 2026

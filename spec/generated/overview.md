@@ -12,12 +12,12 @@ A specification browser that uses its own artifact format to document its requir
 |---|---:|---|
 | Goals | 3 | [Goals](goals.md) |
 | Actors | 1 | [Actors](actors.md) |
-| Use Cases | 8 | [Use Cases](use-cases.md) |
-| Requirements | 38 | [Requirements](requirements.md) |
-| Constraints | 3 | [Constraints](constraints.md) |
-| Decisions | 9 | [Decisions](decisions.md) |
-| Design | 7 | [Design](architecture.md) |
-| Tests | 15 | [Tests](acceptance.md) |
+| Use Cases | 9 | [Use Cases](use-cases.md) |
+| Requirements | 43 | [Requirements](requirements.md) |
+| Constraints | 5 | [Constraints](constraints.md) |
+| Decisions | 11 | [Decisions](decisions.md) |
+| Design | 9 | [Design](architecture.md) |
+| Tests | 20 | [Tests](acceptance.md) |
 
 ## Traceability
 

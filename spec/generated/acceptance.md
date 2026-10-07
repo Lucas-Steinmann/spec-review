@@ -7,15 +7,15 @@
 
 ### Verifies
 
-[REQ-001](../artifacts/requirements/REQ-001.yaml), [REQ-002](../artifacts/requirements/REQ-002.yaml), [REQ-003](../artifacts/requirements/REQ-003.yaml), [REQ-004](../artifacts/requirements/REQ-004.yaml), [REQ-005](../artifacts/requirements/REQ-005.yaml), [REQ-006](../artifacts/requirements/REQ-006.yaml), [REQ-025](../artifacts/requirements/REQ-025.yaml), [REQ-027](../artifacts/requirements/REQ-027.yaml)
+[REQ-001](../artifacts/requirements/REQ-001.yaml), [REQ-002](../artifacts/requirements/REQ-002.yaml), [REQ-029](../artifacts/requirements/REQ-029.yaml), [REQ-004](../artifacts/requirements/REQ-004.yaml), [REQ-005](../artifacts/requirements/REQ-005.yaml), [REQ-006](../artifacts/requirements/REQ-006.yaml), [REQ-025](../artifacts/requirements/REQ-025.yaml), [REQ-027](../artifacts/requirements/REQ-027.yaml), [REQ-032](../artifacts/requirements/REQ-032.yaml), [REQ-033](../artifacts/requirements/REQ-033.yaml)
 
 ### Description
 
-Open a repository containing all supported artifact types, an unknown type, an empty category, Markdown overviews, and multiline fields. Choose categories and select artifacts by mouse and keyboard. Check the bottom/right/left layout, bold headings, highlighted links, ID/title search, and faithful unknown-field presentation. Confirm no ignored legacy documents are loaded.
+Open a repository containing all supported artifact types, an unknown type, an empty category, Markdown overviews, and multiline fields. Choose categories and select artifacts by mouse and keyboard. Check the bottom categories, left artifact list, right content pane, bold headings, highlighted links, ID/title search, and faithful unknown-field presentation. Confirm no ignored legacy documents are loaded.
 
 ### Source
 
-`spec/sources/chat.md` — [Approved implementation plan](provenance.md#approved-implementation-plan)
+`spec/sources/chat.md` — [Requested improvements, October 2, 2026](provenance.md#requested-improvements-october-2-2026)
 
 ## [TEST-002](../artifacts/tests/TEST-002.yaml) — Follow direct, legacy, and ambiguous links
 
@@ -63,7 +63,7 @@ Use Options to disable rendering and select two-panel diff. Confirm existing job
 
 ### Verifies
 
-[REQ-011](../artifacts/requirements/REQ-011.yaml), [REQ-023](../artifacts/requirements/REQ-023.yaml)
+[REQ-011](../artifacts/requirements/REQ-011.yaml), [REQ-023](../artifacts/requirements/REQ-023.yaml), [REQ-031](../artifacts/requirements/REQ-031.yaml)
 
 ### Description
 
@@ -77,7 +77,7 @@ Open Diff, search/page through local commits, select base and target, and cancel
 
 ### Verifies
 
-[REQ-012](../artifacts/requirements/REQ-012.yaml), [REQ-013](../artifacts/requirements/REQ-013.yaml), [REQ-014](../artifacts/requirements/REQ-014.yaml), [REQ-015](../artifacts/requirements/REQ-015.yaml), [REQ-018](../artifacts/requirements/REQ-018.yaml), [REQ-020](../artifacts/requirements/REQ-020.yaml), [REQ-022](../artifacts/requirements/REQ-022.yaml), [REQ-023](../artifacts/requirements/REQ-023.yaml)
+[REQ-012](../artifacts/requirements/REQ-012.yaml), [REQ-013](../artifacts/requirements/REQ-013.yaml), [REQ-014](../artifacts/requirements/REQ-014.yaml), [REQ-015](../artifacts/requirements/REQ-015.yaml), [REQ-018](../artifacts/requirements/REQ-018.yaml), [REQ-020](../artifacts/requirements/REQ-020.yaml), [REQ-022](../artifacts/requirements/REQ-022.yaml), [REQ-023](../artifacts/requirements/REQ-023.yaml), [REQ-030](../artifacts/requirements/REQ-030.yaml)
 
 ### Description
 
@@ -105,11 +105,11 @@ Import snapshot, parsing, link, comparison, content-block, and diagram services 
 
 ### Verifies
 
-[REQ-017](../artifacts/requirements/REQ-017.yaml)
+[REQ-017](../artifacts/requirements/REQ-017.yaml), [REQ-031](../artifacts/requirements/REQ-031.yaml)
 
 ### Description
 
-From an authenticated fresh clone of a consuming project, initialize spec-review at its pinned commit, install locked dependencies, and launch it. Confirm it has independent Git history and defaults to the parent project’s specification.
+From an authenticated fresh clone of a consuming project, initialize spec-review at its pinned commit, install locked dependencies, and launch it. Confirm it has independent Git history and defaults to the current directory's specification. From the submodule, confirm --repo . selects its own specification.
 
 ### Source
 
@@ -143,15 +143,15 @@ Introduce malformed YAML and duplicate artifact IDs in a temporary specification
 
 `spec/sources/chat.md` — [Approved implementation plan](provenance.md#approved-implementation-plan)
 
-## [TEST-011](../artifacts/tests/TEST-011.yaml) — Load selected local and GitHub revisions in the WebUI
+## [TEST-011](../artifacts/tests/TEST-011.yaml) — Load selected local revisions in the WebUI
 
 ### Verifies
 
-[REQ-034](../artifacts/requirements/REQ-034.yaml), [REQ-035](../artifacts/requirements/REQ-035.yaml)
+[REQ-034](../artifacts/requirements/REQ-034.yaml)
 
 ### Description
 
-Start the WebUI against a repository with a working-tree specification and multiple commits. Confirm the initial document list loads, selecting a commit refreshes the list to that revision, and local comparisons display changed, added, and deleted documents with base and target field content. Confirm the local compare API accepts the WebUI's empty revision value for the working tree as either base or target, and categories containing changes are marked. With either a configured GitHub App installation or an authenticated GitHub CLI account, select an accessible repository and confirm its default branch, branch, pull request, and commit revisions can be loaded and compared. Confirm GitHub snapshots are read from a persistent local bare mirror populated through Git fetch with complete objects, without per-blob GitHub API requests or lazy blob fetches; existing incomplete mirrors are refreshed before use.
+Start the WebUI against a repository with a working-tree specification and multiple commits. Confirm its local overview appears with the repository list on the left and opens the detailed review without first contacting gh. Confirm the initial document list loads, selecting a commit refreshes the list to that revision, and local comparisons display changed, added, and deleted documents with base and target field content. Confirm the local compare API accepts the WebUI's empty revision value for the working tree as either base or target, and categories containing changes are marked. Confirm the removed /api/github routes are absent.
 
 ### Source
 
@@ -179,7 +179,7 @@ Open artifacts and generated overviews in the Svelte WebUI. Confirm relationship
 
 ### Description
 
-Compare two revisions of a document containing Markdown with unchanged lines and changed words. Confirm unchanged lines keep normal styling, changed lines receive the existing red or green marker and light background, and removed or added words receive darker red or green inline backgrounds on their respective sides.
+In a rendered browser comparison, inspect a document containing Markdown with unchanged lines and changed words. Confirm unchanged lines keep normal styling, changed lines receive the side-specific red or green marker and light background, and removed or added words receive darker red or green inline backgrounds on their respective sides.
 
 ### Source
 
@@ -187,13 +187,17 @@ Compare two revisions of a document containing Markdown with unchanged lines and
 
 ## [TEST-014](../artifacts/tests/TEST-014.yaml) — Navigate saved repositories and review open pull requests
 
+### Status
+
+specified
+
 ### Verifies
 
-[REQ-035](../artifacts/requirements/REQ-035.yaml)
+[REQ-035](../artifacts/requirements/REQ-035.yaml), [REQ-040](../artifacts/requirements/REQ-040.yaml)
 
 ### Description
 
-With GitHub access configured, open the overview and add a repository using the top-right Add action. Confirm it appears in the left repository sidebar and remains after reload. Select it and confirm open pull requests are shown with available GitHub Actions state; absent checks are presented as unavailable without preventing navigation. Open a repository and a pull request and confirm each enters the detailed review view with the expected default branch or PR base and head comparison.
+With gh authenticated, add an accessible repository and confirm it remains in the left sidebar across reloads. Confirm pull requests and available Actions state, including unavailable checks, and open a repository or pull request in the detailed review view. Select the local folder while a GitHub overview request is pending and confirm the local selection remains available.
 
 ### Source
 
@@ -212,3 +216,77 @@ Run the Playwright browser test against the local Python API and Vite developmen
 ### Source
 
 `spec/sources/chat.md` — [WebUI sidebar usability, October 7, 2026](provenance.md#webui-sidebar-usability-october-7-2026)
+
+## [TEST-016](../artifacts/tests/TEST-016.yaml) — Measure local comparison and artifact switching
+
+### Verifies
+
+[REQ-041](../artifacts/requirements/REQ-041.yaml)
+
+### Description
+
+With at least 100 representative artifacts in a local Git fixture or complete local mirror, measure loading two already available revisions and computing their diff in less than one second. In a browser test, confirm selecting an artifact from a loaded revision displays its content within 200 milliseconds. Measure clone or fetch separately. Simulate an object-read timeout and confirm the HTTP response contains a repository diagnostic.
+
+### Source
+
+`spec/sources/chat.md` — [Specification review corrections, October 7, 2026](provenance.md#specification-review-corrections-october-7-2026)
+
+## [TEST-017](../artifacts/tests/TEST-017.yaml) — Review the current directory and formatted fields
+
+### Verifies
+
+[REQ-031](../artifacts/requirements/REQ-031.yaml), [REQ-032](../artifacts/requirements/REQ-032.yaml), [REQ-033](../artifacts/requirements/REQ-033.yaml)
+
+### Description
+
+Launch from a temporary repository without --repo and confirm ./spec/ is selected. Launch from the spec-review submodule with --repo . and confirm its own specification is selected. Open an artifact in the terminal and browser with source metadata and list-valued preconditions and postconditions; confirm source appears on one line as file#section and list values appear as Markdown bullets.
+
+### Source
+
+`spec/sources/chat.md` — [Specification review corrections, October 7, 2026](provenance.md#specification-review-corrections-october-7-2026)
+
+## [TEST-018](../artifacts/tests/TEST-018.yaml) — Load and compare GitHub revisions
+
+### Status
+
+specified
+
+### Verifies
+
+[REQ-039](../artifacts/requirements/REQ-039.yaml)
+
+### Description
+
+With gh authenticated, select an accessible repository and confirm its default branch, another branch, a pull request, and a commit can each be loaded. Compare selected GitHub revisions and confirm the displayed base and target match the selection. Verify the server invokes gh rather than a direct Python GitHub HTTP client, and returns a sign-in diagnostic when gh is unauthenticated.
+
+### Source
+
+`spec/sources/chat.md` — [Specification review corrections, October 7, 2026](provenance.md#specification-review-corrections-october-7-2026)
+
+## [TEST-019](../artifacts/tests/TEST-019.yaml) — Navigate browser review by keyboard
+
+### Verifies
+
+[REQ-042](../artifacts/requirements/REQ-042.yaml)
+
+### Description
+
+In a real browser, use only the keyboard to enter local review, select a revision and category, open an artifact and its relationship link, and inspect the named link-choice dialog. Confirm visible focus, focus return to the invoking link on dismissal, and focus on the destination heading after choosing a target. Confirm the GitHub Add dialog has a name and reachable controls.
+
+### Source
+
+`spec/sources/chat.md` — [Local-only browser scope and accessibility, October 7, 2026](provenance.md#local-only-browser-scope-and-accessibility-october-7-2026)
+
+## [TEST-020](../artifacts/tests/TEST-020.yaml) — Keep browser navigation available during a pending comparison
+
+### Verifies
+
+[REQ-043](../artifacts/requirements/REQ-043.yaml)
+
+### Description
+
+Delay a local comparison response, gh-backed repository discovery, and a pull-request overview response in browser tests. Confirm loading status appears while category controls, artifact filtering, and local overview navigation remain usable, then release the responses and confirm results appear without an error or stale selection.
+
+### Source
+
+`spec/sources/chat.md` — [Local-only browser scope and accessibility, October 7, 2026](provenance.md#local-only-browser-scope-and-accessibility-october-7-2026)

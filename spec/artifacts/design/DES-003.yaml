@@ -17,10 +17,11 @@ addresses:
 - REQ-020
 - REQ-022
 - REQ-023
+- REQ-030
 decisions:
 - ADR-002
 - ADR-005
-- ADR-008
+- ADR-011
 source:
   file: spec/sources/chat.md
   section: Approved implementation plan

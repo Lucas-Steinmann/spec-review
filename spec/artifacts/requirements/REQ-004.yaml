@@ -1,12 +1,12 @@
 id: REQ-004
 type: requirement
-title: Read selected content on the left
+title: Read selected content in the main pane
 category: presentation
 status: specified
-statement: Display the selected artifact’s content in the main view on the left side.
+statement: Display the selected artifact’s content in the main view on the right side.
 derived_from:
 - UC-001
 related: []
 source:
   file: spec/sources/chat.md
-  section: Initial request
+  section: Requested improvements, October 2, 2026

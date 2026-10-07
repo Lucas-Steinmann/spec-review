@@ -9,7 +9,7 @@ description: Review differences in artifact content and diagrams.
 preconditions:
 - The selected repository contains a specification, or selected historical revisions are available locally.
 main_flow: |-
-  1. Inspect orange changed items, green additions, and red deletions in the right-hand list.
+  1. Inspect orange changed items, green additions, and red deletions in the left-hand list.
   2. Use stars on the bottom categories to locate affected artifact groups.
   3. Select an artifact or overview.
   4. Read an inline diff or aligned two-panel comparison.
@@ -18,4 +18,4 @@ main_flow: |-
 postconditions: The reviewer can distinguish changes, additions, and removals and understand their content.
 source:
   file: spec/sources/chat.md
-  section: Initial request
+  section: Requested improvements, October 2, 2026

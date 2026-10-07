@@ -1,0 +1,15 @@
+id: REQ-042
+type: requirement
+title: Make browser review keyboard accessible
+category: accessibility
+status: specified
+statement: Provide accessible names for browser controls and dialogs, visible focus for keyboard users, and keyboard-only navigation through the overview, revision controls, categories, artifact list, document links, and link-choice dialog. Return focus to the invoking link when the dialog is dismissed, and move focus to the destination heading when a choice navigates.
+derived_from:
+- UC-008
+- UC-009
+related:
+- REQ-034
+- REQ-036
+source:
+  file: spec/sources/chat.md
+  section: Local-only browser scope and accessibility, October 7, 2026

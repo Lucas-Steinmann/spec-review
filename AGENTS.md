@@ -13,3 +13,7 @@
 - Derive regression cases from the reported reproduction and the related requirement/acceptance scenario. Cover both directions or modes when the requirement promises both.
 - Run the focused regression test after adding it, then run the broader relevant suite when practical. Report any test you could not run and why.
 - Keep canonical test artifacts aligned with executable coverage; update `spec/` and regenerate its committed views whenever acceptance behavior changes.
+
+## Periodic specification health reviews
+
+- For a requested cross-cutting specification or product consistency review, use the project skill at `skills/spec-health-review/SKILL.md`. Apply its additional product, operational, and evidence checks alongside the artifact-editing rules in `spec/AGENTS.md`.

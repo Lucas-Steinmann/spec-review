@@ -1,6 +1,6 @@
 # spec-review
 
-A read-only terminal and browser application for reviewing and comparing specifications stored as YAML artifacts and generated Markdown, from local folders or GitHub repositories.
+A read-only terminal and browser application for reviewing and comparing specifications stored as YAML artifacts and generated Markdown, from local folders or repositories accessible through `gh`.
 
 ## Install and run
 
@@ -12,7 +12,7 @@ cd spec-review
 npm ci --prefix frontend
 npm run build --prefix frontend
 uv sync --locked
-uv run spec-review
+uv run spec-review --repo ..
 ```
 
 Run the browser interface against the same local folder:
@@ -22,6 +22,12 @@ uv run spec-review --web --repo /path/to/project --spec-dir spec
 ```
 
 It listens on `127.0.0.1:8765` by default. The WebUI is read-only and supports local working-tree browsing and Git comparisons. To expose it on another interface, pass `--host` and `--port`.
+
+### GitHub repositories through gh
+
+Install [GitHub CLI](https://cli.github.com/) and sign in on the machine running the WebUI with `gh auth login`. The overview's **Add** action lists repositories available to that account. Saved repositories appear in the left sidebar; their branches, commits, pull requests, and available Actions state can be reviewed in the browser. Revision files are fetched into a local bare Git mirror. GitHub App credentials and direct Python GitHub API access are not used.
+
+The server uses the signed-in `gh` account for every browser visitor. Keep this version on a trusted local interface; a hosted multiuser version needs a separate access model.
 
 The browser frontend is implemented in Svelte. Its compiled static assets are served by the Python server; the document API reuses the TUI's field formatting, link resolver, and local diagram renderer. Markdown links and relationship IDs navigate within the selected snapshot, while source metadata and pre/postcondition lists keep their TUI formatting.
 
@@ -35,26 +41,6 @@ cd frontend && npm run dev
 ```
 
 Open `http://127.0.0.1:5173`. Vite proxies `/api` requests to the Python server on port 8765 and reloads Svelte and CSS changes as you edit. To run browser regression tests, install Playwright Chromium with `cd frontend && npx playwright install chromium`, then run `npm run test:e2e`. For production assets, run `npm run build` in `frontend`; Vite writes ignored output to `frontend/dist`, which the Python server serves. Build frontend assets before building a Python wheel.
-
-### GitHub App access in the WebUI
-
-Configure a GitHub App with **Metadata: read**, **Contents: read**, and **Pull requests: read** repository permissions, install it on the organizations or accounts to review, and provide its App ID and private key to the server:
-
-```sh
-export SPEC_REVIEW_GITHUB_APP_ID=123456
-export SPEC_REVIEW_GITHUB_PRIVATE_KEY="$(cat /path/to/private-key.pem)"
-uv run spec-review --web
-```
-
-The private key is used only by the server to mint short-lived GitHub App JWTs and installation access tokens. The browser can select an installation and one of its repositories, review branches or pull requests, and compare refs. GitHub API requests are read-only; no branches are checked out and no repository files are written. Keep the server on a trusted network and protect its environment variables.
-
-The server needs OpenSSL available on `PATH` to sign App JWTs.
-
-#### Use your GitHub CLI login instead
-
-For personal use, the WebUI can also use the account already authenticated with the GitHub CLI. Install `gh`, sign in with `gh auth login`, and start the WebUI with `uv run spec-review --web --github-auth gh`. The CLI account can access only repositories available to that user. This avoids configuring a GitHub App; the App option remains useful for installation-scoped access on a shared server.
-
-The WebUI reads the CLI token from `gh auth token` on the server and keeps it server-side. Do not expose a CLI-authenticated server to untrusted users.
 
 The private submodule requires GitHub authentication. By default, the CLI uses the current directory as the repository and `./spec/` as the specification directory. Override the spec folder with `--spec-dir`, or select another repository with `--repo`:
 

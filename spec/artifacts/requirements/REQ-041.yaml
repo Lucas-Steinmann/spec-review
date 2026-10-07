@@ -1,0 +1,14 @@
+id: REQ-041
+type: requirement
+title: Keep comparison and document switching responsive
+category: performance
+status: specified
+statement: Once the required Git objects are locally available, loading two revisions and computing their comparison should take less than one second under a representative local test workload. A new GitHub repository or revision may add clone or fetch time before this target begins. Once a revision is loaded, switching between its artifacts should feel instant, with document content displayed within 200 milliseconds under a local browser test workload. Exclude clone, pull, or fetch transfer time from these local targets. If an object read times out, show a repository diagnostic at the HTTP boundary.
+derived_from:
+- UC-008
+- UC-009
+related:
+- REQ-034
+source:
+  file: spec/sources/chat.md
+  section: Specification review corrections, October 7, 2026

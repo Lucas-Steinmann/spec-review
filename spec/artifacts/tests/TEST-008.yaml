@@ -3,9 +3,10 @@ type: test
 title: Initialize the private Git submodule
 verifies:
 - REQ-017
+- REQ-031
 description: From an authenticated fresh clone of a consuming project, initialize spec-review at its pinned
   commit, install locked dependencies, and launch it. Confirm it has independent Git history and defaults
-  to the parent project’s specification.
+  to the current directory's specification. From the submodule, confirm --repo . selects its own specification.
 source:
   file: spec/sources/chat.md
   section: Approved implementation plan

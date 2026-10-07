@@ -5,7 +5,9 @@ category: browsing
 status: specified
 statement: Place the artifact list and search sidebar on the left side of the workspace, with selected
   artifact content on the right.
-derived_from: []
+derived_from:
+- UC-001
+- UC-006
 related: []
 source:
   file: spec/sources/chat.md

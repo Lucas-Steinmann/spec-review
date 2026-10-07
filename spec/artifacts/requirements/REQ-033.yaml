@@ -4,7 +4,8 @@ title: Render preconditions and postconditions as lists
 category: browsing
 status: specified
 statement: Render list-valued preconditions and postconditions as Markdown bullet lists.
-derived_from: []
+derived_from:
+- UC-001
 related: []
 source:
   file: spec/sources/chat.md

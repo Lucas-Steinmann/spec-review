@@ -5,7 +5,8 @@ category: cli
 status: specified
 statement: When --repo is omitted, use the current working directory as the repository and ./spec/ as
   the specification directory. Allow --spec-dir to override the specification directory.
-derived_from: []
+derived_from:
+- UC-007
 related: []
 source:
   file: spec/sources/chat.md

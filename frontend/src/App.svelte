@@ -2,14 +2,21 @@
   import { onMount, tick } from 'svelte';
   import DocumentBody from './DocumentBody.svelte';
 
-  let source = 'local';
   let status = null;
-  let installations = [];
-  let installation = '';
-  let repos = [];
+  let source = 'local';
   let repo = '';
-  let repoDefaults = {};
   let defaultBranch = '';
+  let ghAccount = '';
+  let ghMessage = '';
+  let savedRepos = JSON.parse(localStorage.getItem('spec-review-repositories') || '[]');
+  let overviewRepo = '__local__';
+  let overviewPulls = [];
+  let overviewBusy = false;
+  let overviewRequest = 0;
+  let repoDialog;
+  let availableRepos = [];
+  let addRepo = '';
+  let addBusy = false;
   let revisions = [];
   let revision = '';
   let base = '';
@@ -27,20 +34,12 @@
   let history = [];
   let error = '';
   let busy = false;
+  let viewRequest = 0;
   let linkDialog;
   let linkChoices = [];
   let linkAnchor = '';
   let pendingLinkContext = null;
-  let pendingLinkId = '';
   let page = 'overview';
-  let savedRepos = JSON.parse(localStorage.getItem('spec-review-repositories') || '[]');
-  let overviewRepo = '';
-  let overviewPulls = [];
-  let repoDialog;
-  let addInstallation = '';
-  let availableRepos = [];
-  let addRepo = '';
-
   async function api(path, options = {}) {
     const response = await fetch(path, options);
     const result = await response.json();
@@ -51,8 +50,7 @@
   function queryFor(ctx, extra = {}) {
     const params = new URLSearchParams(extra);
     params.set('ref', ctx.ref || '');
-    if (ctx.source === 'github') {
-      params.set('installation', ctx.installation);
+    if (ctx.source === 'gh') {
       const [owner, name] = ctx.repo.split('/');
       params.set('owner', owner);
       params.set('repo', name);
@@ -64,10 +62,7 @@
     return `/api/${ctx.source}/${action}?${queryFor(ctx)}`;
   }
 
-  function currentContext() {
-    if (source === 'github') return { source, installation, repo, ref: revision };
-    return { source, ref: revision };
-  }
+  function currentContext() { return { source, repo, ref: revision }; }
 
   function clearView() {
     currentDocument = null;
@@ -79,69 +74,84 @@
   async function initialize() {
     try {
       status = await api('/api/status');
-      installations = await api('/api/github/installations').catch(() => []);
-      addInstallation = String(installations[0]?.id || '');
-      await refreshOverview();
-    } catch (problem) { showError(problem); }
+      if (savedRepos.length) {
+        overviewRepo = savedRepos[0].full_name;
+        refreshOverview();
+      }
+    }
+    catch (problem) { showError(problem); }
+  }
+
+  async function openLocalRepository() {
+    page = 'detail';
+    source = 'local'; repo = '';
+    try { await loadLocalRevisions(); await loadSnapshot(); }
+    catch (problem) { showError(problem); }
   }
 
   function repoQuery(item) {
     const [owner, name] = item.full_name.split('/');
-    return new URLSearchParams({ installation: item.installation, owner, repo: name }).toString();
+    return new URLSearchParams({ owner, repo: name }).toString();
   }
 
   async function refreshOverview() {
-    localStorage.setItem('spec-review-repositories', JSON.stringify(savedRepos));
-    if (!savedRepos.some((item) => item.full_name === overviewRepo)) overviewRepo = savedRepos[0]?.full_name || '';
-    if (!overviewRepo) { overviewPulls = []; return; }
+    const request = ++overviewRequest;
+    overviewPulls = [];
     const item = savedRepos.find((row) => row.full_name === overviewRepo);
-    try { overviewPulls = await api(`/api/github/overview?${repoQuery(item)}`); }
-    catch (problem) { overviewPulls = []; showError(problem); }
+    if (!item) { overviewBusy = false; return; }
+    overviewBusy = true;
+    try {
+      const pulls = await api(`/api/gh/overview?${repoQuery(item)}`);
+      if (request === overviewRequest) overviewPulls = pulls;
+    } catch (problem) { if (request === overviewRequest) showError(problem); }
+    finally { if (request === overviewRequest) overviewBusy = false; }
   }
 
   async function openAddRepo() {
+    addBusy = true;
     try {
-      installations = await api('/api/github/installations');
-      addInstallation = String(installations[0]?.id || '');
-      if (addInstallation) await loadAvailableRepos();
+      ghAccount = (await api('/api/gh/account')).login;
+      availableRepos = await api('/api/gh/repos');
+      addRepo = availableRepos.find((item) => !savedRepos.some((saved) => saved.full_name === item.full_name))?.full_name || '';
       repoDialog?.showModal();
-    } catch (problem) { showError(problem); }
-  }
-
-  async function loadAvailableRepos() {
-    availableRepos = await api(`/api/github/repos?installation=${encodeURIComponent(addInstallation)}`);
-    addRepo = availableRepos.find((row) => !savedRepos.some((saved) => saved.full_name === row.full_name))?.full_name || '';
+      await tick();
+      repoDialog?.querySelector('select')?.focus();
+    } catch (problem) { ghMessage = problem.message; showError(problem); }
+    finally { addBusy = false; }
   }
 
   async function addRepository() {
     const item = availableRepos.find((row) => row.full_name === addRepo);
     if (!item) return;
-    savedRepos = [...savedRepos.filter((row) => row.full_name !== item.full_name), { ...item, installation: addInstallation }];
+    savedRepos = [...savedRepos.filter((row) => row.full_name !== item.full_name), item];
+    localStorage.setItem('spec-review-repositories', JSON.stringify(savedRepos));
     overviewRepo = item.full_name;
     repoDialog?.close();
     await refreshOverview();
   }
 
-  async function openRepository(item) {
-    page = 'detail';
-    source = 'github'; installation = item.installation; repo = item.full_name;
-    repoDefaults = { ...repoDefaults, [repo]: item.default_branch };
-    repos = [...repos.filter((row) => row.full_name !== item.full_name), item];
-    await loadGithubRevisions();
-    await loadSnapshot();
+  async function openRepository(item, pull = null) {
+    if (!item) return;
+    const request = ++viewRequest;
+    page = 'detail'; source = 'gh'; repo = item.full_name;
+    defaultBranch = item.default_branch;
+    busy = true;
+    try {
+      await loadGithubRevisions();
+      if (request !== viewRequest || page !== 'detail') return;
+      if (pull) {
+        base = pull.base; revision = pull.head;
+        await compareRevisions();
+      } else await loadSnapshot();
+    } catch (problem) { if (request === viewRequest) showError(problem); }
+    finally { if (request === viewRequest) busy = false; }
   }
 
-  async function openLocalRepository() {
-    page = 'detail'; source = 'local';
-    await loadLocalRevisions();
-    await loadSnapshot();
-  }
-
-  async function openPull(pull) {
-    const item = savedRepos.find((row) => row.full_name === overviewRepo);
-    await openRepository(item);
-    base = pull.base; revision = pull.head;
-    await compareRevisions();
+  function openOverview() {
+    viewRequest += 1;
+    busy = false;
+    page = 'overview';
+    refreshOverview();
   }
 
   async function loadLocalRevisions() {
@@ -155,34 +165,18 @@
     revision = '';
   }
 
-  async function connectGithub() {
-    installations = await api('/api/github/installations');
-    installation = String(installations[0]?.id || '');
-    if (!installation) throw new Error('No GitHub App installations are available.');
-    await loadRepos();
-  }
-
-  async function loadRepos() {
-    repos = await api(`/api/github/repos?installation=${encodeURIComponent(installation)}`);
-    repoDefaults = Object.fromEntries(repos.map((item) => [item.full_name, item.default_branch]));
-    repo = repos[0]?.full_name || '';
-    if (!repo) throw new Error('This installation has no accessible repositories.');
-    await loadGithubRevisions();
-  }
-
   async function loadGithubRevisions() {
-    defaultBranch = repoDefaults[repo] || 'main';
-    const ctx = { source: 'github', installation, repo, ref: defaultBranch };
+    const ctx = { source: 'gh', repo, ref: defaultBranch };
     const query = queryFor(ctx);
     const [branches, pulls, commits] = await Promise.all([
-      api(`/api/github/branches?${query}`),
-      api(`/api/github/pulls?${query}`),
-      api(`/api/github/commits?${query}`),
+      api(`/api/gh/branches?${query}`),
+      api(`/api/gh/pulls?${query}`),
+      api(`/api/gh/commits?${query}`),
     ]);
     revisions = [
       ...branches.map((item) => ({ label: `Branch · ${item.name}`, value: item.sha, branch: item.name })),
-      ...pulls.map((item) => ({ label: `PR #${item.number} · ${item.title}`, value: item.head, base: item.base, pull: true })),
-      ...commits.map((item) => ({ label: `Commit · ${item.sha.slice(0, 10)} · ${item.subject}`, value: item.sha, commit: true })),
+      ...pulls.map((item) => ({ label: `PR #${item.number} · ${item.title}`, value: item.head, base: item.base })),
+      ...commits.map((item) => ({ label: `Commit · ${item.sha.slice(0, 10)} · ${item.subject}`, value: item.sha })),
     ];
     revisions.sort((left, right) => Number(right.branch === defaultBranch) - Number(left.branch === defaultBranch));
     revision = revisions.find((item) => item.branch === defaultBranch)?.value || revisions[0]?.value || '';
@@ -190,47 +184,42 @@
   }
 
   async function loadSnapshot() {
+    const request = ++viewRequest;
     busy = true;
     error = '';
     clearView();
     try {
       context = currentContext();
-      snapshot = await api(routeFor(context, 'snapshot'));
+      const loaded = await api(routeFor(context, 'snapshot'));
+      if (request !== viewRequest || page !== 'detail') return;
+      snapshot = loaded;
       comparison = null;
       categories = snapshot.categories || {};
       if (!categories[category]) category = Object.keys(categories)[0] || '';
-    } catch (problem) { showError(problem); }
-    finally { busy = false; }
-  }
-
-  async function changeSource() {
-    error = '';
-    clearView();
-    try {
-      if (source === 'github') await connectGithub();
-      else await loadLocalRevisions();
-      await loadSnapshot();
-    } catch (problem) { showError(problem); }
+    } catch (problem) { if (request === viewRequest) showError(problem); }
+    finally { if (request === viewRequest) busy = false; }
   }
 
   async function compareRevisions() {
+    const request = ++viewRequest;
     busy = true;
     error = '';
-    clearView();
     try {
       const params = new URLSearchParams({ base, target: revision });
-      if (source === 'github') {
-        params.set('installation', installation);
+      if (source === 'gh') {
         const [owner, name] = repo.split('/');
         params.set('owner', owner); params.set('repo', name);
       }
-      comparison = await api(`/api/${source}/compare?${params}`);
+      const loaded = await api(`/api/${source}/compare?${params}`);
+      if (request !== viewRequest || page !== 'detail') return;
+      comparison = loaded;
+      clearView();
       snapshot = comparison.target;
       categories = { ...comparison.base.categories, ...comparison.target.categories };
       if (!categories[category]) category = Object.keys(categories)[0] || '';
       context = currentContext();
-    } catch (problem) { showError(problem); }
-    finally { busy = false; }
+    } catch (problem) { if (request === viewRequest) showError(problem); }
+    finally { if (request === viewRequest) busy = false; }
   }
 
   function changedCategories() {
@@ -288,17 +277,21 @@
 
   async function followLink(ctx, documentId, href) {
     try {
-      const params = new URLSearchParams({ ...ctx, id: documentId, href });
+      const params = new URLSearchParams(queryFor(ctx));
+      params.set('id', documentId);
+      params.set('href', href);
       const result = await api(`/api/${ctx.source}/link?${params}`);
       if (result.kind === 'external') {
         window.open(result.url, '_blank', 'noopener,noreferrer');
       } else if (result.kind === 'unresolved') {
         error = result.message;
       } else if (result.kind === 'choices') {
-        pendingLinkContext = ctx; pendingLinkId = result.targets[0];
+        pendingLinkContext = ctx;
         linkChoices = result.targets.map((id) => snapshotFor(ctx)?.documents?.[id] || { id, title: id });
         linkAnchor = result.anchor || '';
         linkDialog?.showModal();
+        await tick();
+        linkDialog?.querySelector('button')?.focus();
       } else {
         await navigateLink(result.targets[0], ctx, result.anchor);
       }
@@ -320,8 +313,9 @@
     context = ctx;
     try {
       linkedDocument = await fetchDocument(id, ctx);
+      await tick();
+      document.querySelector('.content-pane .doc-heading h1')?.focus();
       if (anchor) {
-        await tick();
         document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     } catch (problem) { showError(problem); }
@@ -345,11 +339,6 @@
     await loadSnapshot();
   }
 
-  async function repoChanged() {
-    await loadGithubRevisions();
-    await loadSnapshot();
-  }
-
   function showError(problem) { error = problem?.message || String(problem); }
 
   onMount(initialize);
@@ -360,23 +349,11 @@
 <header class="topbar">
   <a class="brand" href="/">spec-review</a>
   {#if page === 'detail'}
-  <button on:click={() => { page = 'overview'; refreshOverview(); }}>← Overview</button>
-  <div class="local-path">{repo || status?.repo || ''} <span>{status?.spec_dir || ''}</span></div>
-  <label class="sr-only" for="source">Review source</label>
-  <select id="source" bind:value={source} on:change={changeSource}>
-    <option value="local">Local folder</option><option value="github">GitHub</option>
-  </select>
-  {#if source === 'github'}
-    <select aria-label="GitHub account" bind:value={installation} on:change={loadRepos}>
-      {#each installations as item}<option value={item.id}>{item.account} ({item.type})</option>{/each}
-    </select>
-    <select aria-label="GitHub repository" bind:value={repo} on:change={repoChanged}>
-      {#each repos as item}<option value={item.full_name}>{item.full_name} · {item.default_branch}</option>{/each}
-    </select>
-  {/if}
+    <button on:click={openOverview}>← Overview</button>
+    <div class="local-path">{repo || status?.repo || ''} <span>{status?.spec_dir || ''}</span></div>
   {:else}
-  <span class="overview-title">Projects and pull requests</span><span class="spacer"></span>
-  <button class="primary" on:click={openAddRepo}>Add</button>
+    <span class="overview-title">Projects and pull requests</span><span class="spacer"></span>
+    <button class="primary" on:click={openAddRepo} disabled={addBusy}>Add</button>
   {/if}
 </header>
 {#if error}<div class="error-banner" role="alert">{error}<button aria-label="Dismiss" on:click={() => error = ''}>×</button></div>{/if}
@@ -384,29 +361,30 @@
 {#if page === 'overview'}
 <main class="overview-layout">
   <aside class="repo-sidebar"><h2>Repositories</h2>
-    <button class:active={overviewRepo === '__local__'} on:click={() => { overviewRepo = '__local__'; overviewPulls = []; }}>Local folder · {status?.repo || ''}</button>
-    {#if !savedRepos.length}<p class="empty">Add a GitHub repository to get started.</p>{/if}
+    <button class:active={overviewRepo === '__local__'} on:click={() => { overviewRepo = '__local__'; refreshOverview(); }}>Local folder · {status?.repo || ''}</button>
     {#each savedRepos as item (item.full_name)}
       <button class:active={overviewRepo === item.full_name} on:click={() => { overviewRepo = item.full_name; refreshOverview(); }}>{item.full_name}</button>
     {/each}
   </aside>
   <section class="overview-content">
+    {#if addBusy}<p role="status">Loading GitHub repositories…</p>{/if}
     {#if overviewRepo === '__local__'}
       <div class="overview-heading"><div><p>Local repository</p><h1>{status?.repo || 'Local folder'}</h1></div><button class="primary" on:click={openLocalRepository}>Open review</button></div>
       <p>Review the local specification and compare its revisions.</p>
-    {:else if overviewRepo}
-      <div class="overview-heading"><div><p>Repository</p><h1>{overviewRepo}</h1></div><button class="primary" on:click={() => openRepository(savedRepos.find((item) => item.full_name === overviewRepo))}>Open review</button></div>
+    {:else}
+      <div class="overview-heading"><div><p>GitHub repository · {ghAccount || 'gh CLI'}</p><h1>{overviewRepo}</h1></div><button class="primary" on:click={() => openRepository(savedRepos.find((item) => item.full_name === overviewRepo))}>Open review</button></div>
       <h2>Open pull requests</h2>
-      {#if overviewPulls.length}
+      {#if overviewBusy}<p role="status">Loading pull requests…</p>
+      {:else if overviewPulls.length}
         <div class="pull-list">{#each overviewPulls as pull (pull.number)}
-          <button class="pull-card" on:click={() => openPull(pull)}><span class="pull-number">#{pull.number}</span><span class="pull-title"><strong>{pull.title}</strong><small>{pull.head_ref} → {pull.base_ref}</small></span><span class="checks {pull.checks}">{pull.checks === 'unavailable' ? 'Actions unavailable' : pull.checks.replace('_', ' ')}</span></button>
+          <button class="pull-card" on:click={() => openRepository(savedRepos.find((item) => item.full_name === overviewRepo), pull)}><span class="pull-number">#{pull.number}</span><span class="pull-title"><strong>{pull.title}</strong><small>{pull.head_ref} → {pull.base_ref}</small></span><span class="checks {pull.checks}">{pull.checks === 'unavailable' ? 'Actions unavailable' : pull.checks.replace('_', ' ')}</span></button>
         {/each}</div>
       {:else}<p class="empty">No open pull requests.</p>{/if}
-    {:else}<div class="empty-state">Add a GitHub repository to see its open pull requests.</div>{/if}
+    {/if}
+    {#if ghMessage && !ghAccount}<p class="empty">Sign in with <code>gh auth login</code> to add GitHub repositories.</p>{/if}
   </section>
 </main>
-<dialog bind:this={repoDialog} class="link-dialog add-dialog"><h2>Add GitHub repository</h2>
-  <label>Account<select bind:value={addInstallation} on:change={loadAvailableRepos}>{#each installations as item}<option value={item.id}>{item.account} ({item.type})</option>{/each}</select></label>
+<dialog bind:this={repoDialog} class="link-dialog add-dialog" aria-labelledby="repo-dialog-title"><h2 id="repo-dialog-title">Add GitHub repository</h2>
   <label>Repository<select bind:value={addRepo}>{#each availableRepos as item}<option value={item.full_name}>{item.full_name}</option>{/each}</select></label>
   <div class="dialog-actions"><button on:click={() => repoDialog?.close()}>Cancel</button><button class="primary" disabled={!addRepo} on:click={addRepository}>Add repository</button></div>
 </dialog>
@@ -440,8 +418,8 @@
       {/each}
     </div>
     <div class="document-list">
-      {#if busy}<p class="empty">Loading…</p>
-      {:else if entries().length === 0}<p class="empty">No documents in this category.</p>
+      {#if busy}<p class="loading-status" role="status">Loading revision…</p>{/if}
+      {#if entries().length === 0}<p class="empty">No documents in this category.</p>
       {:else}
         {#each entries() as row (row.document.id)}
           <button class="document-item" class:active={selectedId === row.document.id} on:click={() => selectDocument(row.document.id)}>
@@ -456,7 +434,7 @@
 
   <section class="content-pane">
     {#if linkedDocument}
-      <div class="doc-heading"><div><h1>{linkedDocument.document.id} · {linkedDocument.document.title}</h1><p>{linkedDocument.revision} · {linkedDocument.document.path}</p></div></div>
+      <div class="doc-heading"><div><h1 tabindex="-1">{linkedDocument.document.id} · {linkedDocument.document.title}</h1><p>{linkedDocument.revision} · {linkedDocument.document.path}</p></div></div>
       <DocumentBody sections={linkedDocument.sections} on:follow={(event) => followLink(context, linkedDocument.document.id, event.detail.href)} />
     {:else if compareDocuments}
       <div class="doc-heading"><div><h1>{selectedId} · {(compareDocuments.target || compareDocuments.base).document.title}</h1><p>{compareDocuments.status} · base {comparison.base.revision.slice(0, 10)} → target {comparison.target.revision.slice(0, 10)}</p></div></div>
@@ -476,8 +454,8 @@
   </section>
 </main>
 
-<dialog bind:this={linkDialog} class="link-dialog">
-  <h2>Choose a linked artifact</h2>
+<dialog bind:this={linkDialog} class="link-dialog" aria-labelledby="link-dialog-title">
+  <h2 id="link-dialog-title">Choose a linked artifact</h2>
   {#each linkChoices as option}<button on:click={() => chooseLink(option.id)}><strong>{option.id}</strong><span>{option.title}</span></button>{/each}
   <button class="cancel" on:click={() => linkDialog?.close()}>Cancel</button>
 </dialog>

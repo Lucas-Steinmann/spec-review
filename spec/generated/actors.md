@@ -7,8 +7,8 @@
 
 ### Description
 
-A person who maintains or reviews structured engineering plans in a terminal, uses Kitty for diagram images, and wants to follow relationships and inspect changes over Git history.
+A person who maintains or reviews structured engineering plans in a terminal or browser, follows relationships, and inspects changes across local or gh-accessible repositories. The terminal reviewer may use Kitty for diagram images.
 
 ### Source
 
-`spec/sources/chat.md` — [Initial request](provenance.md#initial-request)
+`spec/sources/chat.md` — [GitHub CLI scope correction, October 7, 2026](provenance.md#github-cli-scope-correction-october-7-2026)

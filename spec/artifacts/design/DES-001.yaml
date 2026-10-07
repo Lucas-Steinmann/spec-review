@@ -2,12 +2,12 @@ id: DES-001
 type: design
 title: Reusable review backend and frontend boundary
 description: |
-  The backend owns repository snapshots, canonical document models, relationship/link resolution, field comparisons, and diagram rendering. The terminal frontend owns layout, focus, selection, colors, dialogs, and Kitty image presentation. A future WebUI can adapt the same backend services without importing Textual into the backend.
+  The backend owns repository snapshots, canonical document models, relationship/link resolution, field comparisons, and diagram rendering. The terminal frontend owns layout, focus, selection, colors, dialogs, and Kitty image presentation. The WebUI uses the same backend services without importing Textual into the backend.
 
   ```mermaid
   flowchart LR
     TUI[Textual frontend] --> Backend[Review services]
-    Web[Future WebUI] -.-> Backend
+    Web[WebUI] --> Backend
     Backend --> Snapshots[Working tree and Git snapshots]
     Backend --> Links[Snapshot-specific link resolution]
     Backend --> Diff[Artifact and overview comparison]
