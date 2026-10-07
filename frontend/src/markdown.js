@@ -3,13 +3,17 @@ const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => (
 }[character]));
 
 function inline(source) {
-  const pattern = /(\[[^\]]+\]\([^)]+\)|`[^`]+`|\*\*[^*]+\*\*|__[^_]+__|~~[^~]+~~|\*[^*]+\*)/g;
+  const pattern = /(\uE000(?:added|removed)\uE001[\s\S]*?\uE002|\[[^\]]+\]\([^)]+\)|`[^`]+`|\*\*[^*]+\*\*|__[^_]+__|~~[^~]+~~|\*[^*]+\*)/g;
   let html = '';
   let offset = 0;
   for (const match of source.matchAll(pattern)) {
     html += escapeHtml(source.slice(offset, match.index));
     const token = match[0];
-    if (token.startsWith('[')) {
+    if (token.startsWith('\uE000')) {
+      const kind = token.includes('added') ? 'added' : 'removed';
+      const value = token.slice(token.indexOf('\uE001') + 1, -1);
+      html += `<span class="diff-text ${kind}">${inline(value)}</span>`;
+    } else if (token.startsWith('[')) {
       const link = token.match(/^\[([^\]]+)\]\((\S+?)(?:\s+"[^"]*")?\)$/);
       if (link) html += `<a href="#" data-review-href="${escapeHtml(link[2])}">${inline(link[1])}</a>`;
       else html += escapeHtml(token);
@@ -20,6 +24,52 @@ function inline(source) {
     offset = match.index + token.length;
   }
   return html + escapeHtml(source.slice(offset));
+}
+
+function wordTokens(value) {
+  return [...value.matchAll(/[\p{L}\p{N}_]+/gu)].map((match) => ({ text: match[0], start: match.index, end: match.index + match[0].length }));
+}
+
+function changedWords(source, other) {
+  const left = wordTokens(source);
+  const right = wordTokens(other);
+  const table = Array.from({ length: left.length + 1 }, () => new Uint32Array(right.length + 1));
+  for (let i = left.length - 1; i >= 0; i--) for (let j = right.length - 1; j >= 0; j--) {
+    table[i][j] = left[i].text === right[j].text ? table[i + 1][j + 1] + 1 : Math.max(table[i + 1][j], table[i][j + 1]);
+  }
+  const unchanged = new Set();
+  let i = 0, j = 0;
+  while (i < left.length && j < right.length) {
+    if (left[i].text === right[j].text) { unchanged.add(i++); j++; }
+    else if (table[i + 1][j] >= table[i][j + 1]) i++;
+    else j++;
+  }
+  return left.map((token, index) => unchanged.has(index) ? null : token);
+}
+
+export function renderMarkdownDiffLine(source, other, kind) {
+  const changes = changedWords(source, other);
+  let output = source;
+  const ranges = [];
+  for (let index = 0; index < changes.length; index++) {
+    const token = changes[index];
+    if (!token) continue;
+    let { start, end } = token;
+    while (index + 1 < changes.length && changes[index + 1]) {
+      const next = changes[index + 1];
+      const between = source.slice(end, next.start);
+      if (!/^\s+$/.test(between)) break;
+      end = next.end;
+      index++;
+    }
+    if (ranges.length && /^\s+$/.test(source.slice(ranges.at(-1).end, start))) ranges.at(-1).end = end;
+    else ranges.push({ start, end });
+  }
+  for (let index = ranges.length - 1; index >= 0; index--) {
+    const { start, end } = ranges[index];
+    output = `${output.slice(0, start)}\uE000${kind}\uE001${output.slice(start, end)}\uE002${output.slice(end)}`;
+  }
+  return renderMarkdown(output || ' ');
 }
 
 export function slug(source) {

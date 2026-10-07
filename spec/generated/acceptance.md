@@ -179,7 +179,7 @@ Open artifacts and generated overviews in the Svelte WebUI. Confirm relationship
 
 ### Description
 
-Compare two revisions of a document containing Markdown with unchanged and differing lines. Confirm unchanged lines keep normal styling and changed lines receive a red marker and background in the base view and a green marker and background in the target view.
+Compare two revisions of a document containing Markdown with unchanged lines and changed words. Confirm unchanged lines keep normal styling, changed lines receive the existing red or green marker and light background, and removed or added words receive darker red or green inline backgrounds on their respective sides.
 
 ### Source
 

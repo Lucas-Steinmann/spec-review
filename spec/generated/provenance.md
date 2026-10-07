@@ -116,6 +116,10 @@ The accepted implementation uses Svelte for the browser frontend and reuses the 
 > Highlight the categories which have changes in the diff view as in the TUI.
 > Highlight the differing lines in the WebView markdown diff viewer. Maybe as a green/red bar to the left of the lines and as background of the text.
 
+## Inline text emphasis in Markdown diffs, October 7, 2026
+
+> In the markdown diff viewer, please highlight the actual added/changed/remove text with a darker green/red as typically done by diff viewers. Keep the light highlight for the full line.
+
 The user reported that the local WebUI comparison still fails when Target is Working tree and Base is a commit. Preserve this concrete reproduction as a regression case at the HTTP API boundary, including both working-tree/base directions, and add project guidance to require regression coverage at the boundary where future behavior defects occur.
 
 

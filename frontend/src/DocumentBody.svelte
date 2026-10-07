@@ -1,10 +1,11 @@
 <script>
   import { createEventDispatcher, onMount } from 'svelte';
   import DiagramBlock from './DiagramBlock.svelte';
-  import { renderMarkdown } from './markdown.js';
+  import { renderMarkdown, renderMarkdownDiffLine } from './markdown.js';
 
   export let sections = [];
   export let diffAgainst = null;
+  export let diffKind = 'added';
   const dispatch = createEventDispatcher();
   let body;
 
@@ -51,7 +52,9 @@
           <div class="markdown markdown-diff">
             {#each block.text.split('\n') as line, lineIndex}
               <div class:changed-line={changes[lineIndex] === 'changed'} class="markdown-diff-line">
-                {@html renderMarkdown(line || ' ')}
+                {@html changes[lineIndex] === 'changed'
+                  ? renderMarkdownDiffLine(line, diffAgainst?.[sectionIndex]?.blocks?.[blockIndex]?.text?.split('\n')?.[lineIndex] || '', diffKind)
+                  : renderMarkdown(line || ' ')}
               </div>
             {/each}
           </div>

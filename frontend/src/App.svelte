@@ -463,7 +463,7 @@
       <div class="diff-columns">
         {#each [['Base', compareDocuments.base, compareDocuments.target, compareDocuments.baseContext], ['Target', compareDocuments.target, compareDocuments.base, compareDocuments.targetContext]] as [label, side, otherSide, sideContext]}
           <section class="diff-side"><h2>{label}{#if side}<small>{side.revision.slice(0, 10)}</small>{/if}</h2>
-            {#if side}<DocumentBody sections={side.sections} diffAgainst={otherSide?.sections || []} on:follow={(event) => followLink(sideContext, side.document.id, event.detail.href)} />{:else}<p class="absent">Document absent in this revision.</p>{/if}
+            {#if side}<DocumentBody sections={side.sections} diffAgainst={otherSide?.sections || []} diffKind={label === 'Base' ? 'removed' : 'added'} on:follow={(event) => followLink(sideContext, side.document.id, event.detail.href)} />{:else}<p class="absent">Document absent in this revision.</p>{/if}
           </section>
         {/each}
       </div>

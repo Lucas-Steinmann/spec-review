@@ -955,7 +955,7 @@ specified
 
 ### Statement
 
-In the WebUI comparison view, visually distinguish Markdown lines that differ between the base and target documents, using side-specific colors and a visible marker beside each changed line.
+In the WebUI comparison view, visually distinguish Markdown lines that differ between the base and target documents, using side-specific colors and a visible marker beside each changed line. Within those lines, highlight added text in darker green and removed text in darker red while retaining the light line background.
 
 ### Derived From
 
