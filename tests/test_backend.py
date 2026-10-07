@@ -104,6 +104,81 @@ def test_web_local_compare_accepts_working_tree_as_target_and_base(
         )
 
 
+def test_github_overview_exposes_open_pulls_and_available_actions_state(
+    repo, monkeypatch
+):
+    from spec_review import web
+
+    class FakeGitHub:
+        configured = True
+
+        def __init__(self, auth):
+            pass
+
+        def open_pull_requests(self, installation, owner, name):
+            return [
+                {"number": 7, "title": "Ready", "head": {"sha": "a" * 40, "ref": "feature"}, "base": {"sha": "b" * 40, "ref": "main"}},
+                {"number": 8, "title": "Checks hidden", "head": {"sha": "c" * 40, "ref": "other"}, "base": {"sha": "b" * 40, "ref": "main"}},
+            ]
+
+        def check_runs(self, installation, owner, name, ref):
+            if ref.startswith("c"):
+                raise RepositoryError("Checks are not accessible")
+            return {"check_runs": [{"status": "completed", "conclusion": "success"}]}
+
+    captured = {}
+
+    class TestHTTPServer:
+        def __init__(self, address, handler):
+            captured["handler"] = handler
+
+        def serve_forever(self):
+            pass
+
+        def server_close(self):
+            pass
+
+    class CaptureWriter:
+        def __init__(self):
+            self.buffer = io.BytesIO()
+
+        def write(self, data):
+            return self.buffer.write(data)
+
+        def flush(self):
+            pass
+
+        def close(self):
+            pass
+
+    class FakeConnection:
+        def __init__(self, request):
+            self.request = io.BytesIO(request)
+            self.response = CaptureWriter()
+
+        def makefile(self, mode, buffering=None):
+            return self.request if "r" in mode else self.response
+
+        def sendall(self, data):
+            self.response.write(data)
+
+        def close(self):
+            pass
+
+    monkeypatch.setattr(web, "GitHubApp", FakeGitHub)
+    monkeypatch.setattr(web, "ThreadingHTTPServer", TestHTTPServer)
+    web.serve(repo, port=0)
+    query = urlencode({"installation": "1", "owner": "sample", "repo": "project"})
+    conn = FakeConnection(
+        f"GET /api/github/overview?{query} HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n".encode()
+    )
+    captured["handler"](conn, ("127.0.0.1", 12345), None)
+    payload = json.loads(conn.response.buffer.getvalue().split(b"\r\n\r\n", 1)[1])
+    assert [pull["number"] for pull in payload] == [7, 8]
+    assert [pull["checks"] for pull in payload] == ["success", "unavailable"]
+    assert payload[0]["head_ref"] == "feature"
+
+
 def test_historical_snapshots_and_semantic_diff(history):
     repo, empty, base, target = history
     comparison = compare(repo.load(base), repo.load(target))

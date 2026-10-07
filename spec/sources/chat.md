@@ -114,3 +114,10 @@ The accepted implementation uses Svelte for the browser frontend and reuses the 
 > Highlight the differing lines in the WebView markdown diff viewer. Maybe as a green/red bar to the left of the lines and as background of the text.
 
 The user reported that the local WebUI comparison still fails when Target is Working tree and Base is a commit. Preserve this concrete reproduction as a regression case at the HTTP API boundary, including both working-tree/base directions, and add project guidance to require regression coverage at the boundary where future behavior defects occur.
+
+
+## Multi-repository overview and pull request navigation, October 7, 2026
+
+> I want to change the layout of the app. The goal is to be able to easily navigate between multiple projects and PRs/branches, such that one reviewer can review multple projects/PRs without having to run multiple web apps. The current main view should be now a sub-page detailed/diff-viewer. There should be a new overview page which allows the user to select a repository to open in the detailed view. GitHub repositories must be added via an Add button in the top-right of the overview page. When added they are shown in a repository list in a left sidebar. Furthermore show open PRs in the overview page. Including their github actions state, if available.
+
+The browser application opens on an overview. A reviewer can add accessible GitHub repositories there, navigate the saved repositories from a left sidebar, and see their open pull requests with GitHub Actions state when the API provides it. Selecting a repository or pull request opens the existing revision and diff review workspace.

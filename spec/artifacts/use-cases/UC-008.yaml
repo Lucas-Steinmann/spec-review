@@ -1,23 +1,24 @@
 id: UC-008
 type: use_case
-title: Review a local or GitHub specification in a browser
+title: Navigate projects and review GitHub specifications in a browser
 actors:
 - ACTOR-001
 goal_refs:
 - GOAL-001
-description: Browse a specification in the WebUI from a local repository folder or a GitHub repository accessed through a configured GitHub App or authenticated GitHub CLI account, and inspect a version or comparison.
+description: Navigate multiple GitHub specification repositories and inspect a revision or comparison in the browser review workspace.
 preconditions:
 - The local repository folder contains a specification, or GitHub access is configured through an App installation or an authenticated GitHub CLI account with access to the desired repository.
 main_flow: |-
-  1. Start the WebUI for a local repository folder or choose GitHub as the source and select App or GitHub CLI authentication.
-  2. For GitHub App access, select an installation; for CLI access, use the account authenticated by `gh auth login`. Then select a repository.
-  3. Review the default branch or select another branch, pull request, or commit.
-  4. Choose documents by category and inspect the selected version, or choose base and target revisions to compare.
-postconditions: The browser displays documents from the selected revision and comparison statuses and field content for the selected diff.
+  1. Open the browser application overview.
+  2. Select the local folder, or use Add at the top-right to add an accessible GitHub repository.
+  3. For GitHub, select a saved repository from the left sidebar and review its open pull requests and available GitHub Actions state.
+  4. Open the local folder or selected GitHub repository in its detailed review view.
+  5. Review the default branch or select a pull request, branch, or commit and inspect a revision or comparison.
+postconditions: The browser displays the selected repository's specification documents and revision comparison when requested. The overview remains available for navigation among saved repositories.
 addresses:
 - REQ-034
 - REQ-035
 - REQ-036
 source:
   file: spec/sources/chat.md
-  section: WebUI and GitHub support
+  section: Multi-repository overview and pull request navigation, October 7, 2026

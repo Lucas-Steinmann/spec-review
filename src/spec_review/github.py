@@ -178,6 +178,18 @@ class GitHubApp:
             f"/repos/{urllib.parse.quote(owner)}/{urllib.parse.quote(repo)}/pulls?state=all&per_page=100",
         )
 
+    def open_pull_requests(self, installation_id, owner, repo):
+        return self.get(
+            installation_id,
+            f"/repos/{urllib.parse.quote(owner)}/{urllib.parse.quote(repo)}/pulls?state=open&per_page=100",
+        )
+
+    def check_runs(self, installation_id, owner, repo, ref):
+        return self.get(
+            installation_id,
+            f"/repos/{urllib.parse.quote(owner)}/{urllib.parse.quote(repo)}/commits/{urllib.parse.quote(ref, safe='')}/check-runs?per_page=100",
+        )
+
     def commits(self, installation_id, owner, repo, ref=""):
         query = urllib.parse.urlencode(
             {"per_page": 100, **({"sha": ref} if ref else {})}

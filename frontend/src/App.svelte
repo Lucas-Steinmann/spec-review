@@ -32,6 +32,14 @@
   let linkAnchor = '';
   let pendingLinkContext = null;
   let pendingLinkId = '';
+  let page = 'overview';
+  let savedRepos = JSON.parse(localStorage.getItem('spec-review-repositories') || '[]');
+  let overviewRepo = '';
+  let overviewPulls = [];
+  let repoDialog;
+  let addInstallation = '';
+  let availableRepos = [];
+  let addRepo = '';
 
   async function api(path, options = {}) {
     const response = await fetch(path, options);
@@ -71,9 +79,69 @@
   async function initialize() {
     try {
       status = await api('/api/status');
-      await loadLocalRevisions();
-      await loadSnapshot();
+      installations = await api('/api/github/installations').catch(() => []);
+      addInstallation = String(installations[0]?.id || '');
+      await refreshOverview();
     } catch (problem) { showError(problem); }
+  }
+
+  function repoQuery(item) {
+    const [owner, name] = item.full_name.split('/');
+    return new URLSearchParams({ installation: item.installation, owner, repo: name }).toString();
+  }
+
+  async function refreshOverview() {
+    localStorage.setItem('spec-review-repositories', JSON.stringify(savedRepos));
+    if (!savedRepos.some((item) => item.full_name === overviewRepo)) overviewRepo = savedRepos[0]?.full_name || '';
+    if (!overviewRepo) { overviewPulls = []; return; }
+    const item = savedRepos.find((row) => row.full_name === overviewRepo);
+    try { overviewPulls = await api(`/api/github/overview?${repoQuery(item)}`); }
+    catch (problem) { overviewPulls = []; showError(problem); }
+  }
+
+  async function openAddRepo() {
+    try {
+      installations = await api('/api/github/installations');
+      addInstallation = String(installations[0]?.id || '');
+      if (addInstallation) await loadAvailableRepos();
+      repoDialog?.showModal();
+    } catch (problem) { showError(problem); }
+  }
+
+  async function loadAvailableRepos() {
+    availableRepos = await api(`/api/github/repos?installation=${encodeURIComponent(addInstallation)}`);
+    addRepo = availableRepos.find((row) => !savedRepos.some((saved) => saved.full_name === row.full_name))?.full_name || '';
+  }
+
+  async function addRepository() {
+    const item = availableRepos.find((row) => row.full_name === addRepo);
+    if (!item) return;
+    savedRepos = [...savedRepos.filter((row) => row.full_name !== item.full_name), { ...item, installation: addInstallation }];
+    overviewRepo = item.full_name;
+    repoDialog?.close();
+    await refreshOverview();
+  }
+
+  async function openRepository(item) {
+    page = 'detail';
+    source = 'github'; installation = item.installation; repo = item.full_name;
+    repoDefaults = { ...repoDefaults, [repo]: item.default_branch };
+    repos = [...repos.filter((row) => row.full_name !== item.full_name), item];
+    await loadGithubRevisions();
+    await loadSnapshot();
+  }
+
+  async function openLocalRepository() {
+    page = 'detail'; source = 'local';
+    await loadLocalRevisions();
+    await loadSnapshot();
+  }
+
+  async function openPull(pull) {
+    const item = savedRepos.find((row) => row.full_name === overviewRepo);
+    await openRepository(item);
+    base = pull.base; revision = pull.head;
+    await compareRevisions();
   }
 
   async function loadLocalRevisions() {
@@ -291,7 +359,9 @@
 
 <header class="topbar">
   <a class="brand" href="/">spec-review</a>
-  <div class="local-path">{status?.repo || ''} <span>{status?.spec_dir || ''}</span></div>
+  {#if page === 'detail'}
+  <button on:click={() => { page = 'overview'; refreshOverview(); }}>← Overview</button>
+  <div class="local-path">{repo || status?.repo || ''} <span>{status?.spec_dir || ''}</span></div>
   <label class="sr-only" for="source">Review source</label>
   <select id="source" bind:value={source} on:change={changeSource}>
     <option value="local">Local folder</option><option value="github">GitHub</option>
@@ -304,8 +374,43 @@
       {#each repos as item}<option value={item.full_name}>{item.full_name} · {item.default_branch}</option>{/each}
     </select>
   {/if}
+  {:else}
+  <span class="overview-title">Projects and pull requests</span><span class="spacer"></span>
+  <button class="primary" on:click={openAddRepo}>Add</button>
+  {/if}
 </header>
+{#if error}<div class="error-banner" role="alert">{error}<button aria-label="Dismiss" on:click={() => error = ''}>×</button></div>{/if}
 
+{#if page === 'overview'}
+<main class="overview-layout">
+  <aside class="repo-sidebar"><h2>Repositories</h2>
+    <button class:active={overviewRepo === '__local__'} on:click={() => { overviewRepo = '__local__'; overviewPulls = []; }}>Local folder · {status?.repo || ''}</button>
+    {#if !savedRepos.length}<p class="empty">Add a GitHub repository to get started.</p>{/if}
+    {#each savedRepos as item (item.full_name)}
+      <button class:active={overviewRepo === item.full_name} on:click={() => { overviewRepo = item.full_name; refreshOverview(); }}>{item.full_name}</button>
+    {/each}
+  </aside>
+  <section class="overview-content">
+    {#if overviewRepo === '__local__'}
+      <div class="overview-heading"><div><p>Local repository</p><h1>{status?.repo || 'Local folder'}</h1></div><button class="primary" on:click={openLocalRepository}>Open review</button></div>
+      <p>Review the local specification and compare its revisions.</p>
+    {:else if overviewRepo}
+      <div class="overview-heading"><div><p>Repository</p><h1>{overviewRepo}</h1></div><button class="primary" on:click={() => openRepository(savedRepos.find((item) => item.full_name === overviewRepo))}>Open review</button></div>
+      <h2>Open pull requests</h2>
+      {#if overviewPulls.length}
+        <div class="pull-list">{#each overviewPulls as pull (pull.number)}
+          <button class="pull-card" on:click={() => openPull(pull)}><span class="pull-number">#{pull.number}</span><span class="pull-title"><strong>{pull.title}</strong><small>{pull.head_ref} → {pull.base_ref}</small></span><span class="checks {pull.checks}">{pull.checks === 'unavailable' ? 'Actions unavailable' : pull.checks.replace('_', ' ')}</span></button>
+        {/each}</div>
+      {:else}<p class="empty">No open pull requests.</p>{/if}
+    {:else}<div class="empty-state">Add a GitHub repository to see its open pull requests.</div>{/if}
+  </section>
+</main>
+<dialog bind:this={repoDialog} class="link-dialog add-dialog"><h2>Add GitHub repository</h2>
+  <label>Account<select bind:value={addInstallation} on:change={loadAvailableRepos}>{#each installations as item}<option value={item.id}>{item.account} ({item.type})</option>{/each}</select></label>
+  <label>Repository<select bind:value={addRepo}>{#each availableRepos as item}<option value={item.full_name}>{item.full_name}</option>{/each}</select></label>
+  <div class="dialog-actions"><button on:click={() => repoDialog?.close()}>Cancel</button><button class="primary" disabled={!addRepo} on:click={addRepository}>Add repository</button></div>
+</dialog>
+{:else}
 <nav class="revision-bar">
   <label>Target
     <select aria-label="Target revision" bind:value={revision} on:change={revisionChanged}>
@@ -323,8 +428,6 @@
   {#if history.length}<button on:click={goBack}>← Back</button>{/if}
   {#if comparison}<span class="revision-summary">{comparison.base.revision.slice(0, 10)} → {comparison.target.revision.slice(0, 10)}</span>{/if}
 </nav>
-
-{#if error}<div class="error-banner" role="alert">{error}<button aria-label="Dismiss" on:click={() => error = ''}>×</button></div>{/if}
 
 <main class="workspace">
   <aside class="sidebar">
@@ -378,3 +481,4 @@
   {#each linkChoices as option}<button on:click={() => chooseLink(option.id)}><strong>{option.id}</strong><span>{option.title}</span></button>{/each}
   <button class="cancel" on:click={() => linkDialog?.close()}>Cancel</button>
 </dialog>
+{/if}

@@ -891,7 +891,7 @@ Provide a browser interface for reading specifications in a selected local repos
 
 `spec/sources/chat.md` — [WebUI and GitHub support](provenance.md#webui-and-github-support)
 
-## [REQ-035](../artifacts/requirements/REQ-035.yaml) — Review GitHub repositories and revisions
+## [REQ-035](../artifacts/requirements/REQ-035.yaml) — Navigate multiple GitHub repositories and pull requests
 
 ### Category
 
@@ -903,7 +903,7 @@ specified
 
 ### Statement
 
-Allow a reviewer to select a repository accessible through either a configured GitHub App or the authenticated GitHub CLI account, review a specific revision defaulting to the repository's default branch, and compare pull requests, branches, or commits.
+Provide an overview as the browser application's main page. Let reviewers add repositories accessible through a configured GitHub App or authenticated GitHub CLI account with an Add button at the top-right, retain them in a left sidebar repository list, and select a repository to open its detailed review view. Show open pull requests for the selected repository and include their GitHub Actions state when available. The review view defaults to the repository's default branch and supports comparisons of pull requests, branches, or commits. Selecting a pull request opens its comparison in the detailed review view.
 
 ### Derived From
 
@@ -915,7 +915,7 @@ Allow a reviewer to select a repository accessible through either a configured G
 
 ### Source
 
-`spec/sources/chat.md` — [WebUI and GitHub support](provenance.md#webui-and-github-support)
+`spec/sources/chat.md` — [Multi-repository overview and pull request navigation, October 7, 2026](provenance.md#multi-repository-overview-and-pull-request-navigation-october-7-2026)
 
 ## [REQ-036](../artifacts/requirements/REQ-036.yaml) — Preserve TUI document rendering in the WebUI
 

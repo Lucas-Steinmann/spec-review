@@ -147,7 +147,7 @@ Maintain a separately versioned Python package and a real submodule gitlink. Sto
 
 ### Description
 
-The Svelte WebUI is built to static assets and served by the read-only Python HTTP server. It consumes the existing snapshot and comparison services. The local provider reads the selected folder and Git history. GitHub access supports server-side GitHub App credentials (enumerating installations and minting short-lived installation tokens) or an existing authenticated GitHub CLI account (`gh auth login`). Both providers enumerate accessible repositories and read tree/blob snapshots through GitHub's API. The browser selects repository revisions and renders snapshots and comparison results.
+The Svelte WebUI is built to static assets and served by the read-only Python HTTP server. It consumes the existing snapshot and comparison services. The local provider reads the selected folder and Git history. GitHub access supports server-side GitHub App credentials (enumerating installations and minting short-lived installation tokens) or an existing authenticated GitHub CLI account (`gh auth login`). Both providers enumerate accessible repositories and read tree/blob snapshots through GitHub's API. The browser opens on a repository overview with a saved repository sidebar and an Add action. The overview presents open pull requests and available Actions checks. Selecting a repository or pull request opens the existing revision and comparison workspace. Saved repository selections are stored in browser-local settings. The browser selects repository revisions and renders snapshots and comparison results.
 
 
 ### Addresses

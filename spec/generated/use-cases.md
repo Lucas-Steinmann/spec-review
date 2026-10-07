@@ -239,7 +239,7 @@ The tool can review its own requirements without switching to the parent project
 
 `spec/sources/chat.md` — [Dogfooding](provenance.md#dogfooding)
 
-## [UC-008](../artifacts/use-cases/UC-008.yaml) — Review a local or GitHub specification in a browser
+## [UC-008](../artifacts/use-cases/UC-008.yaml) — Navigate projects and review GitHub specifications in a browser
 
 ### Actors
 
@@ -251,7 +251,7 @@ The tool can review its own requirements without switching to the parent project
 
 ### Description
 
-Browse a specification in the WebUI from a local repository folder or a GitHub repository accessed through a configured GitHub App or authenticated GitHub CLI account, and inspect a version or comparison.
+Navigate multiple GitHub specification repositories and inspect a revision or comparison in the browser review workspace.
 
 ### Preconditions
 
@@ -259,14 +259,15 @@ Browse a specification in the WebUI from a local repository folder or a GitHub r
 
 ### Main Flow
 
-1. Start the WebUI for a local repository folder or choose GitHub as the source and select App or GitHub CLI authentication.
-2. For GitHub App access, select an installation; for CLI access, use the account authenticated by `gh auth login`. Then select a repository.
-3. Review the default branch or select another branch, pull request, or commit.
-4. Choose documents by category and inspect the selected version, or choose base and target revisions to compare.
+1. Open the browser application overview.
+2. Select the local folder, or use Add at the top-right to add an accessible GitHub repository.
+3. For GitHub, select a saved repository from the left sidebar and review its open pull requests and available GitHub Actions state.
+4. Open the local folder or selected GitHub repository in its detailed review view.
+5. Review the default branch or select a pull request, branch, or commit and inspect a revision or comparison.
 
 ### Postconditions
 
-The browser displays documents from the selected revision and comparison statuses and field content for the selected diff.
+The browser displays the selected repository's specification documents and revision comparison when requested. The overview remains available for navigation among saved repositories.
 
 ### Addresses
 
@@ -274,4 +275,4 @@ The browser displays documents from the selected revision and comparison statuse
 
 ### Source
 
-`spec/sources/chat.md` — [WebUI and GitHub support](provenance.md#webui-and-github-support)
+`spec/sources/chat.md` — [Multi-repository overview and pull request navigation, October 7, 2026](provenance.md#multi-repository-overview-and-pull-request-navigation-october-7-2026)
