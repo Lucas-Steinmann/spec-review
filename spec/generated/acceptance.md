@@ -207,7 +207,7 @@ With GitHub access configured, open the overview and add a repository using the 
 
 ### Description
 
-Open the WebUI comparison view and confirm the Changes only checkbox sits immediately beside its label. At desktop and narrow viewport widths, confirm category buttons wrap within the sidebar and every category can be selected without horizontal scrolling.
+Run the Playwright browser test against the local Python API and Vite development server. At desktop and narrow viewport widths, verify the rendered Changes only checkbox remains adjacent to its label, category buttons stay inside the sidebar without horizontal overflow, and a category can be selected.
 
 ### Source
 

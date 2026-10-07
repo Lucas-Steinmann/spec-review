@@ -139,6 +139,12 @@ The GitHub provider reads revisions from a persistent local bare Git mirror. Fet
 
 The comparison filter keeps its checkbox beside its label. Category buttons wrap within the sidebar so they can be reached without horizontal scrolling, including at narrow viewport widths.
 
+## Frontend development and browser testing, October 7, 2026
+
+> Use a proper dev server which also reloads and if you do frontend test, then do them properly.
+
+Use the Vite development server with hot reload and an API proxy to the Python service. Exercise frontend behavior in a browser with Playwright; checks for CSS source strings do not count as UI regression tests. Keep compiled assets as generated build output rather than committed source files.
+
 
 ## GitHub mirror blob timeout, October 7, 2026
 

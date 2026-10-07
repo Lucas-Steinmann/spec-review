@@ -18,7 +18,13 @@ from .models import Block
 from .repository import Repository, RepositoryError, git
 from .settings import Settings
 
-WEB_ROOT = Path(__file__).with_name("webui")
+PACKAGE_WEB_ROOT = Path(__file__).with_name("webui")
+PROJECT_WEB_ROOT = Path(__file__).resolve().parents[2] / "frontend" / "dist"
+WEB_ROOT = (
+    PROJECT_WEB_ROOT
+    if (PROJECT_WEB_ROOT / "index.html").is_file()
+    else PACKAGE_WEB_ROOT
+)
 
 
 def serve(repository: Repository, host="127.0.0.1", port=8765, github_auth="app"):

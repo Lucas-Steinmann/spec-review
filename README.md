@@ -9,6 +9,8 @@ Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/). From a project conta
 ```sh
 git submodule update --init spec-review
 cd spec-review
+npm ci --prefix frontend
+npm run build --prefix frontend
 uv sync --locked
 uv run spec-review
 ```
@@ -22,6 +24,17 @@ uv run spec-review --web --repo /path/to/project --spec-dir spec
 It listens on `127.0.0.1:8765` by default. The WebUI is read-only and supports local working-tree browsing and Git comparisons. To expose it on another interface, pass `--host` and `--port`.
 
 The browser frontend is implemented in Svelte. Its compiled static assets are served by the Python server; the document API reuses the TUI's field formatting, link resolver, and local diagram renderer. Markdown links and relationship IDs navigate within the selected snapshot, while source metadata and pre/postcondition lists keep their TUI formatting.
+
+### Frontend development
+
+Install frontend dependencies once with `npm ci --prefix frontend`. Run the Python API and Vite in separate terminals from the project root:
+
+```sh
+uv run spec-review --web --repo . --spec-dir spec
+cd frontend && npm run dev
+```
+
+Open `http://127.0.0.1:5173`. Vite proxies `/api` requests to the Python server on port 8765 and reloads Svelte and CSS changes as you edit. To run browser regression tests, install Playwright Chromium with `cd frontend && npx playwright install chromium`, then run `npm run test:e2e`. For production assets, run `npm run build` in `frontend`; Vite writes ignored output to `frontend/dist`, which the Python server serves. Build frontend assets before building a Python wheel.
 
 ### GitHub App access in the WebUI
 

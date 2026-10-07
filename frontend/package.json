@@ -3,8 +3,13 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "scripts": {"build": "vite build"},
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "test:e2e": "playwright test"
+  },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@sveltejs/vite-plugin-svelte": "^7.3.0",
     "svelte": "^5.57.1",
     "vite": "^8.2.2"
