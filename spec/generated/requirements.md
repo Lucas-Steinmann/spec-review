@@ -968,3 +968,29 @@ In the WebUI comparison view, visually distinguish Markdown lines that differ be
 ### Source
 
 `spec/sources/chat.md` — [Working tree comparisons and WebUI diff presentation, October 4, 2026](provenance.md#working-tree-comparisons-and-webui-diff-presentation-october-4-2026)
+
+## [REQ-038](../artifacts/requirements/REQ-038.yaml) — Keep WebUI sidebar filters and categories visible
+
+### Category
+
+presentation
+
+### Status
+
+specified
+
+### Statement
+
+In the WebUI review sidebar, keep the Changes only checkbox adjacent to its label and show category buttons within the available sidebar width without requiring horizontal scrolling.
+
+### Derived From
+
+[UC-008](../artifacts/use-cases/UC-008.yaml)
+
+### Related
+
+[REQ-034](../artifacts/requirements/REQ-034.yaml)
+
+### Source
+
+`spec/sources/chat.md` — [WebUI sidebar usability, October 7, 2026](provenance.md#webui-sidebar-usability-october-7-2026)

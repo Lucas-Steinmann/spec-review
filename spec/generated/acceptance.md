@@ -198,3 +198,17 @@ With GitHub access configured, open the overview and add a repository using the 
 ### Source
 
 `spec/sources/chat.md` — [Multi-repository overview and pull request navigation, October 7, 2026](provenance.md#multi-repository-overview-and-pull-request-navigation-october-7-2026)
+
+## [TEST-015](../artifacts/tests/TEST-015.yaml) — Keep review sidebar controls usable at narrow widths
+
+### Verifies
+
+[REQ-038](../artifacts/requirements/REQ-038.yaml)
+
+### Description
+
+Open the WebUI comparison view and confirm the Changes only checkbox sits immediately beside its label. At desktop and narrow viewport widths, confirm category buttons wrap within the sidebar and every category can be selected without horizontal scrolling.
+
+### Source
+
+`spec/sources/chat.md` — [WebUI sidebar usability, October 7, 2026](provenance.md#webui-sidebar-usability-october-7-2026)

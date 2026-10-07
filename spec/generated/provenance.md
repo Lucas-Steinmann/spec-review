@@ -136,6 +136,13 @@ The browser application opens on an overview. A reviewer can add accessible GitH
 The GitHub provider reads revisions from a persistent local bare Git mirror. Fetch Git objects using Git's pack protocol and reuse cached objects across snapshots, avoiding one GitHub API blob request per specification file.
 
 
+## WebUI sidebar usability, October 7, 2026
+
+> I don't like the UI of the sidebar in the web: [Image #1]. The checkbox and label of the "changes only" is weirdly displayed and the categories always require me to scroll horizontally.
+
+The comparison filter keeps its checkbox beside its label. Category buttons wrap within the sidebar so they can be reached without horizontal scrolling, including at narrow viewport widths.
+
+
 ## GitHub mirror blob timeout, October 7, 2026
 
 The user reported that selecting a GitHub snapshot timed out after 30 seconds in `git cat-file --batch`. The partial clone had omitted blob objects, causing the local snapshot reader to trigger unavailable or slow lazy fetches. Ensure mirrors contain complete objects, refresh older incomplete mirrors, and return a repository diagnostic instead of an uncaught request-thread traceback if object reading times out.

@@ -1,0 +1,9 @@
+id: TEST-015
+type: test
+title: Keep review sidebar controls usable at narrow widths
+verifies:
+- REQ-038
+description: Open the WebUI comparison view and confirm the Changes only checkbox sits immediately beside its label. At desktop and narrow viewport widths, confirm category buttons wrap within the sidebar and every category can be selected without horizontal scrolling.
+source:
+  file: spec/sources/chat.md
+  section: WebUI sidebar usability, October 7, 2026

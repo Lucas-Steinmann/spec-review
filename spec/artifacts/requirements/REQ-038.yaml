@@ -1,0 +1,13 @@
+id: REQ-038
+type: requirement
+title: Keep WebUI sidebar filters and categories visible
+category: presentation
+status: specified
+statement: In the WebUI review sidebar, keep the Changes only checkbox adjacent to its label and show category buttons within the available sidebar width without requiring horizontal scrolling.
+derived_from:
+- UC-008
+related:
+- REQ-034
+source:
+  file: spec/sources/chat.md
+  section: WebUI sidebar usability, October 7, 2026

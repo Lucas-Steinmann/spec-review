@@ -152,7 +152,7 @@ The Svelte WebUI is built to static assets and served by the read-only Python HT
 
 ### Addresses
 
-[REQ-034](../artifacts/requirements/REQ-034.yaml), [REQ-035](../artifacts/requirements/REQ-035.yaml), [REQ-016](../artifacts/requirements/REQ-016.yaml), [REQ-036](../artifacts/requirements/REQ-036.yaml)
+[REQ-034](../artifacts/requirements/REQ-034.yaml), [REQ-035](../artifacts/requirements/REQ-035.yaml), [REQ-016](../artifacts/requirements/REQ-016.yaml), [REQ-036](../artifacts/requirements/REQ-036.yaml), [REQ-038](../artifacts/requirements/REQ-038.yaml)
 
 ### Decisions
 
