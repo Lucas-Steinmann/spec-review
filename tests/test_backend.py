@@ -117,8 +117,18 @@ def test_github_overview_exposes_open_pulls_and_available_actions_state(
 
         def open_pull_requests(self, installation, owner, name):
             return [
-                {"number": 7, "title": "Ready", "head": {"sha": "a" * 40, "ref": "feature"}, "base": {"sha": "b" * 40, "ref": "main"}},
-                {"number": 8, "title": "Checks hidden", "head": {"sha": "c" * 40, "ref": "other"}, "base": {"sha": "b" * 40, "ref": "main"}},
+                {
+                    "number": 7,
+                    "title": "Ready",
+                    "head": {"sha": "a" * 40, "ref": "feature"},
+                    "base": {"sha": "b" * 40, "ref": "main"},
+                },
+                {
+                    "number": 8,
+                    "title": "Checks hidden",
+                    "head": {"sha": "c" * 40, "ref": "other"},
+                    "base": {"sha": "b" * 40, "ref": "main"},
+                },
             ]
 
         def check_runs(self, installation, owner, name, ref):

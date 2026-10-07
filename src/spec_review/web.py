@@ -210,7 +210,9 @@ def serve(repository: Repository, host="127.0.0.1", port=8765, github_auth="app"
                     )
                 if parsed.path == "/api/github/overview":
                     inst, owner, name = (
-                        q["installation"][0], q["owner"][0], q["repo"][0]
+                        q["installation"][0],
+                        q["owner"][0],
+                        q["repo"][0],
                     )
                     pulls = github.open_pull_requests(inst, owner, name)
                     rows = []
@@ -227,23 +229,40 @@ def serve(repository: Repository, host="127.0.0.1", port=8765, github_auth="app"
                                     for check in checks
                                 ]
                                 checks_state = (
-                                    "failure" if any(s in {"failure", "timed_out", "cancelled", "action_required"} for s in statuses)
-                                    else "in_progress" if any(s in {"queued", "in_progress", "pending"} for s in statuses)
-                                    else "success" if all(s == "success" for s in statuses)
+                                    "failure"
+                                    if any(
+                                        s
+                                        in {
+                                            "failure",
+                                            "timed_out",
+                                            "cancelled",
+                                            "action_required",
+                                        }
+                                        for s in statuses
+                                    )
+                                    else "in_progress"
+                                    if any(
+                                        s in {"queued", "in_progress", "pending"}
+                                        for s in statuses
+                                    )
+                                    else "success"
+                                    if all(s == "success" for s in statuses)
                                     else "neutral"
                                 )
                         except RepositoryError:
                             pass
-                        rows.append({
-                            "number": pull["number"],
-                            "title": pull["title"],
-                            "head": pull["head"]["sha"],
-                            "head_ref": pull["head"].get("ref", ""),
-                            "base": pull["base"]["sha"],
-                            "base_ref": pull["base"].get("ref", ""),
-                            "html_url": pull.get("html_url", ""),
-                            "checks": checks_state,
-                        })
+                        rows.append(
+                            {
+                                "number": pull["number"],
+                                "title": pull["title"],
+                                "head": pull["head"]["sha"],
+                                "head_ref": pull["head"].get("ref", ""),
+                                "base": pull["base"]["sha"],
+                                "base_ref": pull["base"].get("ref", ""),
+                                "html_url": pull.get("html_url", ""),
+                                "checks": checks_state,
+                            }
+                        )
                     return self.send_json(rows)
                 if parsed.path == "/api/github/snapshot":
                     snap = load_snapshot(True, q)
