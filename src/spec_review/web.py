@@ -27,7 +27,10 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
 
     def load_snapshot(remote, q):
         if not remote:
-            return repository.load(q.get("ref", [None])[0] or None)
+            revision = q.get("ref", [None])[0] or None
+            if revision == "working tree":
+                revision = None
+            return repository.load(revision)
         key = tuple(q[name][0] for name in ("installation", "owner", "repo", "ref"))
         if key not in snapshot_cache:
             snapshot_cache[key] = github.snapshot(*key, repository.spec_dir)

@@ -1,6 +1,8 @@
+import io
 import json
 import subprocess
 from dataclasses import asdict
+from urllib.parse import urlencode
 
 import pytest
 from conftest import write_artifact
@@ -16,6 +18,90 @@ from spec_review.links import LinkResolver
 from spec_review.models import Document, Snapshot
 from spec_review.repository import Repository, RepositoryError, discover_repository
 from spec_review.settings import Settings
+
+
+def test_web_local_compare_accepts_working_tree_as_target_and_base(
+    history, monkeypatch
+):
+    from spec_review import web
+
+    repo, _, base, _ = history
+    write_artifact(repo, "GOAL-001", statement="Uncommitted working-tree change")
+    captured = {}
+
+    class TestHTTPServer:
+        def __init__(self, address, handler):
+            captured["handler"] = handler
+
+        def serve_forever(self):
+            pass
+
+        def server_close(self):
+            pass
+
+    class CaptureWriter:
+        def __init__(self):
+            self.buffer = io.BytesIO()
+
+        def write(self, data):
+            return self.buffer.write(data)
+
+        def flush(self):
+            pass
+
+        def close(self):
+            pass
+
+    class FakeConnection:
+        def __init__(self, request):
+            self.request = io.BytesIO(request)
+            self.response = CaptureWriter()
+
+        def makefile(self, mode, buffering=None):
+            return self.request if "r" in mode else self.response
+
+        def sendall(self, data):
+            self.response.write(data)
+
+        def close(self):
+            pass
+
+    monkeypatch.setattr(web, "ThreadingHTTPServer", TestHTTPServer)
+    web.serve(repo, port=0)
+    handler = captured["handler"]
+
+    for params, expected_revisions in (
+        ({"base": base, "target": ""}, (base, "working tree")),
+        ({"base": "", "target": base}, ("working tree", base)),
+    ):
+        path = f"/api/local/compare?{urlencode(params)}"
+        connection = FakeConnection(
+            f"GET {path} HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n".encode()
+        )
+        handler(connection, ("127.0.0.1", 12345), None)
+        raw_response = connection.response.buffer.getvalue()
+        body = raw_response.split(b"\r\n\r\n", 1)[1]
+        comparison = json.loads(body)
+        assert (
+            comparison["base"]["revision"],
+            comparison["target"]["revision"],
+        ) == expected_revisions
+        assert comparison["changes"]["GOAL-001"]["status"] == "changed"
+
+        document_path = "/api/local/document?" + urlencode(
+            {"ref": "working tree", "id": "GOAL-001"}
+        )
+        document_connection = FakeConnection(
+            f"GET {document_path} HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n".encode()
+        )
+        handler(document_connection, ("127.0.0.1", 12345), None)
+        document_response = document_connection.response.buffer.getvalue()
+        document_body = document_response.split(b"\r\n\r\n", 1)[1]
+        document = json.loads(document_body)
+        assert document["revision"] == "working tree"
+        assert document["document"]["fields"]["statement"] == (
+            "Uncommitted working-tree change"
+        )
 
 
 def test_historical_snapshots_and_semantic_diff(history):
