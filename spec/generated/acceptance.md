@@ -184,3 +184,17 @@ Compare two revisions of a document containing Markdown with unchanged and diffe
 ### Source
 
 `spec/sources/chat.md` — [Working tree comparisons and WebUI diff presentation, October 4, 2026](provenance.md#working-tree-comparisons-and-webui-diff-presentation-october-4-2026)
+
+## [TEST-014](../artifacts/tests/TEST-014.yaml) — Navigate saved repositories and review open pull requests
+
+### Verifies
+
+[REQ-035](../artifacts/requirements/REQ-035.yaml)
+
+### Description
+
+With GitHub access configured, open the overview and add a repository using the top-right Add action. Confirm it appears in the left repository sidebar and remains after reload. Select it and confirm open pull requests are shown with available GitHub Actions state; absent checks are presented as unavailable without preventing navigation. Open a repository and a pull request and confirm each enters the detailed review view with the expected default branch or PR base and head comparison.
+
+### Source
+
+`spec/sources/chat.md` — [Multi-repository overview and pull request navigation, October 7, 2026](provenance.md#multi-repository-overview-and-pull-request-navigation-october-7-2026)

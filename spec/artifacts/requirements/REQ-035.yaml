@@ -1,9 +1,9 @@
 id: REQ-035
 type: requirement
-title: Review GitHub repositories and revisions
+title: Navigate multiple GitHub repositories and pull requests
 category: integrations
 status: specified
-statement: Allow a reviewer to select a repository accessible through either a configured GitHub App or the authenticated GitHub CLI account, review a specific revision defaulting to the repository's default branch, and compare pull requests, branches, or commits.
+statement: Provide an overview as the browser application's main page. Let reviewers add repositories accessible through a configured GitHub App or authenticated GitHub CLI account with an Add button at the top-right, retain them in a left sidebar repository list, and select a repository to open its detailed review view. Show open pull requests for the selected repository and include their GitHub Actions state when available. The review view defaults to the repository's default branch and supports comparisons of pull requests, branches, or commits. Selecting a pull request opens its comparison in the detailed review view.
 derived_from:
 - UC-008
 related:
@@ -11,4 +11,4 @@ related:
 - REQ-026
 source:
   file: spec/sources/chat.md
-  section: WebUI and GitHub support
+  section: Multi-repository overview and pull request navigation, October 7, 2026

@@ -17,7 +17,7 @@ A specification browser that uses its own artifact format to document its requir
 | Constraints | 3 | [Constraints](constraints.md) |
 | Decisions | 9 | [Decisions](decisions.md) |
 | Design | 7 | [Design](architecture.md) |
-| Tests | 13 | [Tests](acceptance.md) |
+| Tests | 14 | [Tests](acceptance.md) |
 
 ## Traceability
 
