@@ -164,13 +164,22 @@ class Repository:
                 entries.append((path, oid))
         if entries:
             # One Git process for all blobs; filenames never become revision expressions.
-            proc = subprocess.run(
-                ["git", "-C", str(self.root), "cat-file", "--batch"],
-                input=b"\n".join(oid for _, oid in entries) + b"\n",
-                capture_output=True,
-                timeout=30,
-                check=True,
-            )
+            try:
+                proc = subprocess.run(
+                    ["git", "-C", str(self.root), "cat-file", "--batch"],
+                    input=b"\n".join(oid for _, oid in entries) + b"\n",
+                    capture_output=True,
+                    timeout=30,
+                    check=True,
+                )
+            except subprocess.TimeoutExpired as exc:
+                raise RepositoryError(
+                    "Timed out reading Git objects; the repository may be missing blobs"
+                ) from exc
+            except subprocess.CalledProcessError as exc:
+                raise RepositoryError(
+                    exc.stderr.decode(errors="replace").strip()
+                ) from exc
             data = proc.stdout
             pos = 0
             for path, _ in entries:

@@ -1,6 +1,7 @@
 """Read-only GitHub App access for repository review."""
 
 import base64
+import hashlib
 import json
 import os
 import subprocess
@@ -10,9 +11,10 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import datetime
+from pathlib import Path
 
 from .models import Commit
-from .repository import RepositoryError, snapshot_from_files
+from .repository import Repository, RepositoryError
 
 API = "https://api.github.com"
 
@@ -210,33 +212,77 @@ class GitHubApp:
         ]
 
     def snapshot(self, installation_id, owner, repo, revision, spec_dir="spec"):
-        owner, repo = urllib.parse.quote(owner), urllib.parse.quote(repo)
-        path = f"/repos/{owner}/{repo}/git/trees/{urllib.parse.quote(revision, safe='')}?recursive=1"
-        tree = self.get(installation_id, path)
-        if tree.get("truncated"):
-            raise RepositoryError("GitHub tree is too large to review in one request")
-        files = []
-        for entry in tree.get("tree", []):
-            name = entry["path"]
-            if entry["type"] != "blob" or not (
-                name.startswith(f"{spec_dir}/artifacts/")
-                or name.startswith(f"{spec_dir}/generated/")
-            ):
-                continue
-            suffix = name.rsplit(".", 1)[-1].lower() if "." in name else ""
-            if not (
-                name.startswith(f"{spec_dir}/artifacts/")
-                and suffix in {"yaml", "yml"}
-                or name.startswith(f"{spec_dir}/generated/")
-                and suffix == "md"
-            ):
-                continue
-            blob = self.get(
-                installation_id, f"/repos/{owner}/{repo}/git/blobs/{entry['sha']}"
-            )
+        # Git's pack protocol transfers all needed objects in a small number of
+        # requests. The former tree + one-blob-request-per-file approach made
+        # opening large specifications take many seconds.
+        cache_root = Path(os.getenv("XDG_CACHE_HOME", Path.home() / ".cache"))
+        identity = hashlib.sha256(f"{owner}/{repo}".encode()).hexdigest()[:24]
+        mirror = cache_root / "spec-review" / "github" / f"{identity}.git"
+        mirror.parent.mkdir(parents=True, exist_ok=True)
+        remote = f"https://github.com/{owner}/{repo}.git"
+        complete_marker = mirror / "spec-review-complete-objects-v1"
+        if not (mirror / "HEAD").exists():
+            mirror.mkdir(parents=True, exist_ok=True)
             try:
-                value = base64.b64decode(blob["content"]).decode("utf-8")
-            except (ValueError, UnicodeError):
-                value = "\0READ ERROR: GitHub blob is not UTF-8 text"
-            files.append((name, value))
-        return snapshot_from_files(revision, files, spec_dir)
+                subprocess.run(
+                    ["git", "init", "--bare", str(mirror)],
+                    check=True,
+                    capture_output=True,
+                    timeout=30,
+                )
+                subprocess.run(
+                    ["git", "-C", str(mirror), "remote", "add", "origin", remote],
+                    check=True,
+                    capture_output=True,
+                    timeout=30,
+                )
+            except (OSError, subprocess.SubprocessError) as exc:
+                raise RepositoryError(
+                    f"Unable to initialize GitHub cache: {exc}"
+                ) from exc
+        # Older mirrors used a blobless filter. Force a complete fetch once
+        # before trusting any commits already present in those mirrors.
+        complete_cache = complete_marker.exists()
+        cached = False
+        if (
+            len(revision) in (40, 64)
+            and all(c in "0123456789abcdefABCDEF" for c in revision)
+            and complete_cache
+        ):
+            try:
+                Repository(mirror, spec_dir).resolve_commit(revision)
+                cached = True
+            except RepositoryError:
+                pass
+        if not cached:
+            token = self.token(installation_id)
+            auth = base64.b64encode(f"x-access-token:{token}".encode()).decode()
+            try:
+                subprocess.run(
+                    [
+                        "git",
+                        "-C",
+                        str(mirror),
+                        "-c",
+                        f"http.{remote}.extraheader=AUTHORIZATION: basic {auth}",
+                        "fetch",
+                        "--refetch",
+                        "--no-tags",
+                        "origin",
+                        revision,
+                    ],
+                    check=True,
+                    capture_output=True,
+                    timeout=60,
+                )
+            except subprocess.CalledProcessError as exc:
+                detail = exc.stderr.decode(errors="replace").strip()
+                raise RepositoryError(
+                    f"Unable to fetch GitHub revision: {detail}"
+                ) from exc
+            except (OSError, subprocess.SubprocessError) as exc:
+                raise RepositoryError(
+                    f"Unable to fetch GitHub revision: {exc}"
+                ) from exc
+            complete_marker.touch()
+        return Repository(mirror, spec_dir).load(revision)

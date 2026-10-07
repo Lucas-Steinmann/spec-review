@@ -125,3 +125,14 @@ The user reported that the local WebUI comparison still fails when Target is Wor
 > I want to change the layout of the app. The goal is to be able to easily navigate between multiple projects and PRs/branches, such that one reviewer can review multple projects/PRs without having to run multiple web apps. The current main view should be now a sub-page detailed/diff-viewer. There should be a new overview page which allows the user to select a repository to open in the detailed view. GitHub repositories must be added via an Add button in the top-right of the overview page. When added they are shown in a repository list in a left sidebar. Furthermore show open PRs in the overview page. Including their github actions state, if available.
 
 The browser application opens on an overview. A reviewer can add accessible GitHub repositories there, navigate the saved repositories from a left sidebar, and see their open pull requests with GitHub Actions state when the API provides it. Selecting a repository or pull request opens the existing revision and diff review workspace.
+
+## Faster GitHub comparisons, October 7, 2026
+
+> Please improve the performance of the github backend. When selecting a file, we have to wait upto 20 seconds to see the diff. Use a local cache/checked-out repo to do faster comparisons. I'm assuming you are currently doing many roundtrips?
+
+The GitHub provider reads revisions from a persistent local bare Git mirror. Fetch Git objects using Git's pack protocol and reuse cached objects across snapshots, avoiding one GitHub API blob request per specification file.
+
+
+## GitHub mirror blob timeout, October 7, 2026
+
+The user reported that selecting a GitHub snapshot timed out after 30 seconds in `git cat-file --batch`. The partial clone had omitted blob objects, causing the local snapshot reader to trigger unavailable or slow lazy fetches. Ensure mirrors contain complete objects, refresh older incomplete mirrors, and return a repository diagnostic instead of an uncaught request-thread traceback if object reading times out.

@@ -223,6 +223,38 @@ def test_historical_snapshots_and_semantic_diff(history):
     json.dumps(comparison.to_dict())
 
 
+def test_github_snapshot_uses_cached_local_git_mirror(history, monkeypatch, tmp_path):
+    from spec_review import github as github_module
+
+    repo, _, base, target = history
+    monkeypatch.setenv("XDG_CACHE_HOME", str(tmp_path / "cache"))
+    real_run = subprocess.run
+    fetches = []
+
+    def run(args, **kwargs):
+        args = list(args)
+        if "remote" in args and "add" in args:
+            args[-1] = str(repo.root)
+        if "fetch" in args:
+            fetches.append(args)
+        return real_run(args, **kwargs)
+
+    monkeypatch.setattr(github_module.subprocess, "run", run)
+    app = github_module.GitHubApp("gh")
+    monkeypatch.setattr(app, "token", lambda _installation: "test-token")
+    first = app.snapshot("gh", "sample", "project", base)
+    second = app.snapshot("gh", "sample", "project", target)
+    fetched = len(fetches)
+    cached = app.snapshot("gh", "sample", "project", target)
+    assert first.revision == repo.resolve_commit(base)
+    assert second.documents["GOAL-001"].fields["statement"] == "New statement"
+    assert cached.revision == second.revision
+    assert fetched in (1, 2)
+    assert len(fetches) == fetched
+    assert all("--refetch" in call for call in fetches)
+    assert not any("/git/blobs/" in str(call) for call in fetches)
+
+
 def test_formatting_moves_and_scalar_types(repo):
     path = write_artifact(repo, tags=["one", "two"], flag=True, date="2026-10-01")
     original = repo.load()

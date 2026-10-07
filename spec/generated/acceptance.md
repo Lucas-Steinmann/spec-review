@@ -151,7 +151,7 @@ Introduce malformed YAML and duplicate artifact IDs in a temporary specification
 
 ### Description
 
-Start the WebUI against a repository with a working-tree specification and multiple commits. Confirm the initial document list loads, selecting a commit refreshes the list to that revision, and local comparisons display changed, added, and deleted documents with base and target field content. Confirm the local compare API accepts the WebUI's empty revision value for the working tree as either base or target, and categories containing changes are marked. With either a configured GitHub App installation or an authenticated GitHub CLI account, select an accessible repository and confirm its default branch, branch, pull request, and commit revisions can be loaded and compared.
+Start the WebUI against a repository with a working-tree specification and multiple commits. Confirm the initial document list loads, selecting a commit refreshes the list to that revision, and local comparisons display changed, added, and deleted documents with base and target field content. Confirm the local compare API accepts the WebUI's empty revision value for the working tree as either base or target, and categories containing changes are marked. With either a configured GitHub App installation or an authenticated GitHub CLI account, select an accessible repository and confirm its default branch, branch, pull request, and commit revisions can be loaded and compared. Confirm GitHub snapshots are read from a persistent local bare mirror populated through Git fetch with complete objects, without per-blob GitHub API requests or lazy blob fetches; existing incomplete mirrors are refreshed before use.
 
 ### Source
 
