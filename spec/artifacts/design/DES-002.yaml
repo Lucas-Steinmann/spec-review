@@ -1,11 +1,14 @@
 id: DES-002
 type: design
 title: Terminal review workspace
-description: Use an artifact list and search sidebar on the left and a main content pane on the right,
+description: |
+  Use an artifact list and search sidebar on the left and a main content pane on the right,
   and scrollable category tabs along the bottom. Include Overviews, Diff, and Options. Render prose and
   headings with terminal Markdown styling. Support mouse selection, Tab and F6 focus movement, arrows,
   content scrolling, ID/title search, previous/next link selection, Enter activation, and navigation history.
   Status colors are supplemented by +, ~, and − markers.
+
+  ![Terminal review workspace mockup](../../mockups/rendered/terminal-workspace.png)
 addresses:
 - REQ-002
 - REQ-029

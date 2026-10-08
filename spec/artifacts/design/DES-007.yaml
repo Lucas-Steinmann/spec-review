@@ -3,6 +3,8 @@ type: design
 title: Browser review workspace and repository overview
 description: |
   The Svelte WebUI consumes the existing snapshot, comparison, content-block, link-resolution, and diagram services through the read-only Python HTTP server. The local provider reads the selected folder and Git history. The browser opens on an overview with local and saved gh-accessible repositories in the list on the left. Selecting a repository opens the detailed revision and comparison workspace. The workspace displays documents, categories, snapshot-aware links, diagrams, and field or Markdown differences. Changed Markdown lines use side-specific markers and light backgrounds, with darker backgrounds on changed words. Keep the comparison filter and category buttons usable within the sidebar at narrow widths. Keep the workspace interactive and show a loading status while metadata or comparison requests are pending. Name controls and dialogs, show keyboard focus, and restore focus when a dialog closes. GitHub retrieval is specified by DES-008; development and distribution are specified by DES-009.
+
+  ![Browser review workspace mockup](../../mockups/rendered/browser-workspace.png)
 addresses:
 - REQ-034
 - REQ-035

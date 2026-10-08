@@ -4,6 +4,16 @@ title: GitHub CLI access and cached snapshots
 status: specified
 description: |
   Invoke the authenticated gh CLI for the current account's repository, revision, pull-request, and available Actions metadata. Do not use GitHub App credentials or a direct Python HTTP client. Fetch revisions through Git's pack protocol into a persistent local bare mirror in the user cache. Fetch complete objects and refresh existing incomplete mirrors before reading them. Parse snapshots from the mirror and reuse cached snapshots for document selection and comparisons. Convert object-read timeouts into repository diagnostics at the HTTP boundary. Measure clone or fetch separately from local parsing and comparison. A hosted multiuser version needs a separate account-scoped access design.
+
+  ```mermaid
+  flowchart LR
+    Reviewer --> WebUI
+    WebUI --> GH[Authenticated gh CLI]
+    GH --> Mirror[Persistent bare Git mirror]
+    Mirror --> Snapshot[Parsed specification snapshot]
+    Snapshot --> Review[Document selection and comparison]
+    Mirror --> Diagnostic[Repository diagnostic on timeout]
+  ```
 addresses:
 - REQ-039
 - REQ-040

@@ -150,6 +150,14 @@ Use the Vite development server with hot reload and an API proxy to the Python s
 
 The user reported that selecting a GitHub snapshot timed out after 30 seconds in `git cat-file --batch`. The partial clone had omitted blob objects, causing the local snapshot reader to trigger unavailable or slow lazy fetches. Ensure mirrors contain complete objects, refresh older incomplete mirrors, and return a repository diagnostic instead of an uncaught request-thread traceback if object reading times out.
 
+## Visual design artifacts, October 8, 2026
+
+> The specs should be used for planning and not the docs. They are part of the result and part of the user manual.
+>
+> Use small JavaScript, CSS, and HTML files, render them in a headless browser, and insert them into the Markdown files. Add scripting so we can regenerate those diagrams as well.
+
+Store planning visuals under `spec/mockups/`: editable static HTML/CSS source under `src/` and generated PNG previews under `rendered/`. Render the previews with the repository's local Playwright and Chromium setup. Use HTML/CSS previews for user-interface design and Mermaid/PlantUML only when an architecture or interaction relationship is clearer as a diagram. Canonical design artifacts embed UI-preview images and carry the architecture/flow diagrams; generated Markdown views remain derived from those artifacts.
+
 ## Specification review corrections, October 7, 2026
 
 > 1. list should be on the left. Update wrong artifacts

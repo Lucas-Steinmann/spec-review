@@ -92,7 +92,7 @@ class Comparison:
 
 @dataclass
 class Block:
-    kind: str  # markdown, code, diagram
+    kind: str  # markdown, code, diagram, image
     text: str
     language: str = ""
 

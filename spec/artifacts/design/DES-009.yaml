@@ -1,7 +1,17 @@
 id: DES-009
 type: design
 title: Browser development and distribution
-description: Vite serves the Svelte frontend with hot reload and proxies API requests to the Python server. Playwright exercises rendered browser behavior. Production assets are generated in an ignored build directory and included in Python distributions after a frontend build.
+description: |
+  Vite serves the Svelte frontend with hot reload and proxies API requests to the Python server. Playwright exercises rendered browser behavior. Production assets are generated in an ignored build directory and included in Python distributions after a frontend build.
+
+  ```mermaid
+  flowchart LR
+    Svelte[Svelte source] --> Vite[Vite development server]
+    Vite --> Browser[Browser and Playwright]
+    Vite --> Build[Production frontend build]
+    Build --> Package[Python distribution]
+    Browser --> API[Local Python HTTP server]
+  ```
 addresses:
 - REQ-034
 decisions:

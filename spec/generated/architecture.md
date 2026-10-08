@@ -57,7 +57,18 @@ TUI --> Reviewer: categories, statuses, content diff
 
 ### Description
 
-Use an artifact list and search sidebar on the left and a main content pane on the right, and scrollable category tabs along the bottom. Include Overviews, Diff, and Options. Render prose and headings with terminal Markdown styling. Support mouse selection, Tab and F6 focus movement, arrows, content scrolling, ID/title search, previous/next link selection, Enter activation, and navigation history. Status colors are supplemented by +, ~, and − markers.
+Use an artifact list and search sidebar on the left and a main content pane on the right,
+and scrollable category tabs along the bottom. Include Overviews, Diff, and Options. Render prose and
+headings with terminal Markdown styling. Support mouse selection, Tab and F6 focus movement, arrows,
+content scrolling, ID/title search, previous/next link selection, Enter activation, and navigation history.
+Status colors are supplemented by +, ~, and − markers.
+
+
+
+![Terminal review workspace mockup](../mockups/rendered/terminal-workspace.png)
+
+
+
 
 ### Addresses
 
@@ -75,7 +86,19 @@ Use an artifact list and search sidebar on the left and a main content pane on t
 
 ### Description
 
-Open a modal with searchable, paginated local Git history showing SHA, date, and subject. Select base and target separately, then Compare or Cancel. Read blobs without checkout. Match YAML artifacts by ID, compare typed field values, and compare overview Markdown text. List the union of documents and retain deleted items. Type changes affect both categories. Inline mode shows field and prose hunks; two-panel mode aligns rows in a shared scroll viewport. Carry snapshot provenance through content and links. Inline images come only from the target; removed diagram source stays readable.
+Open a modal with searchable, paginated local Git history showing SHA, date, and subject.
+Select base and target separately, then Compare or Cancel. Read blobs without checkout. Match YAML artifacts
+by ID, compare typed field values, and compare overview Markdown text. List the union of documents and
+retain deleted items. Type changes affect both categories. Inline mode shows field and prose hunks;
+two-panel mode aligns rows in a shared scroll viewport. Carry snapshot provenance through content and
+links. Inline images come only from the target; removed diagram source stays readable.
+
+
+
+![Two-panel comparison mockup](../mockups/rendered/comparison-workspace.png)
+
+
+
 
 ### Addresses
 
@@ -93,7 +116,24 @@ Open a modal with searchable, paginated local Git history showing SHA, date, and
 
 ### Description
 
-Extract interleaved prose, code, fenced Mermaid/PlantUML blocks, and raw standalone PlantUML blocks from descriptions. Read overview fences in the same way. Run local executables asynchronously with timeouts and cache PNG results by source, renderer identity/version, and configuration. Present them through Kitty graphics support and release uploaded images when content leaves the view. Disabled rendering shows source and invokes no renderers. Failed or unsupported rendering produces local diagnostics instead of stopping navigation. Persist rendering preferences in the user configuration directory and keep generated image caches outside the repository.
+Extract interleaved prose, code, fenced Mermaid/PlantUML blocks, and raw standalone PlantUML
+blocks from descriptions. Read overview fences in the same way. Run local executables asynchronously
+with timeouts and cache PNG results by source, renderer identity/version, and configuration. Present
+them through Kitty graphics support and release uploaded images when content leaves the view. Disabled
+rendering shows source and invokes no renderers. Failed or unsupported rendering produces local diagnostics
+instead of stopping navigation. Persist rendering preferences in the user configuration directory and
+keep generated image caches outside the repository.
+
+
+
+```mermaid
+flowchart LR
+  Source[Description blocks] --> Parse[Parse prose, code, and diagrams]
+  Parse --> Render[Local Mermaid or PlantUML renderer]
+  Render --> Cache[PNG cache outside repository]
+  Cache --> Present[Terminal or browser presentation]
+  Render --> Failure[Local diagnostic on failure]
+```
 
 ### Addresses
 
@@ -111,7 +151,25 @@ Extract interleaved prose, code, fenced Mermaid/PlantUML blocks, and raw standal
 
 ### Description
 
-Load canonical artifacts and stored overviews from the selected spec/ tree only. Index explicit artifact IDs, specification document paths, and source.file/source.section metadata within each snapshot. Follow direct canonical links first, then source metadata for retained legacy references. Offer a chooser when a source file maps to several artifacts. Resolve anchors in the relevant document or source section; explain missing targets. Removed links use the base snapshot, while added and unchanged links use the target. Preserve navigation history when moving between documents and versions. Legacy source files remain metadata and are never opened as documents.
+Load canonical artifacts and stored overviews from the selected spec/ tree only. Index explicit
+artifact IDs, specification document paths, and source.file/source.section metadata within each snapshot.
+Follow direct canonical links first, then source metadata for retained
+legacy references. Offer a chooser when a source file maps to several artifacts. Resolve anchors in
+the relevant document or source section; explain missing targets. Removed links use the base snapshot,
+while added and unchanged links use the target. Preserve navigation history when moving between documents
+and versions. Legacy source files remain metadata and are never opened as documents.
+
+
+
+```mermaid
+flowchart TD
+  Link[Selected link] --> Direct{Canonical ID?}
+  Direct -->|yes| Target[Target in content snapshot]
+  Direct -->|no| Metadata{Source metadata match?}
+  Metadata -->|one| Target
+  Metadata -->|many| Choose[Show target chooser]
+  Metadata -->|none| Explain[Show unresolved explanation]
+```
 
 ### Addresses
 
@@ -129,7 +187,22 @@ Load canonical artifacts and stored overviews from the selected spec/ tree only.
 
 ### Description
 
-Maintain a separately versioned Python package and a real submodule gitlink. Store this tool’s own canonical artifacts in spec/artifacts, provenance in spec/sources/chat.md, and derived review views in spec/generated. Regenerate those views explicitly using scripts/generate_spec_views.py. Launch with --repo . from the submodule to review its own specification; without --repo the current directory is selected. Trace requirements to use cases, decisions, designs, and acceptance scenarios.
+Maintain a separately versioned Python package and a real submodule gitlink. Store this tool’s
+own canonical artifacts in spec/artifacts, provenance in spec/sources/chat.md, and derived review views
+in spec/generated. Regenerate those views explicitly using scripts/generate_spec_views.py. Launch with
+--repo . from the submodule to review its own specification; without --repo the current directory is selected.
+Trace requirements to use cases, decisions, designs, and acceptance scenarios.
+
+
+
+```mermaid
+flowchart LR
+  Chat[Conversation provenance] --> Artifacts[Canonical YAML artifacts]
+  Artifacts --> Views[Generated Markdown views]
+  Artifacts --> Tool[spec-review package]
+  Tool --> Artifacts
+  Artifacts --> Tests[Acceptance scenarios]
+```
 
 ### Addresses
 
@@ -148,6 +221,12 @@ Maintain a separately versioned Python package and a real submodule gitlink. Sto
 ### Description
 
 The Svelte WebUI consumes the existing snapshot, comparison, content-block, link-resolution, and diagram services through the read-only Python HTTP server. The local provider reads the selected folder and Git history. The browser opens on an overview with local and saved gh-accessible repositories in the list on the left. Selecting a repository opens the detailed revision and comparison workspace. The workspace displays documents, categories, snapshot-aware links, diagrams, and field or Markdown differences. Changed Markdown lines use side-specific markers and light backgrounds, with darker backgrounds on changed words. Keep the comparison filter and category buttons usable within the sidebar at narrow widths. Keep the workspace interactive and show a loading status while metadata or comparison requests are pending. Name controls and dialogs, show keyboard focus, and restore focus when a dialog closes. GitHub retrieval is specified by DES-008; development and distribution are specified by DES-009.
+
+
+
+![Browser review workspace mockup](../mockups/rendered/browser-workspace.png)
+
+
 
 
 ### Addresses
@@ -173,6 +252,17 @@ specified
 Invoke the authenticated gh CLI for the current account's repository, revision, pull-request, and available Actions metadata. Do not use GitHub App credentials or a direct Python HTTP client. Fetch revisions through Git's pack protocol into a persistent local bare mirror in the user cache. Fetch complete objects and refresh existing incomplete mirrors before reading them. Parse snapshots from the mirror and reuse cached snapshots for document selection and comparisons. Convert object-read timeouts into repository diagnostics at the HTTP boundary. Measure clone or fetch separately from local parsing and comparison. A hosted multiuser version needs a separate account-scoped access design.
 
 
+
+```mermaid
+flowchart LR
+  Reviewer --> WebUI
+  WebUI --> GH[Authenticated gh CLI]
+  GH --> Mirror[Persistent bare Git mirror]
+  Mirror --> Snapshot[Parsed specification snapshot]
+  Snapshot --> Review[Document selection and comparison]
+  Mirror --> Diagnostic[Repository diagnostic on timeout]
+```
+
 ### Addresses
 
 [REQ-039](../artifacts/requirements/REQ-039.yaml), [REQ-040](../artifacts/requirements/REQ-040.yaml), [REQ-041](../artifacts/requirements/REQ-041.yaml), [REQ-043](../artifacts/requirements/REQ-043.yaml)
@@ -190,6 +280,17 @@ Invoke the authenticated gh CLI for the current account's repository, revision, 
 ### Description
 
 Vite serves the Svelte frontend with hot reload and proxies API requests to the Python server. Playwright exercises rendered browser behavior. Production assets are generated in an ignored build directory and included in Python distributions after a frontend build.
+
+
+
+```mermaid
+flowchart LR
+  Svelte[Svelte source] --> Vite[Vite development server]
+  Vite --> Browser[Browser and Playwright]
+  Vite --> Build[Production frontend build]
+  Build --> Package[Python distribution]
+  Browser --> API[Local Python HTTP server]
+```
 
 ### Addresses
 

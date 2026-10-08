@@ -54,8 +54,22 @@ def _raw_plantuml(text: str) -> list[Block]:
         r"(?m)^[ \t]*@startuml\b[^\n]*\n.*?^[ \t]*@enduml\b[^\n]*(?:\n|$)", text, re.S
     ):
         if match.start() > cursor:
-            result.append(Block("markdown", text[cursor : match.start()]))
+            result.extend(_markdown_images(text[cursor : match.start()]))
         result.append(Block("diagram", match.group(), "plantuml"))
+        cursor = match.end()
+    if cursor < len(text):
+        result.extend(_markdown_images(text[cursor:]))
+    return result
+
+
+def _markdown_images(text: str) -> list[Block]:
+    """Keep local Markdown images separate so each frontend can render them safely."""
+    result = []
+    cursor = 0
+    for match in re.finditer(r"!\[([^\]]*)\]\(([^)\s]+)\)", text):
+        if match.start() > cursor:
+            result.append(Block("markdown", text[cursor : match.start()]))
+        result.append(Block("image", match.group(2), match.group(1)))
         cursor = match.end()
     if cursor < len(text):
         result.append(Block("markdown", text[cursor:]))

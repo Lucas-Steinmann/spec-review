@@ -4,13 +4,14 @@ import asyncio
 import base64
 import json
 import mimetypes
+import posixpath
 from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from threading import Lock
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, urlencode, urlparse
 
 from .content import compare, document_blocks
 from .diagrams import DiagramRenderer
@@ -51,9 +52,34 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
             snapshot_cache.move_to_end(key)
             return snapshot_cache[key]
 
+    def mockup_path(document, value):
+        path = PurePosixPath(
+            posixpath.normpath(str(PurePosixPath(document.path).parent / value))
+        )
+        spec_root = PurePosixPath(repository.spec_dir)
+        if path.is_absolute() or ".." in path.parts or not path.is_relative_to(spec_root):
+            raise RepositoryError("Specification image must stay inside the spec directory")
+        return path.as_posix()
+
     def sections(document):
         return [
-            {"heading": heading, "blocks": [asdict(block) for block in blocks]}
+            {
+                "heading": heading,
+                "blocks": [
+                    {
+                        **asdict(block),
+                        **(
+                            {
+                                "text": "/api/local/asset?"
+                                + urlencode({"path": mockup_path(document, block.text)})
+                            }
+                            if block.kind == "image"
+                            else {}
+                        ),
+                    }
+                    for block in blocks
+                ],
+            }
             for heading, blocks in document_blocks(document)
         ]
 
@@ -121,6 +147,29 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
                     return self.send_json(
                         repository.load(q.get("ref", [None])[0] or None).to_dict()
                     )
+                if parsed.path == "/api/local/asset":
+                    path = PurePosixPath(q["path"][0])
+                    spec_root = (repository.root / repository.spec_dir).resolve()
+                    asset = (repository.root / path).resolve()
+                    if (
+                        path.is_absolute()
+                        or ".." in path.parts
+                        or not asset.is_relative_to(spec_root)
+                        or not asset.is_file()
+                    ):
+                        self.send_error(404)
+                        return
+                    body = asset.read_bytes()
+                    self.send_response(200)
+                    self.send_header(
+                        "Content-Type",
+                        mimetypes.guess_type(asset.name)[0]
+                        or "application/octet-stream",
+                    )
+                    self.send_header("Content-Length", str(len(body)))
+                    self.end_headers()
+                    self.wfile.write(body)
+                    return
                 if parsed.path in {"/api/local/document", "/api/gh/document"}:
                     snapshot = load_snapshot(parsed.path.startswith("/api/gh/"), q)
                     doc = snapshot.documents.get(q["id"][0])

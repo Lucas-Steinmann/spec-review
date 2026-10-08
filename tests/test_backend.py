@@ -510,6 +510,15 @@ def test_unknown_fields_and_json_source(repo):
     assert sections["Extra"][0].text == json.dumps({"nested": [1, None]}, indent=2)
 
 
+def test_description_images_are_content_blocks():
+    result = blocks("Before. ![Workspace mockup](../../mockups/rendered/workspace.png) After.")
+    assert [(block.kind, block.text, block.language) for block in result] == [
+        ("markdown", "Before. ", ""),
+        ("image", "../../mockups/rendered/workspace.png", "Workspace mockup"),
+        ("markdown", " After.", ""),
+    ]
+
+
 def test_link_resolution_and_provenance(history):
     repo, _, base, target = history
     old = repo.load(base)

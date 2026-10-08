@@ -21,10 +21,13 @@ The explicit `--repo .` selects this submodule's specification and commit histor
 ## Regenerate overviews
 
 ```sh
+node scripts/render_spec_mockups.mjs
 uv run python scripts/generate_spec_views.py
 ```
 
 The generator reads this repository's canonical artifacts, validates their IDs and relationship references, and writes deterministic views. It does not load the parent project's specification or its legacy documents.
+
+`mockups/src/` contains editable HTML/CSS planning previews. The renderer writes their committed PNG output to `mockups/rendered/`, which the relevant design artifacts embed. UI previews are kept with the planning specification rather than with end-user documentation.
 
 ## Updating the specification
 

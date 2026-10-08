@@ -344,6 +344,31 @@ class SpecReviewApp(App):
     async def mount_block(self, parent, block, doc, snapshot, allow_image=True):
         if block.kind == "markdown":
             await parent.mount(self.markdown(block.text, doc, snapshot))
+        elif block.kind == "image":
+            path = ((self.repository.root / doc.path).parent / block.text).resolve()
+            spec_root = (self.repository.root / self.repository.spec_dir).resolve()
+            if (
+                snapshot.revision != "working tree"
+                or not path.is_relative_to(spec_root)
+                or not path.is_file()
+            ):
+                await parent.mount(
+                    Static("Specification image is unavailable in this snapshot.", classes="help")
+                )
+            elif allow_image and self.settings.rendering and self.kitty_available():
+                from .images import KittyImage
+
+                await parent.mount(
+                    KittyImage(
+                        path,
+                        classes="diagram-image",
+                        on_error=lambda error: Static(str(error)),
+                    )
+                )
+            else:
+                await parent.mount(
+                    Static("Image display unavailable in this terminal.", classes="help")
+                )
         else:
             await parent.mount(
                 Static(

@@ -1,12 +1,15 @@
 id: DES-003
 type: design
 title: Revision selection and artifact comparison
-description: Open a modal with searchable, paginated local Git history showing SHA, date, and subject.
+description: |
+  Open a modal with searchable, paginated local Git history showing SHA, date, and subject.
   Select base and target separately, then Compare or Cancel. Read blobs without checkout. Match YAML artifacts
   by ID, compare typed field values, and compare overview Markdown text. List the union of documents and
   retain deleted items. Type changes affect both categories. Inline mode shows field and prose hunks;
   two-panel mode aligns rows in a shared scroll viewport. Carry snapshot provenance through content and
   links. Inline images come only from the target; removed diagram source stays readable.
+
+  ![Two-panel comparison mockup](../../mockups/rendered/comparison-workspace.png)
 addresses:
 - REQ-011
 - REQ-012

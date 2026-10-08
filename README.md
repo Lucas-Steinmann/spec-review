@@ -60,7 +60,12 @@ From the `spec-review` directory, select this repository explicitly:
 uv run spec-review --repo .
 ```
 
-Regenerate its overviews after changing canonical artifacts with `uv run python scripts/generate_spec_views.py`.
+Regenerate its visual previews and overviews after changing canonical artifacts with:
+
+```sh
+node scripts/render_spec_mockups.mjs
+uv run python scripts/generate_spec_views.py
+```
 
 ## Specification format
 

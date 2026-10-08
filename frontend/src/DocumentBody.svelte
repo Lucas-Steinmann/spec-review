@@ -63,6 +63,11 @@
         {/if}
       {:else if block.kind === 'diagram'}
         <DiagramBlock {block} />
+      {:else if block.kind === 'image'}
+        <figure class="spec-image">
+          <img src={block.text} alt={block.language || 'Specification visual'} />
+          {#if block.language}<figcaption>{block.language}</figcaption>{/if}
+        </figure>
       {:else}
         <pre><code class={`language-${block.language || 'text'}`}>{block.text}</code></pre>
       {/if}

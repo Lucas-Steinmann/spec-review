@@ -50,7 +50,17 @@ def detail(doc, documents):
         else:
             for part in parts:
                 if part.kind == "markdown":
-                    result += [part.text, ""]
+                    # Canonical artifact paths are relative to spec/artifacts/, while
+                    # generated views are written beneath spec/generated/.
+                    result += [
+                        part.text.replace("](../../mockups/", "](../mockups/"),
+                        "",
+                    ]
+                elif part.kind == "image":
+                    result += [
+                        f"![{part.language}]({part.text.replace('../../mockups/', '../mockups/')})",
+                        "",
+                    ]
                 else:
                     fence = "`" * max(
                         3,
