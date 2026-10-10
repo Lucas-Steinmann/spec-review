@@ -17,7 +17,7 @@ Apply these checks whenever you add, revise, or remove canonical artifacts under
 - Treat new additions, clarifications, and implementation detail as compatible unless they actually conflict with an existing artifact.
 - If a new user request appears to contradict an earlier requirement or decision and does not identify its artifact ID, cite the relevant ID and ask whether it should be changed or superseded before removing or rewriting it. Continue independent work while that clarification is pending.
 - When the user explicitly confirms a change or supersession, update the old artifact's status and record a `superseded_by` reference to the replacement artifact. Keep the new artifact's provenance tied to the clarifying request.
-- Don't silently resolve a conflict by editing generated views or by changing an unrelated artifact.
+- Don't silently resolve a conflict by editing an unrelated view or artifact.
 
 ## Validate changes
 
@@ -25,5 +25,6 @@ Apply these checks whenever you add, revise, or remove canonical artifacts under
 - Check requirement-to-use-case/design/test traceability and verify that new decisions or constraints are reflected where they affect the plan.
 - Preserve source provenance. Update `spec/sources/chat.md` when the user's request, clarification, or decision is the source of a change.
 - Keep requirements about observable outcomes separate from implementation choices. Put implementation detail in design artifacts and link it to the requirements it satisfies.
-- Regenerate committed views after canonical artifact changes with `uv run python scripts/generate_spec_views.py`. Never hand-edit files under `spec/generated/`.
+- Maintain reader-oriented guides under `spec/views/` when the plan changes. Start with principal artifacts and keep topic routes linked to canonical detail; do not duplicate full artifact fields.
+- Validate canonical artifacts and maintained views with `uv run python scripts/validate_spec_views.py`. The views under `spec/views/` are edited directly and reviewed as committed Markdown.
 - Ensure acceptance scenarios describe expected behavior; do not imply that a test passed unless it was actually run.

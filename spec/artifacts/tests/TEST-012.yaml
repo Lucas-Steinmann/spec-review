@@ -3,7 +3,7 @@ type: test
 title: Render WebUI documents with TUI content semantics
 verifies:
 - REQ-036
-description: Open artifacts and generated overviews in the Svelte WebUI. Confirm relationships and Markdown links navigate through the snapshot-aware resolver, ambiguous links present choices, unresolved links explain the target, and external links open externally. Confirm fenced and standalone diagrams retain readable source and show local-rendered images or diagnostics. Confirm source metadata is displayed on one line and list-valued preconditions and postconditions appear as bullets.
+description: Open artifacts and maintained views in the Svelte WebUI. Confirm relationships and Markdown links navigate through the snapshot-aware resolver, ambiguous links present choices, unresolved links explain the target, and external links open externally. Confirm fenced and standalone diagrams retain readable source and show local-rendered images or diagnostics. Confirm source metadata is displayed on one line and list-valued preconditions and postconditions appear as bullets.
 source:
   file: spec/sources/chat.md
   section: Svelte frontend

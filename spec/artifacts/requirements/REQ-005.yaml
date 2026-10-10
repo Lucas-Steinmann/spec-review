@@ -1,13 +1,13 @@
 id: REQ-005
 type: requirement
-title: Browse generated overviews
+title: Browse maintained views
 category: browsing
 status: specified
-statement: Make generated Markdown overviews readable under a separate Overviews category in the bottom
-  panel.
+statement: Make Markdown files from spec/views/ readable under a separate Overviews category in the bottom
+  panel. Show their authored content directly, without a generated-file banner.
 derived_from:
 - UC-001
 related: []
 source:
   file: spec/sources/chat.md
-  section: Initial request
+  section: Show maintained views directly, October 10, 2026

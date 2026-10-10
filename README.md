@@ -52,7 +52,7 @@ For a standalone installation, `uv tool install /path/to/spec-review` exposes `s
 
 ## Review spec-review itself
 
-The tool's own [specification](spec/README.md) captures the original requirements and decisions from the project conversation, with linked artifacts, acceptance scenarios, and generated overviews.
+The tool's own [specification](spec/README.md) captures the original requirements and decisions from the project conversation, with linked artifacts, acceptance scenarios, and maintained views.
 
 From the `spec-review` directory, select this repository explicitly:
 
@@ -64,7 +64,7 @@ Regenerate its visual previews and overviews after changing canonical artifacts 
 
 ```sh
 node scripts/render_spec_mockups.mjs
-uv run python scripts/generate_spec_views.py
+uv run python scripts/validate_spec_views.py
 ```
 
 ## Specification format
@@ -74,7 +74,7 @@ See the [artifact format and field display reference](docs/artifact-format.md) f
 - `spec/artifacts/**/*.yaml` (or `.yml`): one artifact per file, with string `id`, `type`, and `title`. All other fields are retained. Stable IDs identify documents across revisions and file moves.
 - Supported types: `goal`, `actor`, `use_case`, `requirement`, `constraint`, `decision`, `design`, `test`, `risk`, `assumption`, and `question`. Additional types get their own category.
 - Relationship fields (`actors`, `goal_refs`, `derived_from`, `related`, `addresses`, `decisions`, `verifies`) contain artifact IDs and appear as navigable links.
-- `spec/generated/**/*.md`: stored overviews, displayed and compared as committed. The tool never regenerates them.
+- `spec/views/**/*.md`: maintained overviews, displayed and compared as committed. Historical `spec/generated/` files remain readable where no matching view exists.
 - Optional `source: {file, section}` metadata resolves links retained from old source documents into migrated artifacts. Ambiguous targets open a chooser. Missing targets show an explanation; legacy documents are never loaded.
 - Malformed artifacts and duplicate IDs appear in Diagnostics. Duplicate IDs cannot be link targets. Input errors are indicated during comparisons; classifications for invalid documents should be reviewed alongside their diagnostics.
 
@@ -187,6 +187,6 @@ npm ci
 npm run build
 ```
 
-Tests use temporary Git repositories, Textual Pilot, and renderer doubles. For image QA, launch in Kitty and inspect multi-diagram descriptions and generated overviews while scrolling, resizing, following links, opening dialogs, disabling rendering, and switching diff layouts. Verify that removed inline diagrams have source only, and that images disappear when navigating away.
+Tests use temporary Git repositories, Textual Pilot, and renderer doubles. For image QA, launch in Kitty and inspect multi-diagram descriptions and maintained views while scrolling, resizing, following links, opening dialogs, disabling rendering, and switching diff layouts. Verify that removed inline diagrams have source only, and that images disappear when navigating away.
 
 To update a consuming project, pull a committed release inside the submodule, then commit its gitlink in the parent repository. Fresh clones can use `git clone --recurse-submodules`.

@@ -3,7 +3,7 @@ type: requirement
 title: Read the canonical specification only
 category: browsing
 status: specified
-statement: Read artifacts and generated overviews from the selected spec/ directory. Ignore the parent
+statement: Read artifacts and maintained views from the selected spec/ directory. Ignore the parent
   project’s root requirements/ and design/ folders; source references to them may remain visible as metadata.
 derived_from:
 - UC-001

@@ -13,7 +13,7 @@ main_flow: |-
   2. Choose Goals, Use Cases, or another category in the bottom panel.
   3. Select an artifact from the list on the left.
   4. Read its content in the main pane on the right.
-  5. Choose Overviews and read a generated Markdown document.
+  5. Choose Overviews and read a maintained Markdown view.
 postconditions: The selected document is readable with headings and links highlighted.
 source:
   file: spec/sources/chat.md

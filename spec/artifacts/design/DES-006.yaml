@@ -3,15 +3,18 @@ type: design
 title: Standalone package and self specification
 description: |
   Maintain a separately versioned Python package and a real submodule gitlink. Store this tool’s
-  own canonical artifacts in spec/artifacts, provenance in spec/sources/chat.md, and derived review views
-  in spec/generated. Regenerate those views explicitly using scripts/generate_spec_views.py. Launch with
+  own canonical artifacts in spec/artifacts, provenance in spec/sources/chat.md, and maintained reader
+  guides in spec/views. Validate artifact relationships and guide links with scripts/validate_spec_views.py.
+  The reviewer reads those guides directly. Start with principal artifacts,
+  then offer topic routes to canonical detail instead of concatenating artifact fields. Launch with
   --repo . from the submodule to review its own specification; without --repo the current directory is selected.
   Trace requirements to use cases, decisions, designs, and acceptance scenarios.
 
   ```mermaid
   flowchart LR
     Chat[Conversation provenance] --> Artifacts[Canonical YAML artifacts]
-    Artifacts --> Views[Generated Markdown views]
+    Artifacts --> Guides[Maintained reading guides]
+    Guides --> Tool
     Artifacts --> Tool[spec-review package]
     Tool --> Artifacts
     Artifacts --> Tests[Acceptance scenarios]

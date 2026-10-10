@@ -5,7 +5,7 @@ description: Review this project's maintained specification and its fit with imp
 
 # Specification health review
 
-Review canonical `spec/artifacts/` and `spec/sources/chat.md`; read `spec/AGENTS.md` before proposing changes. Treat `spec/generated/` as derived output. Preserve stable IDs, supersession history, provenance, and the user's uncommitted work. A review request authorizes analysis and checks; edit artifacts or code when the user also asks for fixes.
+Review canonical `spec/artifacts/`, maintained `spec/views/`, and `spec/sources/chat.md`; read `spec/AGENTS.md` before proposing changes. Validate the views directly. Preserve stable IDs, supersession history, provenance, and the user's uncommitted work. A review request authorizes analysis and checks; edit artifacts or code when the user also asks for fixes.
 
 ## Core consistency checks
 

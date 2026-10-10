@@ -1,0 +1,16 @@
+# Where this plan came from
+
+The [conversation record](../sources/chat.md) is the source for user requirements, clarifications, and accepted choices. Each canonical artifact names a section of that record. This page points to the sections most useful when checking intent.
+
+| Topic | Source section |
+|---|---|
+| Original terminal and diff scope | [Initial request](../sources/chat.md#initial-request) and [confirmed scope](../sources/chat.md#confirmed-scope) |
+| Comparison semantics and links | [Diff semantics](../sources/chat.md#diff-semantics) and [legacy links](../sources/chat.md#legacy-links) |
+| Self-specification | [Dogfooding](../sources/chat.md#dogfooding) |
+| Browser and GitHub scope | [WebUI and GitHub support](../sources/chat.md#webui-and-github-support) and [GitHub CLI correction](../sources/chat.md#github-cli-scope-correction-october-7-2026) |
+| Repository overview and performance | [Multi-repository overview](../sources/chat.md#multi-repository-overview-and-pull-request-navigation-october-7-2026) and [faster comparisons](../sources/chat.md#faster-github-comparisons-october-7-2026) |
+| Planning visuals | [Visual design artifacts](../sources/chat.md#visual-design-artifacts-october-8-2026) |
+| Current guide structure | [Reader-oriented generated guides](../sources/chat.md#reader-oriented-generated-guides-october-10-2026) |
+| Direct display of maintained views | [Show maintained views directly](../sources/chat.md#show-maintained-views-directly-october-10-2026) |
+
+Start with the [overview](overview.md) when reading the current plan. Use this source map when you need to check a choice against the original request.

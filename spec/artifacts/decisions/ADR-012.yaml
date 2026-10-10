@@ -1,0 +1,15 @@
+id: ADR-012
+type: decision
+title: Read maintained views directly
+status: accepted
+context: Duplicating hand-written guides into spec/generated added maintenance work and showed a generated-file
+  banner in the review UI.
+decision: Load spec/views/ Markdown directly as Overviews and compare those committed files across revisions.
+  If an older revision has only spec/generated/, use that historical file as a fallback. Validate maintained
+  views without copying them.
+addresses:
+- REQ-005
+- REQ-020
+source:
+  file: spec/sources/chat.md
+  section: Show maintained views directly, October 10, 2026

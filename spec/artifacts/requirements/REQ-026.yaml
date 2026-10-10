@@ -4,11 +4,12 @@ title: Maintain a specification for the tool itself
 category: dogfooding
 status: specified
 statement: Create a spec/ folder in the spec-review repository containing the requirements supplied in
-  the conversation, their clarifications and accepted decisions, linked artifacts, and readable generated
-  overviews.
+  the conversation, their clarifications and accepted decisions, linked artifacts, and reader-oriented
+  maintained views. The views start with principal artifacts and let readers navigate by topic into
+  canonical detail rather than repeat every artifact field.
 derived_from:
 - UC-007
 related: []
 source:
   file: spec/sources/chat.md
-  section: Dogfooding
+  section: Show maintained views directly, October 10, 2026

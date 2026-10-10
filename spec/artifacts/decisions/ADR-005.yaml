@@ -1,10 +1,11 @@
 id: ADR-005
 type: decision
 title: Compare committed generated overviews
-status: accepted
+status: superseded
 context: Decision selected or approved during the project conversation.
 decision: Read and compare generated Markdown as stored at each revision; regeneration belongs to specification
   maintenance rather than the review application.
+superseded_by: ADR-012
 addresses:
 - REQ-005
 - REQ-020

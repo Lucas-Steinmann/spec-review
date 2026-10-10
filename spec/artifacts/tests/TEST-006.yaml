@@ -13,7 +13,7 @@ verifies:
 - REQ-030
 description: Compare revisions containing additions, changes, deletions, and a type change. Confirm row
   colors/markers, category stars, and deleted-item visibility. Confirm formatting-only edits, key reordering,
-  and moves do not count as YAML changes, while scalar types and list order do. Confirm stored overview
+  and moves do not count as YAML changes, while scalar types and list order do. Confirm maintained view
   changes are marked. Inspect inline and two-panel diffs, including old-side links, target-only inline
   images, removed diagram source, and synchronized scrolling.
 source:

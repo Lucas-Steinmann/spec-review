@@ -61,7 +61,7 @@ class LinkResolver:
                     posixpath.join(posixpath.dirname(source["file"]), split.path)
                 ),
             )
-        # Overviews repeat migrated prose but lack source metadata. Only match an exact source path.
+        # Maintained views lack source metadata. Only match an exact source path.
         docs = []
         for candidate in dict.fromkeys(candidates):
             docs = self.sources.get(candidate, [])

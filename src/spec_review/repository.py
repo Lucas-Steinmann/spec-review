@@ -116,6 +116,7 @@ class Repository:
         if revision is None:
             for folder, suffixes in (
                 ("artifacts", (".yaml", ".yml")),
+                ("views", (".md",)),
                 ("generated", (".md",)),
             ):
                 base = self.root / self.spec_dir / folder
@@ -142,6 +143,7 @@ class Repository:
             sha,
             "--",
             f"{self.spec_dir}/artifacts/",
+            f"{self.spec_dir}/views/",
             f"{self.spec_dir}/generated/",
             binary=True,
         )
@@ -205,12 +207,22 @@ def snapshot_from_files(
     """Parse specification files supplied by a local tree or a remote provider."""
     documents = []
     diagnostics = []
+    view_names = {
+        str(PurePosixPath(path).relative_to(f"{spec_dir}/views"))
+        for path, _ in files
+        if path.startswith(f"{spec_dir}/views/")
+    }
     for path, text in files:
         try:
-            if text.startswith("\0READ ERROR:"):
-                raise ValueError(text[1:])
             if path.startswith(f"{spec_dir}/generated/"):
                 name = str(PurePosixPath(path).relative_to(f"{spec_dir}/generated"))
+                if name in view_names:
+                    continue
+            if text.startswith("\0READ ERROR:"):
+                raise ValueError(text[1:])
+            if path.startswith((f"{spec_dir}/views/", f"{spec_dir}/generated/")):
+                folder = "views" if path.startswith(f"{spec_dir}/views/") else "generated"
+                name = str(PurePosixPath(path).relative_to(f"{spec_dir}/{folder}"))
                 title = next(
                     (
                         line[2:].strip()

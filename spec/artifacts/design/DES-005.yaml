@@ -2,7 +2,8 @@ id: DES-005
 type: design
 title: Snapshot-specific link navigation
 description: |
-  Load canonical artifacts and stored overviews from the selected spec/ tree only. Index explicit
+  Load canonical artifacts and maintained views from the selected spec/ tree only. For historical revisions
+  without a matching maintained view, read stored generated overviews. Index explicit
   artifact IDs, specification document paths, and source.file/source.section metadata within each snapshot.
   Follow direct canonical links first, then source metadata for retained
   legacy references. Offer a chooser when a source file maps to several artifacts. Resolve anchors in

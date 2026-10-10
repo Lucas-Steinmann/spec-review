@@ -49,9 +49,9 @@ def history(repo):
         description="[goal](GOAL-001)",
     )
     write_artifact(repo, "REQ-001", "requirement", statement="Remove me")
-    generated = repo.root / "spec" / "generated" / "overview.md"
-    generated.parent.mkdir(parents=True)
-    generated.write_text("# Overview\n\n[Goal](../artifacts/goal/GOAL-001.yaml)\n")
+    overview = repo.root / "spec" / "views" / "overview.md"
+    overview.parent.mkdir(parents=True)
+    overview.write_text("# Overview\n\n[Goal](../artifacts/goal/GOAL-001.yaml)\n")
     base = commit(repo, "Introduce specification")
     write_artifact(repo, "GOAL-001", statement="New statement")
     (repo.root / "spec" / "artifacts" / "requirement" / "REQ-001.yaml").unlink()
@@ -61,6 +61,6 @@ def history(repo):
         "design",
         description="```mermaid\nflowchart LR\nA --> B\n```\n",
     )
-    generated.write_text("# Overview\n\nUpdated\n")
+    overview.write_text("# Overview\n\nUpdated\n")
     target = commit(repo, "Change specification")
     return repo, empty, base, target

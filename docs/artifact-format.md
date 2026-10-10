@@ -20,8 +20,8 @@ Keys such as `statement`, `rationale`, `acceptance`, `steps`, `constraints`, and
 
 ## Comparisons and validation
 
-Comparisons use artifact IDs, then compare parsed field values. YAML formatting and mapping order do not count as changes; list order and value types do. Unknown fields are compared just like known fields. Generated Markdown files are compared as text.
+Comparisons use artifact IDs, then compare parsed field values. YAML formatting and mapping order do not count as changes; list order and value types do. Unknown fields are compared just like known fields. Maintained Markdown views are compared as text.
 
 The loader requires `id`, `type`, and `title` to be non-empty strings and requires YAML values to be JSON-compatible. Malformed files and duplicate IDs appear in Diagnostics. Duplicate IDs are excluded as link targets. Relationship references that do not resolve remain visible but do not navigate to an artifact.
 
-`spec/generated/` contains committed review views. Edit canonical YAML and regenerate these views with `uv run python scripts/generate_spec_views.py`; do not edit generated files directly.
+`spec/views/` contains maintained review views shown directly in the Overviews category. Edit them alongside canonical YAML and validate with `uv run python scripts/validate_spec_views.py`. Historical `spec/generated/` files remain readable when an older revision has no matching maintained view.
