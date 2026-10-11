@@ -1,14 +1,14 @@
 id: DES-006
 type: design
-title: Standalone package and self specification
+title: Package and specification tooling
 description: |
-  Maintain a separately versioned Python package and a real submodule gitlink. Store this tool’s
-  own canonical artifacts in spec/artifacts, provenance in spec/sources/chat.md, and maintained reader
-  guides in spec/views. Validate artifact relationships and guide links with scripts/validate_spec_views.py.
-  The reviewer reads those guides directly. Start with principal artifacts,
-  then offer topic routes to canonical detail instead of concatenating artifact fields. Launch with
-  --repo . from the submodule to review its own specification; without --repo the current directory is selected.
-  Trace requirements to use cases, decisions, designs, and acceptance scenarios.
+  Package the reviewer as a separately versioned Python project that can be pinned by a consuming
+  repository through a Git submodule. Resolve the repository from the current directory unless
+  --repo selects another path; resolve specification content from ./spec unless --spec-dir overrides it.
+  Store canonical YAML artifacts in spec/artifacts, source provenance in spec/sources/chat.md, and
+  maintained Markdown guides in spec/views. Load those guides directly in the reviewer. Keep artifact
+  authoring guidance in docs/artifact-authoring.md and link it from agent instructions. Validate IDs,
+  relationships, supersession targets, and guide links with scripts/validate_spec_views.py.
 
   ```mermaid
   flowchart LR
@@ -23,9 +23,9 @@ addresses:
 - REQ-017
 - REQ-026
 - REQ-031
-decisions:
-- ADR-007
-- ADR-010
 source:
   file: spec/sources/chat.md
   section: Dogfooding
+revision_source:
+  file: spec/sources/chat.md
+  section: Targeted artifact taxonomy cleanup, October 11, 2026

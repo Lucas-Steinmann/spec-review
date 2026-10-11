@@ -1,5 +1,5 @@
 id: DES-002
-type: design
+type: ui_design
 title: Terminal review workspace
 description: |
   Use an artifact list and search sidebar on the left and a main content pane on the right,
@@ -24,6 +24,11 @@ addresses:
 - REQ-033
 decisions:
 - ADR-001
+related:
+- DES-001
 source:
   file: spec/sources/chat.md
   section: Requested improvements, October 2, 2026
+classification_source:
+  file: spec/sources/chat.md
+  section: Artifact authoring and UI design separation, October 10, 2026

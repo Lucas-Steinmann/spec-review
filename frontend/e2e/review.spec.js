@@ -5,7 +5,7 @@ const newGoal = { ...oldGoal };
 const useCase = { id: 'UC-001', type: 'use_case', title: 'Review', path: 'spec/artifacts/use-cases/UC-001.yaml' };
 const addedRequirement = { id: 'REQ-001', type: 'requirement', title: 'New requirement', path: 'spec/artifacts/requirements/REQ-001.yaml' };
 const deletedDesign = { id: 'DES-001', type: 'design', title: 'Old design', path: 'spec/artifacts/design/DES-001.yaml' };
-const categories = { goal: 'Goals', use_case: 'Use Cases', requirement: 'Requirements', design: 'Design' };
+const categories = { goal: 'Goals', use_case: 'Use Cases', requirement: 'Requirements', design: 'Technical Design' };
 const snapshot = (revision, goal = newGoal) => ({ revision, documents: { 'GOAL-001': goal, 'UC-001': useCase }, diagnostics: [], categories });
 const comparison = (base = 'base', target = 'working tree') => ({
   base: snapshot(base, oldGoal), target: snapshot(target),
@@ -215,7 +215,7 @@ test('local revision selection, both working-tree directions, filter, and render
   await page.locator('.document-item', { hasText: 'REQ-001' }).click();
   await expect(page.locator('.diff-side').first()).toContainText('Document absent');
   await expect(page.locator('.diff-side').last()).toContainText('New requirement text');
-  await page.getByRole('button', { name: 'Design' }).click();
+  await page.getByRole('button', { name: 'Technical Design' }).click();
   await page.locator('.document-item', { hasText: 'DES-001' }).click();
   await expect(page.locator('.diff-side').first()).toContainText('Old design text');
   await expect(page.locator('.diff-side').last()).toContainText('Document absent');

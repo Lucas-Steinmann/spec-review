@@ -6,8 +6,9 @@ verifies:
 description: From spec-review, launch uv run spec-review --repo . and browse the requirements from this
   conversation. Open the main maintained view, find principal goals and user journeys first, follow a topic
   route to use-case, requirement, decision, design, and test artifacts, and confirm that the guides summarize
-  rather than concatenate artifact fields. Validate views and confirm valid references. Compare the commit introducing this spec/ with its predecessor
+  rather than concatenate artifact fields. Read the artifact authoring guide and confirm agents are directed
+  to it. Validate views and confirm valid references. Compare the commit introducing this spec/ with its predecessor
   and confirm additions appear in every populated category.
 source:
   file: spec/sources/chat.md
-  section: Dogfooding
+  section: Artifact authoring and UI design separation, October 10, 2026

@@ -5,9 +5,13 @@ category: distribution
 status: specified
 statement: Name the tool spec-review, maintain it in a separate Git repository, and integrate it into
   the consuming project at ./spec-review as an actual Git submodule pinned to a committed revision.
+  The separate repository is the private Lucas-Steinmann/spec-review repository.
 derived_from:
 - UC-007
 related: []
 source:
   file: spec/sources/chat.md
   section: Initial request
+revision_source:
+  file: spec/sources/chat.md
+  section: Targeted artifact taxonomy cleanup, October 11, 2026

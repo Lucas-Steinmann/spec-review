@@ -15,6 +15,7 @@ The main user journeys are [browsing](../artifacts/use-cases/UC-001.yaml), [comp
 | The intended workflows | [Use case guide](use-cases.md) |
 | Observable behavior | [Requirement guide](requirements.md) |
 | The terminal, browser, and service boundaries | [Design guide](architecture.md) |
+| The screen layouts and interaction states | [UI design route](architecture.md#terminal-workspace) |
 | How revision comparison works | [Comparison route](use-cases.md#compare-revisions) and [design](architecture.md#comparison-and-links) |
 | Product and integration limits | [Constraint guide](constraints.md) |
 | Why an approach was selected | [Decision guide](decisions.md) |

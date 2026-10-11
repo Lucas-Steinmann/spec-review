@@ -4,6 +4,8 @@ title: Build the WebUI with Svelte
 status: accepted
 context: The browser frontend needs reusable components for browsing snapshots, navigating crosslinks, rendering diagrams, and comparing revisions while keeping the Python review services shared with the TUI.
 decision: Implement the browser frontend in Svelte and build it to static assets served by the Python WebUI. Reuse the backend content-block, link-resolution, snapshot, comparison, and diagram-rendering services.
+rationale: Svelte components provide a single browser workspace for the distinct repository, navigation,
+  and comparison states while the Python service remains the shared source of review behavior.
 addresses:
 - REQ-034
 - REQ-036
@@ -11,3 +13,6 @@ addresses:
 source:
   file: spec/sources/chat.md
   section: Svelte frontend
+revision_source:
+  file: spec/sources/chat.md
+  section: Targeted artifact taxonomy cleanup, October 11, 2026

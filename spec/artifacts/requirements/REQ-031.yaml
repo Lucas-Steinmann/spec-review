@@ -4,10 +4,13 @@ title: Use the current directory and spec folder by default
 category: cli
 status: specified
 statement: When --repo is omitted, use the current working directory as the repository and ./spec/ as
-  the specification directory. Allow --spec-dir to override the specification directory.
+  the specification directory. Allow --repo and --spec-dir to override these defaults explicitly.
 derived_from:
 - UC-007
 related: []
 source:
   file: spec/sources/chat.md
   section: Requested improvements, October 2, 2026
+revision_source:
+  file: spec/sources/chat.md
+  section: Targeted artifact taxonomy cleanup, October 11, 2026

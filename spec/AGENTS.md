@@ -2,6 +2,9 @@
 
 Apply these checks whenever you add, revise, or remove canonical artifacts under `spec/`.
 
+Read [`docs/artifact-authoring.md`](../docs/artifact-authoring.md) before adding or reclassifying an artifact. It defines the canonical role of each type, including the boundary between technical `design` and `ui_design`.
+Reserve `decision` for engineering choices with a meaningful rationale. Keep required behavior in `requirement`, mandatory solution boundaries in `constraint`, implementation in technical `design`, and screen behavior in `ui_design`.
+
 ## Keep the plan coherent
 
 - Search by ID and topic before adding an artifact. Reuse or extend an existing artifact when it covers the same intent; don't create duplicate or contradictory requirements, decisions, or design statements.

@@ -7,9 +7,14 @@ context: Duplicating hand-written guides into spec/generated added maintenance w
 decision: Load spec/views/ Markdown directly as Overviews and compare those committed files across revisions.
   If an older revision has only spec/generated/, use that historical file as a fallback. Validate maintained
   views without copying them.
+rationale: Reading the maintained file keeps the visible guide and its revision history identical to
+  what authors edit, while the fallback preserves access to older committed overviews.
 addresses:
 - REQ-005
 - REQ-020
 source:
   file: spec/sources/chat.md
   section: Show maintained views directly, October 10, 2026
+revision_source:
+  file: spec/sources/chat.md
+  section: Targeted artifact taxonomy cleanup, October 11, 2026

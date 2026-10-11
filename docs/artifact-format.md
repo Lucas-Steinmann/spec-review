@@ -2,14 +2,17 @@
 
 `spec-review` reads one YAML mapping per file from `spec/artifacts/`. Each artifact must have non-empty string values for `id`, `type`, and `title`. IDs are stable references across file moves. The tool does not enforce a closed list of field names: extra fields are retained in the document model, displayed, and included in comparisons.
 
+For which information belongs in each artifact type, see [Choosing a specification artifact](artifact-authoring.md).
+
 ## Artifact keys
 
 | Key or field | Meaning and display |
 |---|---|
 | `id` | Required stable identifier. Used in the artifact list and links; shown with the title. |
-| `type` | Required category key, such as `requirement` or `design`. Known types get named categories; other values get a category derived from the type string. |
+| `type` | Required category key, such as `requirement`, `design`, or `ui_design`. Known types get named categories; other values get a category derived from the type string. |
 | `title` | Required short label, shown with the ID. |
 | `actors`, `goal_refs`, `derived_from`, `related`, `addresses`, `decisions`, `verifies` | Lists of artifact references. Displayed as Markdown links. `derived_from` records derivation; use `related` for other connections. |
+| `superseded_by` | A single artifact ID, rendered as a navigable link. The replacement may have a different artifact type. |
 | `source` | Mapping with optional `file` and `section`; displayed on one line as `file#section` (or just `file` when no section is set). The metadata also helps resolve links into migrated artifacts. |
 | `description` | String rendered as Markdown, including links and supported Mermaid/PlantUML blocks. When `source.file` ends in `.json`, it is displayed as JSON code. |
 | `precondition`, `preconditions`, `postcondition`, `postconditions` | List values display as Markdown bullet lists. Other value types follow the generic rules below. |
@@ -22,6 +25,6 @@ Keys such as `statement`, `rationale`, `acceptance`, `steps`, `constraints`, and
 
 Comparisons use artifact IDs, then compare parsed field values. YAML formatting and mapping order do not count as changes; list order and value types do. Unknown fields are compared just like known fields. Maintained Markdown views are compared as text.
 
-The loader requires `id`, `type`, and `title` to be non-empty strings and requires YAML values to be JSON-compatible. Malformed files and duplicate IDs appear in Diagnostics. Duplicate IDs are excluded as link targets. Relationship references that do not resolve remain visible but do not navigate to an artifact.
+The loader requires `id`, `type`, and `title` to be non-empty strings and requires YAML values to be JSON-compatible. Malformed files and duplicate IDs appear in Diagnostics. Duplicate IDs are excluded as link targets. Relationship references that do not resolve remain visible but do not navigate to an artifact. The repository validator rejects broken relation and supersession IDs.
 
 `spec/views/` contains maintained review views shown directly in the Overviews category. Edit them alongside canonical YAML and validate with `uv run python scripts/validate_spec_views.py`. Historical `spec/generated/` files remain readable when an older revision has no matching maintained view.

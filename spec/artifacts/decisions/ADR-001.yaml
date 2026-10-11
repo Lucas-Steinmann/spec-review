@@ -2,9 +2,12 @@ id: ADR-001
 type: decision
 title: Python and Textual terminal frontend
 status: accepted
-context: Decision selected or approved during the project conversation.
+context: The review tool needs a terminal frontend while parsing, navigation, comparison, and rendering
+  also serve the browser frontend. A shared Python backend avoids duplicating those behaviors.
 decision: Use Python with Textual, Rich, and textual-image for terminal presentation, with frontend-independent
   Python backend services.
+rationale: Textual and Rich support the requested terminal interaction and formatting, while the
+  presentation boundary lets the same review data serve the WebUI.
 addresses:
 - REQ-006
 - REQ-008
@@ -12,3 +15,6 @@ addresses:
 source:
   file: spec/sources/chat.md
   section: Toolkit
+revision_source:
+  file: spec/sources/chat.md
+  section: Targeted artifact taxonomy cleanup, October 11, 2026

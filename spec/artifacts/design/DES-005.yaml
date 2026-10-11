@@ -26,8 +26,9 @@ addresses:
 - REQ-022
 - REQ-025
 - REQ-001
-decisions:
-- ADR-003
 source:
   file: spec/sources/chat.md
   section: Approved implementation plan
+revision_source:
+  file: spec/sources/chat.md
+  section: Targeted artifact taxonomy cleanup, October 11, 2026

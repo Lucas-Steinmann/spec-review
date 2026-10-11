@@ -1,12 +1,16 @@
 id: ADR-007
 type: decision
 title: Private independent repository and submodule
-status: accepted
+status: superseded
 context: Decision selected or approved during the project conversation.
 decision: Host the tool in the private GitHub repository Lucas-Steinmann/spec-review and register ./spec-review
   as a Git submodule in the companion planning project.
+superseded_by: REQ-017
 addresses:
 - REQ-017
 source:
   file: spec/sources/chat.md
   section: Repository
+revision_source:
+  file: spec/sources/chat.md
+  section: Targeted artifact taxonomy cleanup, October 11, 2026

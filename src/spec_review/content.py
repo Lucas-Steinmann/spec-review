@@ -18,6 +18,7 @@ RELATION_FIELDS = {
     "decisions",
     "verifies",
 }
+SCALAR_RELATION_FIELDS = {"superseded_by"}
 MARKDOWN = MarkdownIt("commonmark").enable("table")
 
 
@@ -90,6 +91,8 @@ def field_text(key: str, value, document: Document) -> str:
         return "\n".join(f"- {item}" for item in value) or "—"
     if key in RELATION_FIELDS and isinstance(value, list):
         return "\n".join(f"- [{v}]({v})" for v in value) or "—"
+    if key in SCALAR_RELATION_FIELDS and isinstance(value, str):
+        return f"[{value}]({value})"
     if isinstance(value, str):
         return value
     if isinstance(value, (dict, list)):

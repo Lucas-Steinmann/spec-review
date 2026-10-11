@@ -1,0 +1,22 @@
+id: DES-010
+type: design
+title: Separate design categories in review snapshots
+description: |
+  Represent software design with type design and interface design with type ui_design. Register them as
+  Technical Design and UI Design categories in terminal and browser snapshots. Use the stable artifact ID for identity and comparison,
+  so moving an artifact between categories retains links and reports a type change in both categories.
+  Interpret mockup links relative to the UI design artifact path and keep technical architecture diagrams
+  in design descriptions.
+addresses:
+- REQ-002
+- REQ-044
+related:
+- DES-002
+- UI-001
+- UI-002
+source:
+  file: spec/sources/chat.md
+  section: Artifact authoring and UI design separation, October 10, 2026
+revision_source:
+  file: spec/sources/chat.md
+  section: Targeted artifact taxonomy cleanup, October 11, 2026

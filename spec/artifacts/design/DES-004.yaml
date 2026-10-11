@@ -4,7 +4,8 @@ title: Description blocks and local diagram images
 description: |
   Extract interleaved prose, code, fenced Mermaid/PlantUML blocks, and raw standalone PlantUML
   blocks from descriptions. Read overview fences in the same way. Run local executables asynchronously
-  with timeouts and cache PNG results by source, renderer identity/version, and configuration. Present
+  without a shell, with configurable timeouts, and cache PNG results by source, language, renderer
+  identity/version, and rendering configuration. Present
   them through Kitty graphics support and release uploaded images when content leaves the view. Disabled
   rendering shows source and invokes no renderers. Failed or unsupported rendering produces local diagnostics
   instead of stopping navigation. Persist rendering preferences in the user configuration directory and
@@ -28,8 +29,10 @@ addresses:
 - REQ-028
 decisions:
 - ADR-001
-- ADR-004
 - ADR-006
 source:
   file: spec/sources/chat.md
   section: Approved implementation plan
+revision_source:
+  file: spec/sources/chat.md
+  section: Targeted artifact taxonomy cleanup, October 11, 2026

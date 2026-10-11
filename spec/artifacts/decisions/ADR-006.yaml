@@ -1,15 +1,18 @@
 id: ADR-006
 type: decision
-title: Persist settings with explicit defaults
+title: Use XDG locations for settings and render caches
 status: accepted
-context: Decision selected or approved during the project conversation.
-decision: Persist options in XDG configuration and PNGs in XDG cache directories. Default to rendering
-  enabled, inline diff, and a 30-second timeout.
+context: Settings and rendered diagrams must survive review sessions without adding generated files
+  to the repository being reviewed.
+decision: Persist options in the XDG configuration directory and PNGs in the XDG cache directory.
+rationale: User-scoped directories keep preferences and derived image data available across sessions
+  while leaving the specification tree free of local cache files.
 addresses:
-- REQ-010
-- REQ-014
 - REQ-021
 - REQ-028
 source:
   file: spec/sources/chat.md
   section: Settings
+revision_source:
+  file: spec/sources/chat.md
+  section: Targeted artifact taxonomy cleanup, October 11, 2026

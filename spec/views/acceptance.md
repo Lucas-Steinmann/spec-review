@@ -6,6 +6,8 @@ These artifacts describe expected behavior. They do not claim a test has passed.
 
 [TEST-001](../artifacts/tests/TEST-001.yaml) covers categories, artifacts, and overviews; [TEST-002](../artifacts/tests/TEST-002.yaml) covers links. [TEST-003](../artifacts/tests/TEST-003.yaml), [TEST-004](../artifacts/tests/TEST-004.yaml), and [TEST-010](../artifacts/tests/TEST-010.yaml) cover diagrams, options, and failure recovery.
 
+[TEST-021](../artifacts/tests/TEST-021.yaml) checks separate technical and UI design categories, stable IDs across reclassification, and navigation between the designs.
+
 ## Revision comparison
 
 [TEST-005](../artifacts/tests/TEST-005.yaml) checks revision selection without checkout changes. [TEST-006](../artifacts/tests/TEST-006.yaml) checks statuses and diff layouts. Browser comparison behavior appears in [TEST-011](../artifacts/tests/TEST-011.yaml), [TEST-013](../artifacts/tests/TEST-013.yaml), and [TEST-016](../artifacts/tests/TEST-016.yaml).

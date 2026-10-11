@@ -2,7 +2,7 @@
 
 This is the specification for **spec-review itself**, captured from the project conversation. It uses the same artifact format that the tool reads.
 
-- `artifacts/`: canonical YAML goals, actors, use cases, requirements, constraints, decisions, designs, and acceptance scenarios. IDs are permanent within this specification.
+- `artifacts/`: canonical YAML goals, actors, use cases, requirements, constraints, decisions, technical designs, UI designs, and acceptance scenarios. IDs are permanent within this specification.
 - `sources/chat.md`: the original user request, subsequent clarifications, and agreed implementation decisions. Each artifact names its source section.
 - `views/`: maintained Markdown reading guides shown directly in the Overviews category. They summarize the plan and route readers to canonical detail.
 
@@ -34,3 +34,4 @@ The validator reads this repository's canonical artifacts and maintained views, 
 Change the smallest relevant set of artifacts and views, then validate them. Keep requirement statements separate from design choices. Record new user decisions with their provenance; do not infer new product requirements from the current implementation.
 
 See [`AGENTS.md`](AGENTS.md) for the review checklist to follow when editing canonical specification artifacts. The user-facing [artifact format reference](../docs/artifact-format.md) documents how this tool displays fields.
+The [artifact authoring guide](../docs/artifact-authoring.md) explains what belongs in each type and how to separate technical and interface design.

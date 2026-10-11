@@ -4,10 +4,14 @@ title: Support multiple diagrams in descriptions
 category: diagrams
 status: specified
 statement: Treat diagrams as part of an artifact’s description. Support multiple diagram blocks interspersed
-  with prose in one description. Do not introduce a separate rendered_diagram rendering contract.
+  with prose in one description, including fenced Mermaid or PlantUML and existing standalone PlantUML
+  blocks. Retain historical rendered_diagram content as readable text without a separate rendering contract.
 derived_from:
 - UC-003
 related: []
 source:
   file: spec/sources/chat.md
   section: Diagram clarification
+revision_source:
+  file: spec/sources/chat.md
+  section: Targeted artifact taxonomy cleanup, October 11, 2026

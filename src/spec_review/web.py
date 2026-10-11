@@ -17,7 +17,7 @@ from .content import compare, document_blocks
 from .diagrams import DiagramRenderer
 from .github import GitHubCLI
 from .links import LinkResolver
-from .models import Block
+from .models import CATEGORIES, Block
 from .repository import Repository, RepositoryError, git
 from .settings import Settings
 
@@ -87,22 +87,9 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
         def send_json(self, data, status=200):
             if isinstance(data, dict) and "documents" in data:
                 data["categories"] = {
+                    **CATEGORIES,
                     **{
-                        "goal": "Goals",
-                        "actor": "Actors",
-                        "use_case": "Use Cases",
-                        "requirement": "Requirements",
-                        "constraint": "Constraints",
-                        "decision": "Decisions",
-                        "design": "Design",
-                        "test": "Tests",
-                        "risk": "Risks",
-                        "assumption": "Assumptions",
-                        "question": "Questions",
-                        "overview": "Overviews",
-                    },
-                    **{
-                        doc["type"]: doc["type"].replace("_", " ").title()
+                        doc["type"]: CATEGORIES.get(doc["type"], doc["type"].replace("_", " ").title())
                         for doc in data["documents"].values()
                     },
                 }
@@ -110,7 +97,7 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
                 for side in ("base", "target"):
                     snap = data[side]
                     snap["categories"] = {
-                        doc["type"]: doc["type"].replace("_", " ").title()
+                        doc["type"]: CATEGORIES.get(doc["type"], doc["type"].replace("_", " ").title())
                         for doc in snap["documents"].values()
                     }
             body = json.dumps(

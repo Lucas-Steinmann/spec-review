@@ -1,10 +1,11 @@
 id: ADR-003
 type: decision
 title: Map legacy links through source metadata
-status: accepted
+status: superseded
 context: Decision selected or approved during the project conversation.
 decision: Resolve migrated links against artifact source metadata, using an ambiguity chooser or an unresolved-target
   explanation instead of opening legacy files.
+superseded_by: REQ-019
 addresses:
 - REQ-001
 - REQ-007
@@ -12,3 +13,6 @@ addresses:
 source:
   file: spec/sources/chat.md
   section: Legacy links
+revision_source:
+  file: spec/sources/chat.md
+  section: Targeted artifact taxonomy cleanup, October 11, 2026

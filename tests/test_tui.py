@@ -42,6 +42,25 @@ async def test_browse_search_link_keyboard_and_back(history):
         await pilot.press("f6")
 
 
+async def test_technical_and_ui_design_have_separate_terminal_categories(repo):
+    write_artifact(repo, "DES-001", "design", description="Service boundary")
+    write_artifact(repo, "UI-001", "ui_design", description="Workspace layout")
+    app = SpecReviewApp(repo, Settings(rendering=False))
+    async with app.run_test(size=(140, 45)) as pilot:
+        await settle(app, pilot)
+        tabs = app.query_one("#categories", Tabs)
+        design_tab = next(key for key, value in app.category_ids.items() if value == "design")
+        ui_tab = next(key for key, value in app.category_ids.items() if value == "ui_design")
+        assert "Technical Design" in str(tabs.get_tab(design_tab).label)
+        assert "UI Design" in str(tabs.get_tab(ui_tab).label)
+        tabs.active = design_tab
+        await settle(app, pilot)
+        assert app.selected_id == "DES-001"
+        tabs.active = ui_tab
+        await settle(app, pilot)
+        assert app.selected_id == "UI-001"
+
+
 async def test_left_artifact_list_right_content_and_changed_filter(history):
     repo, _, base, target = history
     app = SpecReviewApp(repo, Settings(rendering=False))
@@ -180,7 +199,8 @@ async def test_overviews_and_snapshot_specific_links(history):
         await settle(app, pilot)
         app.begin_comparison((base, target))
         await settle(app, pilot)
-        app.query_one("#categories", Tabs).active = "cat-11"
+        overview_tab = next(key for key, value in app.category_ids.items() if value == "overview")
+        app.query_one("#categories", Tabs).active = overview_tab
         await settle(app, pilot)
         assert app.selected_id == "overview:overview.md"
         old_link = next(link for link in app.links if "GOAL-001.yaml" in link.href)

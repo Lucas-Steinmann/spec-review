@@ -1,0 +1,26 @@
+id: UI-001
+type: ui_design
+title: Revision selection and comparison workspace
+description: |
+  Open a modal with searchable, paginated local Git history showing SHA, date, and subject. Let the reviewer
+  select base and target separately, then Compare or Cancel. Mark added, changed, and deleted artifacts and
+  categories with text markers as well as color. Let the reviewer choose inline or two-panel differences;
+  keep paired rows aligned in the two-panel view. Show target-side images in inline differences and keep
+  removed diagram source readable. Offer a changed-items filter without hiding navigation.
+
+  ![Two-panel comparison mockup](../../mockups/rendered/comparison-workspace.png)
+addresses:
+- REQ-011
+- REQ-012
+- REQ-013
+- REQ-014
+- REQ-015
+- REQ-030
+related:
+- DES-003
+source:
+  file: spec/sources/chat.md
+  section: Approved implementation plan
+classification_source:
+  file: spec/sources/chat.md
+  section: Artifact authoring and UI design separation, October 10, 2026

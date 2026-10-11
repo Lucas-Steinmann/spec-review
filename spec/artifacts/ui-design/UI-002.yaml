@@ -1,0 +1,35 @@
+id: UI-002
+type: ui_design
+title: Browser repository overview and review workspace
+description: |
+  Open on a repository overview with the local folder and saved gh-accessible repositories in a left list.
+  Show open pull requests and available Actions state. Selecting a repository or pull request opens the
+  detailed revision and comparison workspace. Display documents, categories, links, diagrams, and field or
+  Markdown differences. Mark changed Markdown lines with side-specific bars and light backgrounds, and
+  changed words with stronger color. Keep filters and category buttons usable at narrow widths. Show loading
+  status while requests are pending without blocking other navigation. Give controls and dialogs accessible
+  names, show keyboard focus, and restore focus when a dialog closes.
+
+  ![Browser review workspace mockup](../../mockups/rendered/browser-workspace.png)
+addresses:
+- REQ-034
+- REQ-035
+- REQ-036
+- REQ-037
+- REQ-038
+- REQ-040
+- REQ-041
+- REQ-042
+- REQ-043
+related:
+- DES-007
+source:
+  file: spec/sources/chat.md
+  section: WebUI and GitHub support
+classification_source:
+  file: spec/sources/chat.md
+  section: Artifact authoring and UI design separation, October 10, 2026
+additional_source_sections:
+- Multi-repository overview and pull request navigation, October 7, 2026
+- WebUI sidebar usability, October 7, 2026
+- Local-only browser scope and accessibility, October 7, 2026

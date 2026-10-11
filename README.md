@@ -72,7 +72,7 @@ uv run python scripts/validate_spec_views.py
 See the [artifact format and field display reference](docs/artifact-format.md) for supported keys, special rendering rules, comparison behavior, and validation.
 
 - `spec/artifacts/**/*.yaml` (or `.yml`): one artifact per file, with string `id`, `type`, and `title`. All other fields are retained. Stable IDs identify documents across revisions and file moves.
-- Supported types: `goal`, `actor`, `use_case`, `requirement`, `constraint`, `decision`, `design`, `test`, `risk`, `assumption`, and `question`. Additional types get their own category.
+- Supported types: `goal`, `actor`, `use_case`, `requirement`, `constraint`, `decision`, `design`, `ui_design`, `test`, `risk`, `assumption`, and `question`. Additional types get their own category. See the [artifact authoring guide](docs/artifact-authoring.md) for what belongs in each type.
 - Relationship fields (`actors`, `goal_refs`, `derived_from`, `related`, `addresses`, `decisions`, `verifies`) contain artifact IDs and appear as navigable links.
 - `spec/views/**/*.md`: maintained overviews, displayed and compared as committed. Historical `spec/generated/` files remain readable where no matching view exists.
 - Optional `source: {file, section}` metadata resolves links retained from old source documents into migrated artifacts. Ambiguous targets open a chooser. Missing targets show an explanation; legacy documents are never loaded.

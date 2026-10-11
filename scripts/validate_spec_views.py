@@ -5,7 +5,7 @@ import json
 import re
 from pathlib import Path
 
-from spec_review.content import RELATION_FIELDS
+from spec_review.content import RELATION_FIELDS, SCALAR_RELATION_FIELDS
 from spec_review.links import slug
 from spec_review.repository import Repository
 
@@ -46,6 +46,10 @@ def main() -> None:
             for ident in doc.fields.get(field, []):
                 if ident not in documents:
                     raise SystemExit(f"{doc.id}.{field}: unresolved artifact {ident}")
+        for field in SCALAR_RELATION_FIELDS:
+            ident = doc.fields.get(field)
+            if ident is not None and (not isinstance(ident, str) or ident not in documents):
+                raise SystemExit(f"{doc.id}.{field}: unresolved artifact {ident}")
     artifact_paths = {(ROOT / doc.path).resolve() for doc in documents.values()}
     if not SOURCES.is_dir():
         raise SystemExit(f"Missing guide sources: {SOURCES}")

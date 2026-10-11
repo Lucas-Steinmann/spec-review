@@ -1,11 +1,15 @@
 id: ADR-011
 type: decision
 title: Default commit selections in the diff modal
-status: accepted
+status: superseded
 context: The repository default changed, while the approved modal commit defaults remain applicable.
 decision: Default commit selections to HEAD^ and HEAD, or HEAD twice when no parent exists. Require Compare to activate the selection.
+superseded_by: REQ-011
 addresses:
 - REQ-011
 source:
   file: spec/sources/chat.md
   section: Approved implementation plan
+revision_source:
+  file: spec/sources/chat.md
+  section: Targeted artifact taxonomy cleanup, October 11, 2026

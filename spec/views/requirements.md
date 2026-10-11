@@ -4,7 +4,7 @@ Requirements state observable behavior. For exact wording, status, and relations
 
 ## Browsing and content
 
-What can the reviewer read? [Canonical artifacts and overviews](../artifacts/requirements/REQ-001.yaml), [category navigation](../artifacts/requirements/REQ-002.yaml), [content display](../artifacts/requirements/REQ-004.yaml), and [generated overview access](../artifacts/requirements/REQ-005.yaml) define the entry route. [Search and history](../artifacts/requirements/REQ-025.yaml), [link activation](../artifacts/requirements/REQ-007.yaml), [diagnostics](../artifacts/requirements/REQ-027.yaml), and [formatted fields](../artifacts/requirements/REQ-033.yaml) refine it.
+What can the reviewer read? [Canonical artifacts and overviews](../artifacts/requirements/REQ-001.yaml), [category navigation](../artifacts/requirements/REQ-002.yaml), [content display](../artifacts/requirements/REQ-004.yaml), and [maintained view access](../artifacts/requirements/REQ-005.yaml) define the entry route. [REQ-044](../artifacts/requirements/REQ-044.yaml) separates technical and UI design categories. [Search and history](../artifacts/requirements/REQ-025.yaml), [link activation](../artifacts/requirements/REQ-007.yaml), [diagnostics](../artifacts/requirements/REQ-027.yaml), and [formatted fields](../artifacts/requirements/REQ-033.yaml) refine it.
 
 ## Comparison
 
@@ -12,7 +12,7 @@ What can the reviewer read? [Canonical artifacts and overviews](../artifacts/req
 
 ## Diagrams and options
 
-[Local image rendering](../artifacts/requirements/REQ-008.yaml) supports [multiple diagrams](../artifacts/requirements/REQ-009.yaml); [renderer failure tolerance](../artifacts/requirements/REQ-024.yaml) keeps source readable. [Options](../artifacts/requirements/REQ-010.yaml) and [persistent settings](../artifacts/requirements/REQ-021.yaml) govern presentation.
+[Local image rendering](../artifacts/requirements/REQ-008.yaml) supports [multiple diagrams](../artifacts/requirements/REQ-009.yaml); [responsive rendering](../artifacts/requirements/REQ-028.yaml) and [renderer failure tolerance](../artifacts/requirements/REQ-024.yaml) keep navigation and source readable. [Options](../artifacts/requirements/REQ-010.yaml) and [persistent settings](../artifacts/requirements/REQ-021.yaml) govern presentation.
 
 ## Browser and repositories
 
