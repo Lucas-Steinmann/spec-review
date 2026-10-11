@@ -6,25 +6,24 @@ actors:
 goal_refs:
 - GOAL-001
 - GOAL-002
-description: Inspect the selected local repository's specification and compare its working tree, branches, or commits in the browser review workspace.
+description: Review a selected local repository in the browser. Browse artifacts as in UC-001, follow links as in UC-002, and inspect diagrams as in UC-003. Select revisions and inspect changed content in the browser workspace.
 preconditions:
 - The selected local repository folder contains a specification or locally available historical revisions.
 main_flow: |-
   1. Open the browser application overview and select the local folder.
   2. Open its detailed review view and select the working tree, a branch, or a commit.
-  3. Read a revision or compare two selected revisions.
-  4. Continue navigating while a comparison loads, then inspect its results.
-postconditions: The browser displays the local specification and requested comparison with keyboard-accessible controls. The overview remains available.
-addresses:
-- REQ-034
-- REQ-036
-- REQ-037
-- REQ-038
-- REQ-041
-- REQ-042
-- REQ-043
-- REQ-045
+  3. Review the selected revision or choose two revisions to compare.
+  4. Browse its artifacts, follow links, and inspect diagrams or comparison results.
+  5. Continue navigating while a comparison loads.
+postconditions: The browser displays the local specification and requested comparison. Browser-specific interaction, accessibility, and loading behavior is defined by the related requirements and UI design.
+related:
+- UC-001
+- UC-002
+- UC-003
 source:
   - type: conversation
     file: "spec/sources/chat.md"
     section: "Local-only browser scope and accessibility, October 7, 2026"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Scope, journey overlap, and computed backlinks, October 12, 2026"

@@ -21,6 +21,8 @@ For which information belongs in each artifact type, see [Choosing a specificati
 
 Keys such as `statement`, `rationale`, `acceptance`, `steps`, `constraints`, and `status` are ordinary fields. Their values are preserved and displayed by the generic rules unless a rule above applies. Unknown fields are retained for forward compatibility; see the authoring guide before adding a new field rather than treating generic display as an invitation to create ad hoc headings.
 
+The terminal and browser document views compute a **Referenced by** section from the current snapshot's relationship fields. This is a navigational reverse index, not a field to store in YAML; keep only the canonical relationship at its source.
+
 Use `source` for provenance. Do not add one-off fields such as `classification_source` or `additional_source_sections`; add a typed entry to the `source` list only when it records a distinct, useful origin. Prefer the established types `conversation`, `document`, `issue`, and `url`. Keep `file` and `section` separate (for example, `file: spec/sources/chat.md` and `section: WebUI and GitHub support`) and avoid free-form explanatory text in source entries.
 
 ## Comparisons and validation

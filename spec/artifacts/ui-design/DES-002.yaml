@@ -6,6 +6,8 @@ description: |
   and scrollable category tabs along the bottom. Include Overviews, Diff, and Options. Render prose and
   headings with terminal Markdown styling. Support mouse selection, Tab and F6 focus movement, arrows,
   content scrolling, ID/title search, previous/next link selection, Enter activation, and navigation history.
+  In the document pane, show a computed Referenced by section with navigable links to artifacts that point
+  to the current artifact through relationship fields in the selected snapshot.
   Status colors are supplemented by +, ~, and − markers.
 
   ![Terminal review workspace mockup](../../mockups/rendered/terminal-workspace.png)
@@ -20,6 +22,7 @@ addresses:
 - REQ-013
 - REQ-025
 - REQ-030
+- REQ-046
 decisions:
 - ADR-001
 related:

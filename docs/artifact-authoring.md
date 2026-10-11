@@ -39,6 +39,14 @@ A browser review feature may need several linked artifacts at different levels:
 
 Link the layers with `goal_refs`, `derived_from`, `addresses`, `verifies`, and `related` as appropriate. Shared scope does not mean the artifacts should repeat one another. When an artifact starts explaining both how a screen looks and how data is fetched, split it into `ui_design` and `design` and link them with `related`.
 
+## Scope, overlap, and relationships
+
+State the product surface, platform, or operating mode of a use case whenever its flow or behavior is surface-specific. For example, distinguish terminal interaction from browser interaction when controls or navigation differ. Keep shared user outcomes in shared requirements; put surface-specific behavior in the relevant requirement or `ui_design`. When adding a surface or journey, review existing artifacts that describe the same capabilities and update or supersede them where needed.
+
+Before adding an artifact, compare its intent with existing artifacts. Extend an existing artifact when the new detail is part of the same outcome and has no independent lifecycle, rationale, scope, or verification. Keep an artifact separate when it has an independently meaningful outcome, scope, or acceptance path. A distinct subjourney may build on a broader journey: link the journeys and state their relationship rather than repeating the broader flow. A journey may mention a related journey at the relevant step when it summarizes or hands off to that journey.
+
+Store each relationship in its canonical direction using the field that expresses its meaning. For example, requirements point to their originating journey with `derived_from`; designs point to requirements they realize with `addresses`; tests point to requirements with `verifies`. Do not copy inverse links into the other artifact merely for navigation. Backlinks are derived from canonical relationship fields and should be computed by the reader or a view, not manually maintained. Use `related` only for a meaningful connection that has no more specific relationship field.
+
 Mockup source lives in `spec/mockups/src/`; rendered previews live in `spec/mockups/rendered/`. Embed a preview in the relevant `ui_design` artifact. State the important interaction and accessibility behavior in text, since a static image cannot specify it. Keep Mermaid or PlantUML in technical `design` artifacts when a relationship or sequence is clearer as a diagram.
 
 ## Maintenance checks
@@ -47,6 +55,7 @@ Mockup source lives in `spec/mockups/src/`; rendered previews live in `spec/mock
 - Preserve source provenance and mark a replaced decision or constraint as superseded, with a `superseded_by` link to an artifact of any type. A former decision can point to the requirement that now owns its rule; supersession changes the artifact's role, not the product behavior. Do not erase useful historical reasoning.
 - Keep requirements about observable outcomes and designs about choices. Include measurable targets where a quality claim needs one.
 - Link active requirements to the relevant journey, technical or UI design, and acceptance scenario. A requirement can address both design types when both are needed.
+- Check that journeys and requirements identify applicable surfaces or modes where behavior differs, that new journeys have been reconciled with overlapping journeys, and that relationships use canonical direction rather than duplicated backlinks.
 - Update affected views and run `uv run python scripts/validate_spec_views.py` after editing the specification.
 
 For YAML field syntax and display rules, see [Artifact format](artifact-format.md). For this repository's specific editing rules, see [spec/AGENTS.md](../spec/AGENTS.md).

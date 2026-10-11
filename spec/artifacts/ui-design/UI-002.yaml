@@ -10,7 +10,9 @@ description: |
   status while requests are pending without blocking other navigation. Provide Hide superseded, checked by
   default, and the Changes only comparison filter; retain both checkbox values across page reloads. Give
   controls and dialogs accessible names, show keyboard focus, and restore focus when a dialog closes. In the
-  revision bar, place a Review/Compare selector before the target revision selector and retain its value
+  document view, show a computed Referenced by section with navigable links to artifacts that point to the
+  current artifact through relationship fields in the selected snapshot. Place a Review/Compare selector
+  before the target revision selector in the revision bar and retain its value
   across page reloads. Hide the base selector in Review mode and show it in Compare mode. Confirm applies the selection for the chosen mode;
   changing a selection alone does not load a revision or comparison.
 
@@ -26,6 +28,7 @@ addresses:
 - REQ-042
 - REQ-043
 - REQ-045
+- REQ-046
 tests:
 - TEST-023
 related:

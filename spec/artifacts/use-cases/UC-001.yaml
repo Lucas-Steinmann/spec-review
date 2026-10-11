@@ -5,17 +5,23 @@ actors:
 - ACTOR-001
 goal_refs:
 - GOAL-001
-description: Inspect the plan by artifact category and select a document to read.
+description: In the terminal or browser interface, inspect the plan by artifact category and select a document to read.
 preconditions:
 - The selected repository contains a specification, or selected historical revisions are available locally.
 main_flow: |-
   1. Open the specification repository in spec-review.
-  2. Choose Goals, Use Cases, or another category in the bottom panel.
-  3. Select an artifact from the list on the left.
-  4. Read its content in the main pane on the right.
-  5. Choose Overviews and read a maintained Markdown view.
+  2. Choose Goals, Use Cases, or another artifact category.
+  3. Select an artifact from the category list.
+  4. Read its content, including any diagrams described by UC-003.
+  5. Follow links in the document, including the computed list of artifacts that reference it.
+  6. Choose Overviews and read a maintained Markdown view.
 postconditions: The selected document is readable with headings and links highlighted.
+related:
+- UC-003
 source:
   - type: conversation
     file: "spec/sources/chat.md"
     section: "Requested improvements, October 2, 2026"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Scope, journey overlap, and computed backlinks, October 12, 2026"

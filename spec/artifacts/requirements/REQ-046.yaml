@@ -1,0 +1,19 @@
+id: REQ-046
+type: requirement
+title: Show computed backlinks to related artifacts
+category: browsing
+status: specified
+statement: In the terminal and browser document views, show navigable backlinks to artifacts that reference the selected artifact through canonical relationship fields. Compute the list from the current snapshot so authors do not need to maintain inverse links.
+derived_from:
+- UC-001
+addresses:
+- DES-001
+- DES-002
+- DES-007
+- UI-002
+verifies:
+- TEST-025
+source:
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Scope, journey overlap, and computed backlinks, October 12, 2026"

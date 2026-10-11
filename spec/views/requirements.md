@@ -6,6 +6,8 @@ Requirements state observable behavior. For exact wording, status, and relations
 
 What can the reviewer read? [Canonical artifacts and overviews](../artifacts/requirements/REQ-001.yaml), [category navigation](../artifacts/requirements/REQ-002.yaml), [content display and field formatting, including typed source-reference lists](../artifacts/requirements/REQ-004.yaml), and [maintained view access](../artifacts/requirements/REQ-005.yaml) define the entry route. [REQ-044](../artifacts/requirements/REQ-044.yaml) separates technical and UI design categories. [Search and history](../artifacts/requirements/REQ-025.yaml), [link activation](../artifacts/requirements/REQ-007.yaml), and [diagnostics](../artifacts/requirements/REQ-027.yaml) refine it.
 
+[REQ-046](../artifacts/requirements/REQ-046.yaml) adds computed, navigable backlinks to artifacts that reference the current artifact in the selected snapshot.
+
 ## Comparison
 
 [Revision selection](../artifacts/requirements/REQ-011.yaml) and [checkout safety](../artifacts/requirements/REQ-023.yaml) precede [stable-ID comparison](../artifacts/requirements/REQ-018.yaml). [Statuses](../artifacts/requirements/REQ-012.yaml), [changed categories](../artifacts/requirements/REQ-013.yaml), [diff layouts](../artifacts/requirements/REQ-014.yaml), and [stored overview comparison](../artifacts/requirements/REQ-020.yaml) make changes visible. [Snapshot provenance](../artifacts/requirements/REQ-022.yaml) keeps followed links in the right revision.

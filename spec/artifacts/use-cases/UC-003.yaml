@@ -5,16 +5,19 @@ actors:
 - ACTOR-001
 goal_refs:
 - GOAL-001
-description: Review a description containing prose and one or more Mermaid or PlantUML diagrams in Kitty.
+description: Continue from the artifact-reading journey in [UC-001](UC-001) and review its prose alongside one or more Mermaid or PlantUML diagrams in the terminal or browser interface.
 preconditions:
 - The selected repository contains a specification, or selected historical revisions are available locally.
 main_flow: |-
   1. Select an artifact containing diagram blocks in its description, or an overview containing such blocks.
-  2. Keep diagram rendering enabled.
-  3. Render diagram source using local mmdc or PlantUML.
-  4. Read the images alongside the surrounding prose and source.
+  2. In the terminal interface, keep diagram rendering enabled; in the browser, open the description.
+  3. Read each rendered image alongside the surrounding prose and diagram source.
+  4. When image rendering is unavailable or disabled, read the diagram source.
 postconditions: Every supported diagram block is available for review without a remote rendering service.
 source:
   - type: conversation
     file: "spec/sources/chat.md"
     section: "Diagram clarification"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Scope, journey overlap, and computed backlinks, October 12, 2026"

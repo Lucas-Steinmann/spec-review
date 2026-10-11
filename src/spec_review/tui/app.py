@@ -471,7 +471,7 @@ class SpecReviewApp(App):
         await parent.mount(
             Static(Text(f"{snapshot.revision} · {doc.path}"), classes="help")
         )
-        for heading, items in document_blocks(doc):
+        for heading, items in document_blocks(doc, snapshot):
             if heading:
                 await parent.mount(
                     Static(Text(heading, style="bold"), classes="field-heading")

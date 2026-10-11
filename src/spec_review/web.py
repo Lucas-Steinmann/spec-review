@@ -61,7 +61,7 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
             raise RepositoryError("Specification image must stay inside the spec directory")
         return path.as_posix()
 
-    def sections(document):
+    def sections(document, snapshot):
         return [
             {
                 "heading": heading,
@@ -80,7 +80,7 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
                     for block in blocks
                 ],
             }
-            for heading, blocks in document_blocks(document)
+            for heading, blocks in document_blocks(document, snapshot)
         ]
 
     class Handler(BaseHTTPRequestHandler):
@@ -168,7 +168,7 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
                         {
                             "document": asdict(doc),
                             "revision": snapshot.revision,
-                            "sections": sections(doc),
+                            "sections": sections(doc, snapshot),
                         }
                     )
                 if parsed.path in {"/api/local/link", "/api/gh/link"}:

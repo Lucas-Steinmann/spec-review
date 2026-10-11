@@ -5,7 +5,7 @@ actors:
 - ACTOR-001
 goal_refs:
 - GOAL-002
-description: Review differences in artifact content and diagrams.
+description: In the terminal interface, review differences in artifact content and diagrams after selecting revisions as described in UC-005. Browser comparison is covered by UC-008.
 preconditions:
 - The selected repository contains a specification, or selected historical revisions are available locally.
 main_flow: |-
@@ -20,3 +20,6 @@ source:
   - type: conversation
     file: "spec/sources/chat.md"
     section: "Requested improvements, October 2, 2026"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Scope, journey overlap, and computed backlinks, October 12, 2026"

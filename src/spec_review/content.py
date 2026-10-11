@@ -129,7 +129,7 @@ def field_blocks(key: str, value, doc: Document) -> list[Block]:
     return blocks(text)
 
 
-def document_blocks(doc: Document) -> list[tuple[str, list[Block]]]:
+def document_blocks(doc: Document, snapshot=None) -> list[tuple[str, list[Block]]]:
     if doc.error:
         return [
             ("Error", [Block("markdown", doc.error)]),
@@ -137,11 +137,27 @@ def document_blocks(doc: Document) -> list[tuple[str, list[Block]]]:
         ]
     if doc.type == "overview":
         return [("", blocks(doc.text))]
-    return [
+    result = [
         (key.replace("_", " ").title(), field_blocks(key, value, doc))
         for key, value in doc.fields.items()
         if key not in {"id", "type", "title"}
     ]
+    if snapshot:
+        backlinks = []
+        relation_fields = RELATION_FIELDS | SCALAR_RELATION_FIELDS
+        for source in snapshot.documents.values():
+            if source.id == doc.id:
+                continue
+            for field in relation_fields:
+                value = source.fields.get(field)
+                refs = value if isinstance(value, list) else [value]
+                if doc.id in refs:
+                    backlinks.append(
+                        f"- [{source.id} — {source.title}]({source.id}) ({field.replace('_', ' ')})"
+                    )
+        if backlinks:
+            result.append(("Referenced by", blocks("\n".join(sorted(backlinks)))))
+    return result
 
 
 def compare(base, target) -> Comparison:

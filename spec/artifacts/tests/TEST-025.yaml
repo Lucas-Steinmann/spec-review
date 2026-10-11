@@ -1,0 +1,15 @@
+id: TEST-025
+type: test
+title: Navigate computed backlinks in terminal and browser
+verifies:
+- REQ-046
+description: |
+  Given a snapshot where requirements, designs, decisions, or tests reference a selected use case through
+  canonical relationship fields, open that use case in the terminal and browser document views. Both views
+  show a Referenced by section with navigable links to each referencing artifact. Activate a backlink and
+  confirm it opens the referenced artifact in the same snapshot. Confirm a revision without incoming
+  references has no Referenced by section, and that no inverse relationship fields need to be stored.
+source:
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Scope, journey overlap, and computed backlinks, October 12, 2026"

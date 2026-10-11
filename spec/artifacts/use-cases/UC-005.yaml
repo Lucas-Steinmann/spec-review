@@ -5,7 +5,7 @@ actors:
 - ACTOR-001
 goal_refs:
 - GOAL-002
-description: Choose a base revision and a target revision from Git history.
+description: In the terminal interface, choose a base revision and a target revision from Git history.
 preconditions:
 - The selected repository contains a specification, or selected historical revisions are available locally.
 main_flow: |-
@@ -18,3 +18,6 @@ source:
   - type: conversation
     file: "spec/sources/chat.md"
     section: "Initial request"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Scope, journey overlap, and computed backlinks, October 12, 2026"

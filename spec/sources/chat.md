@@ -251,3 +251,21 @@ Represent provenance as a typed list under `source`, render references as a read
 > I did not mean that you have to conflate file and section into an "identifier" field. You can reverse that. I think it is better to keep them separate instead of having to do some weird parsing. Just add the "type" and also show the "type" in the UI.
 
 Use separate `type`, `file`, and optional `section` fields for each source reference. Display the type together with the file and section in the reviewer.
+
+## Scope, journey overlap, and computed backlinks, October 12, 2026
+
+> I'm currently trying to clean up the specs in spec/ and make sure the rules on creating them are clear, such that agents produce high quality spec artifacts. I found
+> following issues and want to you to a) fix them and b) find the gap in the agent instructions/docs which let them happen in the first place:
+> 1. ACTOR-001: "The terminal reviewer may use Kitty for diagram images." -> This seems to me like a completely unnecessary detail in this section. Why was that ever
+> included here. Seems to me like a requirement (see images in terminal) or even ADR (use kitty feature).
+> 2. UC-001 and UC-003: Does UC-001 not contain UC-003?
+> 3. When we added WebUI it seems to me that many use cases where not adapted, to make sure it is clear whether their scope is Web or TUI. E.g. UC-004 describes an
+> option pane, which does not exist in the WebUI. They also meantioned keyboard-navigation which only exists in the TUI. It also seems that UC-008 was added which
+> repeats some of the features of the previous UC. Why wasn't it integrated in the previous Use cases?
+> 4. I found that UC-008 and UC-009 contain links to requirements but no other use case does. Can we add back-links to the UIs? E.g. when I have a use case, list all
+> related requirements, ADRs, etc.? Does that make sense? We don't have to maintain them right? They should be computable.
+>
+> I stopped reading after use cases, since these are probably enough problems for a first session. Plese start with b) and after I have approved your changes to the
+> instructions also apply them to all spec artifacts. If your instructions could be formulated generalically to capture all artifacts instead of just use cases, do so.
+
+The user approved generalizing the scope, overlap, and relationship rules to the specification health review skill. UC-001 and UC-003 are both useful: UC-001 should point from its diagram-reading step to UC-003, and UC-003 should identify UC-001 as its preceding journey. Keep relationships in their canonical direction and derive reverse navigation links from those relationships rather than maintaining duplicated links. Apply the guidance across the relevant artifacts and maintained views.

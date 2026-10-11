@@ -5,7 +5,7 @@ actors:
 - ACTOR-001
 goal_refs:
 - GOAL-003
-description: Use this repository as a concrete example of the format and review workflow.
+description: Use this repository as a concrete example of the format and review workflow in the terminal interface.
 preconditions:
 - The selected repository contains a specification, or selected historical revisions are available locally.
 main_flow: |-
@@ -19,3 +19,6 @@ source:
   - type: conversation
     file: "spec/sources/chat.md"
     section: "Dogfooding"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Scope, journey overlap, and computed backlinks, October 12, 2026"

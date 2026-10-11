@@ -5,7 +5,7 @@ actors:
 - ACTOR-001
 goal_refs:
 - GOAL-001
-description: Adjust rendering and diff layout through Options.
+description: In the terminal interface, adjust rendering and diff layout through Options.
 preconditions:
 - The selected repository contains a specification, or selected historical revisions are available locally.
 main_flow: |-
@@ -20,3 +20,6 @@ source:
   - type: conversation
     file: "spec/sources/chat.md"
     section: "Initial request"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Scope, journey overlap, and computed backlinks, October 12, 2026"

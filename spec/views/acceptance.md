@@ -8,6 +8,8 @@ These artifacts describe expected behavior. They do not claim a test has passed.
 
 [TEST-021](../artifacts/tests/TEST-021.yaml) checks separate technical and UI design categories, stable IDs across reclassification, and navigation between the designs.
 
+[TEST-025](../artifacts/tests/TEST-025.yaml) covers computed incoming relationship links in both document views.
+
 ## Revision comparison
 
 [TEST-005](../artifacts/tests/TEST-005.yaml) checks revision selection without checkout changes. [TEST-006](../artifacts/tests/TEST-006.yaml) checks statuses and diff layouts. Browser comparison behavior appears in [TEST-011](../artifacts/tests/TEST-011.yaml), [TEST-013](../artifacts/tests/TEST-013.yaml), and [TEST-016](../artifacts/tests/TEST-016.yaml).

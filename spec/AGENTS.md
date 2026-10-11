@@ -8,7 +8,9 @@ Reserve `decision` for engineering choices with a meaningful rationale. Keep req
 ## Keep the plan coherent
 
 - Search by ID and topic before adding an artifact. Reuse or extend an existing artifact when it covers the same intent; don't create duplicate or contradictory requirements, decisions, or design statements.
+- State the applicable product surface or mode in a journey whenever its flow differs by interface. When adding a journey or surface, review overlapping artifacts and decide whether to extend an existing artifact or retain a separately traceable journey; link distinct journeys and explain their relationship.
 - Keep each fact in its canonical home. Avoid copying plan details into another artifact; link to the relevant artifact or section instead. A short summary is fine when it helps the reader, provided it points to the canonical detail.
+- Store relationships in their canonical direction and use the field that expresses their meaning. Do not maintain inverse links for navigation; backlinks should be derived from canonical relationships.
 - Don't add conversational answers or incidental discussion to the plan unless they affect a goal, requirement, constraint, decision, design, risk, assumption, question, or acceptance scenario.
 - Prefer a concise table or plantuml or mermaid diagram when it communicates relationships, comparisons, sequences, or responsibilities more clearly than prose. Keep necessary explanations in prose where a visual would be less clear.
 - When revising a plan, preserve information that is still current and useful. Remove or replace only information that is obsolete, duplicated, or explicitly superseded; retain the provenance and a clear link to replacement artifacts where relevant.
