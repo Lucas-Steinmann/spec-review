@@ -220,3 +220,11 @@ Keep a targeted taxonomy cleanup. Label technical `design` artifacts **Technical
 > Please implement a way to hide superseded artifacts. Also make the checkbox(es) persist across page reloads
 
 In the browser review sidebar, provide a Hide superseded checkbox that starts checked and filters artifacts marked `status: superseded`. Persist it and the existing Changes only checkbox in browser local storage, shared across repositories. Default Changes only to unchecked. Both controls retain their saved values after a page reload.
+
+## Browser revision mode selector, October 11, 2026
+
+> Please change the review/vs. compare ui a bit. Make Review/Compare a dropdown before the version selection. Depending on whether review or compare is selected hide the "base" dropdown and add a confirm button to trigger the comparison/review/version selection.
+
+In the browser detailed review view, put a Review/Compare selector before target revision selection. Hide Base in Review mode and show it in Compare mode. Apply a selected revision or revision pair only after the user presses Confirm.
+
+Retain the selected Review/Compare mode across browser page reloads.

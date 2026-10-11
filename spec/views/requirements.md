@@ -16,7 +16,7 @@ What can the reviewer read? [Canonical artifacts and overviews](../artifacts/req
 
 ## Browser and repositories
 
-[WebUI review](../artifacts/requirements/REQ-034.yaml), [saved repository navigation](../artifacts/requirements/REQ-035.yaml), [GitHub revisions](../artifacts/requirements/REQ-039.yaml), and [pull requests and Actions](../artifacts/requirements/REQ-040.yaml) define the browser scope. [Responsive comparisons](../artifacts/requirements/REQ-041.yaml), [keyboard access](../artifacts/requirements/REQ-042.yaml), and [navigation during loading](../artifacts/requirements/REQ-043.yaml) define usability.
+[WebUI review](../artifacts/requirements/REQ-034.yaml) defines the persistent Review/Compare selector and confirm-driven revision loading, alongside [saved repository navigation](../artifacts/requirements/REQ-035.yaml), [GitHub revisions](../artifacts/requirements/REQ-039.yaml), and [pull requests and Actions](../artifacts/requirements/REQ-040.yaml). [Responsive comparisons](../artifacts/requirements/REQ-041.yaml), [keyboard access](../artifacts/requirements/REQ-042.yaml), and [navigation during loading](../artifacts/requirements/REQ-043.yaml) define usability.
 
 [REQ-045](../artifacts/requirements/REQ-045.yaml) adds a default-on filter for superseded artifacts and persistence for both browser sidebar filters.
 

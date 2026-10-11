@@ -24,6 +24,9 @@
   let addBusy = false;
   let revisions = [];
   let revision = '';
+  let reviewMode = ['review', 'compare'].includes(localStorage.getItem('spec-review-mode'))
+    ? localStorage.getItem('spec-review-mode')
+    : 'review';
   let base = '';
   let snapshot = null;
   let comparison = null;
@@ -146,6 +149,7 @@
       await loadGithubRevisions();
       if (request !== viewRequest || page !== 'detail') return;
       if (pull) {
+        reviewMode = 'compare';
         base = pull.base; revision = pull.head;
         await compareRevisions();
       } else await loadSnapshot();
@@ -343,7 +347,11 @@
   async function revisionChanged() {
     const selected = revisions.find((item) => item.value === revision);
     if (selected?.base) base = selected.base;
-    await loadSnapshot();
+  }
+
+  async function confirmSelection() {
+    if (reviewMode === 'compare') await compareRevisions();
+    else await loadSnapshot();
   }
 
   function showError(problem) { error = problem?.message || String(problem); }
@@ -397,18 +405,23 @@
 </dialog>
 {:else}
 <nav class="revision-bar">
+  <label>Mode
+    <select aria-label="Review or compare" bind:value={reviewMode} on:change={() => localStorage.setItem('spec-review-mode', reviewMode)}>
+      <option value="review">Review</option>
+      <option value="compare">Compare</option>
+    </select>
+  </label>
   <label>Target
     <select aria-label="Target revision" bind:value={revision} on:change={revisionChanged}>
       {#each revisions as item}<option value={item.value}>{item.label}</option>{/each}
     </select>
   </label>
-  <label>Base
+  {#if reviewMode === 'compare'}<label>Base
     <select aria-label="Base revision" bind:value={base}>
       {#each revisions as item}<option value={item.value}>{item.label}</option>{/each}
     </select>
-  </label>
-  <button class="primary" on:click={compareRevisions} disabled={busy}>Compare</button>
-  <button on:click={loadSnapshot} disabled={busy}>Review version</button>
+  </label>{/if}
+  <button class="primary" on:click={confirmSelection} disabled={busy}>Confirm</button>
   <span class="spacer"></span>
   {#if history.length}<button on:click={goBack}>← Back</button>{/if}
   {#if comparison}<span class="revision-summary">{comparison.base.revision.slice(0, 10)} → {comparison.target.revision.slice(0, 10)}</span>{/if}

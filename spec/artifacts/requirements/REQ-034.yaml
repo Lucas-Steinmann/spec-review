@@ -3,7 +3,7 @@ type: requirement
 title: Browse and compare specifications in a WebUI
 category: browsing
 status: specified
-statement: Provide a browser overview with the selected local repository in a left sidebar and an action to open its detailed review. Use the same snapshot and comparison services as the terminal interface. Selecting a revision loads and displays that revision's documents. Allow comparisons between any selected local revisions, including the working tree, and mark each category that contains changed, added, or deleted documents.
+statement: Provide a browser overview with the selected local repository in a left sidebar and an action to open its detailed review. Use the same snapshot and comparison services as the terminal interface. In the detailed view, let the reviewer choose Review or Compare before selecting a target revision, and retain that choice across page reloads. In Review mode, hide the base revision selector; in Compare mode, show it. Apply the chosen mode and revisions only when the reviewer confirms, then display the selected revision's documents or the comparison. Allow comparisons between any selected local revisions, including the working tree, and mark each category that contains changed, added, or deleted documents.
 derived_from:
 - UC-008
 related:

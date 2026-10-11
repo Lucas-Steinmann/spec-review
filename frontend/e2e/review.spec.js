@@ -87,8 +87,11 @@ test('gh CLI repositories, saved overview, Actions, and pull comparison', async 
   await expect(page.getByRole('combobox', { name: 'Target revision' })).toHaveValue('main');
   await expect.poll(() => loadedRevisions.at(-1)).toBe('main');
   await page.getByRole('combobox', { name: 'Target revision' }).selectOption('feature');
+  await expect.poll(() => loadedRevisions.at(-1)).toBe('main');
+  await page.getByRole('button', { name: 'Confirm' }).click();
   await expect.poll(() => loadedRevisions.at(-1)).toBe('feature');
   await page.getByRole('combobox', { name: 'Target revision' }).selectOption('base');
+  await page.getByRole('button', { name: 'Confirm' }).click();
   await expect.poll(() => loadedRevisions.at(-1)).toBe('base');
   expect(loadedRevisions).toEqual(['main', 'feature', 'base']);
   await page.getByRole('button', { name: /Overview/ }).click();
@@ -99,6 +102,7 @@ test('gh CLI repositories, saved overview, Actions, and pull comparison', async 
   await expect(page.locator('.revision-summary')).toContainText('base → head');
   await expect(page.locator('.category-list button').first()).toContainText('★');
   await page.getByRole('combobox', { name: 'Target revision' }).selectOption('main');
+  await page.getByRole('button', { name: 'Confirm' }).click();
   await expect(page.locator('.document-list')).toContainText('GOAL-001');
 });
 
@@ -183,6 +187,7 @@ test('local revision selection, both working-tree directions, filter, and render
   await page.getByRole('button', { name: 'Open review' }).click();
   await expect(page.locator('.document-list')).toContainText('GOAL-001');
   await page.getByRole('combobox', { name: 'Target revision' }).selectOption('base');
+  await page.getByRole('button', { name: 'Confirm' }).click();
   await page.getByRole('button', { name: 'Use Cases' }).click();
   await page.locator('.document-item', { hasText: 'UC-001' }).click();
   await expect(page.locator('.content-pane')).toContainText('Review use case');
@@ -205,7 +210,8 @@ test('local revision selection, both working-tree directions, filter, and render
   expect(elapsed).toBeLessThan(200);
 
   await page.getByRole('combobox', { name: 'Target revision' }).selectOption('');
-  await page.getByRole('button', { name: 'Compare', exact: true }).click();
+  await page.getByRole('combobox', { name: 'Review or compare' }).selectOption('compare');
+  await page.getByRole('button', { name: 'Confirm' }).click();
   await expect(page.locator('.category-list button').first()).toContainText('★');
   await page.locator('.document-item', { hasText: 'GOAL-001' }).click();
   await expect(page.locator('.diff-side')).toHaveCount(2);
@@ -225,8 +231,50 @@ test('local revision selection, both working-tree directions, filter, and render
 
   await page.getByRole('combobox', { name: 'Base revision' }).selectOption('');
   await page.getByRole('combobox', { name: 'Target revision' }).selectOption('base');
-  await page.getByRole('button', { name: 'Compare', exact: true }).click();
+  await page.getByRole('combobox', { name: 'Review or compare' }).selectOption('compare');
+  await page.getByRole('button', { name: 'Confirm' }).click();
   expect(comparisons).toEqual([['base', ''], ['', 'base']]);
+});
+
+test('review and compare modes apply selected revisions only on confirmation', async ({ page }) => {
+  const snapshots = [];
+  const comparisons = [];
+  await mockApi(page, (url) => {
+    if (url.pathname === '/api/status') return { repo: '/tmp/sample', spec_dir: 'spec' };
+    if (url.pathname === '/api/local/commits') return { branches: [], commits: [{ sha: 'target', subject: 'Target' }, { sha: 'base', subject: 'Base' }] };
+    if (url.pathname === '/api/local/snapshot') {
+      snapshots.push(url.searchParams.get('ref'));
+      return snapshot(url.searchParams.get('ref') || 'working tree');
+    }
+    if (url.pathname === '/api/local/compare') {
+      comparisons.push([url.searchParams.get('base'), url.searchParams.get('target')]);
+      return comparison(url.searchParams.get('base'), url.searchParams.get('target'));
+    }
+  });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Open review' }).click();
+  const mode = page.getByRole('combobox', { name: 'Review or compare' });
+  const target = page.getByRole('combobox', { name: 'Target revision' });
+  await expect(mode).toHaveValue('review');
+  await expect(page.getByRole('combobox', { name: 'Base revision' })).toHaveCount(0);
+  await target.selectOption('target');
+  expect(snapshots).toEqual(['']);
+  await page.getByRole('button', { name: 'Confirm' }).click();
+  await expect.poll(() => snapshots.at(-1)).toBe('target');
+
+  await mode.selectOption('compare');
+  await expect(page.getByRole('combobox', { name: 'Base revision' })).toBeVisible();
+  await page.getByRole('combobox', { name: 'Base revision' }).selectOption('base');
+  await target.selectOption('');
+  expect(comparisons).toEqual([]);
+  await page.getByRole('button', { name: 'Confirm' }).click();
+  await expect.poll(() => comparisons.length).toBe(1);
+  expect(comparisons).toEqual([['base', '']]);
+
+  await page.reload();
+  await page.getByRole('button', { name: 'Open review' }).click();
+  await expect(page.getByRole('combobox', { name: 'Review or compare' })).toHaveValue('compare');
+  await expect(page.getByRole('combobox', { name: 'Base revision' })).toBeVisible();
 });
 
 test('superseded and changes-only filters persist across reloads', async ({ page }) => {
@@ -261,7 +309,8 @@ test('superseded and changes-only filters persist across reloads', async ({ page
 
   await hideSuperseded.uncheck();
   await expect(page.locator('.document-list')).toContainText('GOAL-OLD');
-  await page.getByRole('button', { name: 'Compare', exact: true }).click();
+  await page.getByRole('combobox', { name: 'Review or compare' }).selectOption('compare');
+  await page.getByRole('button', { name: 'Confirm' }).click();
   const changesOnly = page.getByRole('checkbox', { name: 'Changes only' });
   await expect(changesOnly).not.toBeChecked();
   await changesOnly.check();
@@ -271,7 +320,8 @@ test('superseded and changes-only filters persist across reloads', async ({ page
   await page.getByRole('button', { name: 'Open review' }).click();
   await expect(page.getByRole('checkbox', { name: 'Hide superseded' })).not.toBeChecked();
   await expect(page.locator('.document-list')).toContainText('GOAL-OLD');
-  await page.getByRole('button', { name: 'Compare', exact: true }).click();
+  await page.getByRole('combobox', { name: 'Review or compare' }).selectOption('compare');
+  await page.getByRole('button', { name: 'Confirm' }).click();
   await expect(page.getByRole('checkbox', { name: 'Changes only' })).toBeChecked();
   await expect(page.locator('.document-list')).toContainText('GOAL-001');
   await expect(page.locator('.document-list')).not.toContainText('GOAL-OLD');
@@ -348,6 +398,8 @@ test('keyboard opens review and navigates a named link dialog with focus return'
   await tabTo(page, page.getByRole('combobox', { name: 'Target revision' }));
   await expect(page.getByRole('combobox', { name: 'Target revision' })).toBeFocused();
   await page.keyboard.press('ArrowDown');
+  await expect.poll(() => selectedRevisions.at(-1)).toBe('');
+  await page.getByRole('button', { name: 'Confirm' }).click();
   await expect.poll(() => selectedRevisions.at(-1)).toBe('base');
   await tabTo(page, page.getByRole('button', { name: 'Use Cases' }));
   await expect(page.getByRole('button', { name: 'Use Cases' })).toBeFocused();
@@ -390,7 +442,8 @@ test('a pending local comparison leaves filtering and overview navigation availa
   });
   await page.goto('/');
   await page.getByRole('button', { name: 'Open review' }).click();
-  await page.getByRole('button', { name: 'Compare', exact: true }).click();
+  await page.getByRole('combobox', { name: 'Review or compare' }).selectOption('compare');
+  await page.getByRole('button', { name: 'Confirm' }).click();
   await expect(page.getByRole('status')).toContainText('Loading revision');
   await page.getByRole('button', { name: 'Use Cases' }).click();
   await page.getByRole('textbox', { name: 'Filter documents' }).fill('UC-001');

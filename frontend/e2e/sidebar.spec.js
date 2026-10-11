@@ -5,7 +5,8 @@ test('comparison controls and categories fit the sidebar at desktop and mobile w
   await expect(page.locator('.repo-sidebar button').first()).toContainText('spec-review');
   await page.getByRole('button', { name: 'Open review' }).click();
   await expect(page.getByRole('combobox', { name: 'Target revision' })).toBeVisible();
-  await page.getByRole('button', { name: 'Compare', exact: true }).click();
+  await page.getByRole('combobox', { name: 'Review or compare' }).selectOption('compare');
+  await page.getByRole('button', { name: 'Confirm' }).click();
 
   const checkbox = page.getByRole('checkbox', { name: 'Changes only' });
   await expect(checkbox).toBeVisible();

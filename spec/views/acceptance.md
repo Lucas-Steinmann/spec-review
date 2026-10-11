@@ -16,6 +16,8 @@ These artifacts describe expected behavior. They do not claim a test has passed.
 
 [TEST-012](../artifacts/tests/TEST-012.yaml) checks document semantics in the WebUI. [TEST-014](../artifacts/tests/TEST-014.yaml) and [TEST-018](../artifacts/tests/TEST-018.yaml) cover repository, pull request, and GitHub revision review. [TEST-015](../artifacts/tests/TEST-015.yaml), [TEST-019](../artifacts/tests/TEST-019.yaml), and [TEST-020](../artifacts/tests/TEST-020.yaml) cover sidebar, keyboard, and loading usability. [TEST-022](../artifacts/tests/TEST-022.yaml) verifies superseded filtering and persistence of both browser filters.
 
+Browser mode persistence and revision confirmation are covered by [TEST-023](../artifacts/tests/TEST-023.yaml).
+
 ## Self-specification
 
 [TEST-009](../artifacts/tests/TEST-009.yaml) checks that the tool can read its own specification and that maintained views have valid links and an overview-first navigation route. [TEST-007](../artifacts/tests/TEST-007.yaml) checks reuse of the backend, and [TEST-008](../artifacts/tests/TEST-008.yaml) checks submodule packaging.
