@@ -5,5 +5,6 @@ verifies:
 - REQ-043
 description: Delay a local comparison response, gh-backed repository discovery, and a pull-request overview response in browser tests. Confirm loading status appears while category controls, artifact filtering, and local overview navigation remain usable, then release the responses and confirm results appear without an error or stale selection.
 source:
-  file: spec/sources/chat.md
-  section: Local-only browser scope and accessibility, October 7, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Local-only browser scope and accessibility, October 7, 2026"

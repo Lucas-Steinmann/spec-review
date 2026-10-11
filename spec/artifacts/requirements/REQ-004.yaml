@@ -3,10 +3,11 @@ type: requirement
 title: Read selected content in the main pane
 category: presentation
 status: specified
-statement: Display the selected artifact’s content in the main view on the right side.
+statement: Display the selected artifact’s content in the main view on the right side. Render typed source references as a readable list rather than generic JSON, and list-valued preconditions and postconditions as Markdown bullet lists.
 derived_from:
 - UC-001
 related: []
 source:
-  file: spec/sources/chat.md
-  section: Requested improvements, October 2, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Requested improvements, October 2, 2026"

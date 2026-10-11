@@ -14,5 +14,9 @@ related:
 - REQ-042
 - REQ-043
 source:
-  file: spec/sources/chat.md
-  section: WebUI and GitHub support
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "WebUI and GitHub support"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Browser revision mode selector, October 11, 2026"

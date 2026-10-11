@@ -8,5 +8,6 @@ description: From an authenticated fresh clone of a consuming project, initializ
   commit, install locked dependencies, and launch it. Confirm it has independent Git history and defaults
   to the current directory's specification. From the submodule, confirm --repo . selects its own specification.
 source:
-  file: spec/sources/chat.md
-  section: Approved implementation plan
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Approved implementation plan"

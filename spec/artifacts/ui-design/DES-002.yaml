@@ -20,15 +20,14 @@ addresses:
 - REQ-013
 - REQ-025
 - REQ-030
-- REQ-032
-- REQ-033
 decisions:
 - ADR-001
 related:
 - DES-001
 source:
-  file: spec/sources/chat.md
-  section: Requested improvements, October 2, 2026
-classification_source:
-  file: spec/sources/chat.md
-  section: Artifact authoring and UI design separation, October 10, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Requested improvements, October 2, 2026"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Artifact authoring and UI design separation, October 10, 2026"

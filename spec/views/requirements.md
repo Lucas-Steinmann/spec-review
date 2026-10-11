@@ -4,7 +4,7 @@ Requirements state observable behavior. For exact wording, status, and relations
 
 ## Browsing and content
 
-What can the reviewer read? [Canonical artifacts and overviews](../artifacts/requirements/REQ-001.yaml), [category navigation](../artifacts/requirements/REQ-002.yaml), [content display](../artifacts/requirements/REQ-004.yaml), and [maintained view access](../artifacts/requirements/REQ-005.yaml) define the entry route. [REQ-044](../artifacts/requirements/REQ-044.yaml) separates technical and UI design categories. [Search and history](../artifacts/requirements/REQ-025.yaml), [link activation](../artifacts/requirements/REQ-007.yaml), [diagnostics](../artifacts/requirements/REQ-027.yaml), and [formatted fields](../artifacts/requirements/REQ-033.yaml) refine it.
+What can the reviewer read? [Canonical artifacts and overviews](../artifacts/requirements/REQ-001.yaml), [category navigation](../artifacts/requirements/REQ-002.yaml), [content display and field formatting, including typed source-reference lists](../artifacts/requirements/REQ-004.yaml), and [maintained view access](../artifacts/requirements/REQ-005.yaml) define the entry route. [REQ-044](../artifacts/requirements/REQ-044.yaml) separates technical and UI design categories. [Search and history](../artifacts/requirements/REQ-025.yaml), [link activation](../artifacts/requirements/REQ-007.yaml), and [diagnostics](../artifacts/requirements/REQ-027.yaml) refine it.
 
 ## Comparison
 

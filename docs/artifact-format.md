@@ -13,13 +13,15 @@ For which information belongs in each artifact type, see [Choosing a specificati
 | `title` | Required short label, shown with the ID. |
 | `actors`, `goal_refs`, `derived_from`, `related`, `addresses`, `decisions`, `verifies` | Lists of artifact references. Displayed as Markdown links. `derived_from` records derivation; use `related` for other connections. |
 | `superseded_by` | A single artifact ID, rendered as a navigable link. The replacement may have a different artifact type. |
-| `source` | Mapping with optional `file` and `section`; displayed on one line as `file#section` (or just `file` when no section is set). The metadata also helps resolve links into migrated artifacts. |
-| `description` | String rendered as Markdown, including links and supported Mermaid/PlantUML blocks. When `source.file` ends in `.json`, it is displayed as JSON code. |
+| `source` | List of `{type, file, section}` references; `section` is optional. Entries are displayed as typed list items using the file and section separately. File references also help resolve links into migrated artifacts. Historical `{file, section}` mappings remain readable. |
+| `description` | String rendered as Markdown, including links and supported Mermaid/PlantUML blocks. When a source file ends in `.json`, it is displayed as JSON code. |
 | `precondition`, `preconditions`, `postcondition`, `postconditions` | List values display as Markdown bullet lists. Other value types follow the generic rules below. |
 | `rendered_diagram` | Historical string values display as plain source text; they are not rendered as diagrams. |
 | Any other field | The field name becomes a heading. Strings display as Markdown; mappings and lists display as indented JSON; numbers, booleans, and null display as JSON values. |
 
-Keys such as `statement`, `rationale`, `acceptance`, `steps`, `constraints`, and `status` are ordinary fields. Their values are preserved and displayed by the generic rules unless a rule above applies. This lets a specification evolve without requiring a code change for each new field.
+Keys such as `statement`, `rationale`, `acceptance`, `steps`, `constraints`, and `status` are ordinary fields. Their values are preserved and displayed by the generic rules unless a rule above applies. Unknown fields are retained for forward compatibility; see the authoring guide before adding a new field rather than treating generic display as an invitation to create ad hoc headings.
+
+Use `source` for provenance. Do not add one-off fields such as `classification_source` or `additional_source_sections`; add a typed entry to the `source` list only when it records a distinct, useful origin. Prefer the established types `conversation`, `document`, `issue`, and `url`. Keep `file` and `section` separate (for example, `file: spec/sources/chat.md` and `section: WebUI and GitHub support`) and avoid free-form explanatory text in source entries.
 
 ## Comparisons and validation
 

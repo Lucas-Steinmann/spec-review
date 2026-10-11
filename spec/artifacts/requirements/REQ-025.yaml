@@ -10,5 +10,6 @@ derived_from:
 - UC-002
 related: []
 source:
-  file: spec/sources/chat.md
-  section: Approved implementation plan
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Approved implementation plan"

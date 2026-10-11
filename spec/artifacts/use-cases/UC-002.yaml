@@ -15,5 +15,6 @@ main_flow: |-
   4. Read the destination and return to the previous document when needed.
 postconditions: Navigation uses canonical artifacts and preserves the relevant document version.
 source:
-  file: spec/sources/chat.md
-  section: Initial request
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Initial request"

@@ -9,5 +9,6 @@ derived_from: []
 related: []
 superseded_by: REQ-029
 source:
-  file: spec/sources/chat.md
-  section: Initial request
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Initial request"

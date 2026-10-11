@@ -5,5 +5,6 @@ verifies:
 - REQ-037
 description: In a rendered browser comparison, inspect a document containing Markdown with unchanged lines and changed words. Confirm unchanged lines keep normal styling, changed lines receive the side-specific red or green marker and light background, and removed or added words receive darker red or green inline backgrounds on their respective sides.
 source:
-  file: spec/sources/chat.md
-  section: Working tree comparisons and WebUI diff presentation, October 4, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Working tree comparisons and WebUI diff presentation, October 4, 2026"

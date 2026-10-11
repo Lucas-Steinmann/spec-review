@@ -9,5 +9,6 @@ description: Load a specification with technical design and UI design artifacts 
   with a mockup and follow its link to technical design. Compare a revision that reclassifies an artifact
   while retaining its ID; confirm the change appears in both categories and links still resolve.
 source:
-  file: spec/sources/chat.md
-  section: Artifact authoring and UI design separation, October 10, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Artifact authoring and UI design separation, October 10, 2026"

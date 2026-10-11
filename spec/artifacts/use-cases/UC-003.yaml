@@ -15,5 +15,6 @@ main_flow: |-
   4. Read the images alongside the surrounding prose and source.
 postconditions: Every supported diagram block is available for review without a remote rendering service.
 source:
-  file: spec/sources/chat.md
-  section: Diagram clarification
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Diagram clarification"

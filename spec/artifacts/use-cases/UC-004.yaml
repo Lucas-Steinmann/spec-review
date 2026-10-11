@@ -17,5 +17,6 @@ main_flow: |-
 postconditions: The chosen presentation applies and persistent settings remain outside the specification
   repository.
 source:
-  file: spec/sources/chat.md
-  section: Initial request
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Initial request"

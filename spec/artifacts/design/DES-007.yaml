@@ -27,5 +27,6 @@ related:
 decisions:
 - ADR-009
 source:
-  file: spec/sources/chat.md
-  section: WebUI and GitHub support
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "WebUI and GitHub support"

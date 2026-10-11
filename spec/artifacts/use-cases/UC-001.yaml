@@ -16,5 +16,6 @@ main_flow: |-
   5. Choose Overviews and read a maintained Markdown view.
 postconditions: The selected document is readable with headings and links highlighted.
 source:
-  file: spec/sources/chat.md
-  section: Requested improvements, October 2, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Requested improvements, October 2, 2026"

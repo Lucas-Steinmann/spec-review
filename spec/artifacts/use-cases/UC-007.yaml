@@ -16,5 +16,6 @@ main_flow: |-
   5. Compare commits containing changes to this specification.
 postconditions: The tool can review its own requirements without switching to the parent project’s specification.
 source:
-  file: spec/sources/chat.md
-  section: Dogfooding
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Dogfooding"

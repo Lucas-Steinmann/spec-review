@@ -6,5 +6,6 @@ related:
 - REQ-001
 - REQ-034
 source:
-  file: spec/sources/chat.md
-  section: Specification review corrections, October 7, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Specification review corrections, October 7, 2026"

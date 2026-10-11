@@ -31,12 +31,18 @@ tests:
 related:
 - DES-007
 source:
-  file: spec/sources/chat.md
-  section: WebUI and GitHub support
-classification_source:
-  file: spec/sources/chat.md
-  section: Artifact authoring and UI design separation, October 10, 2026
-additional_source_sections:
-- Multi-repository overview and pull request navigation, October 7, 2026
-- WebUI sidebar usability, October 7, 2026
-- Local-only browser scope and accessibility, October 7, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "WebUI and GitHub support"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Artifact authoring and UI design separation, October 10, 2026"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Multi-repository overview and pull request navigation, October 7, 2026"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "WebUI sidebar usability, October 7, 2026"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Local-only browser scope and accessibility, October 7, 2026"

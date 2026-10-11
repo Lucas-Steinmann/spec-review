@@ -9,8 +9,9 @@ superseded_by: REQ-018
 addresses:
 - REQ-018
 source:
-  file: spec/sources/chat.md
-  section: Diff semantics
-revision_source:
-  file: spec/sources/chat.md
-  section: Targeted artifact taxonomy cleanup, October 11, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Diff semantics"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Targeted artifact taxonomy cleanup, October 11, 2026"

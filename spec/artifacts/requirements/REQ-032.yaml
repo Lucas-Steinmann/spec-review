@@ -2,11 +2,13 @@ id: REQ-032
 type: requirement
 title: Display source metadata on one line
 category: browsing
-status: specified
+status: superseded
 statement: Display source metadata as {file}#{section} on one line.
 derived_from:
 - UC-001
 related: []
+superseded_by: REQ-004
 source:
-  file: spec/sources/chat.md
-  section: Requested improvements, October 2, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Requested improvements, October 2, 2026"

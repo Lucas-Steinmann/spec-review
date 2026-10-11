@@ -19,8 +19,9 @@ addresses:
 related:
 - DES-003
 source:
-  file: spec/sources/chat.md
-  section: Approved implementation plan
-classification_source:
-  file: spec/sources/chat.md
-  section: Artifact authoring and UI design separation, October 10, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Approved implementation plan"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Artifact authoring and UI design separation, October 10, 2026"

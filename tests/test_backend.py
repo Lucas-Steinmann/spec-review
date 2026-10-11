@@ -510,6 +510,26 @@ def test_unknown_fields_and_json_source(repo):
     assert sections["Extra"][0].text == json.dumps({"nested": [1, None]}, indent=2)
 
 
+def test_typed_source_list_renders_as_readable_markdown(repo):
+    write_artifact(
+        repo,
+        "DES-001",
+        "design",
+        description='{"hello": 1}',
+        source=[
+            {"type": "document", "file": "design/schema/example.json", "section": "Schema"},
+            {"type": "conversation", "file": "spec/sources/chat.md", "section": "Initial request"},
+        ],
+    )
+    doc = repo.load().documents["DES-001"]
+    sections = dict(document_blocks(doc))
+    source = sections["Source"][0]
+    assert source.kind == "markdown"
+    assert "**document:** design/schema/example.json#Schema" in source.text
+    assert "**conversation:** spec/sources/chat.md#Initial request" in source.text
+    assert sections["Description"][0].language == "json"
+
+
 def test_description_images_are_content_blocks():
     result = blocks("Before. ![Workspace mockup](../../mockups/rendered/workspace.png) After.")
     assert [(block.kind, block.text, block.language) for block in result] == [
@@ -573,6 +593,24 @@ def test_legacy_links_are_metadata_only(repo):
         origin, "../requirements/use-cases.md#uc-01--pair-phone"
     ).targets == ["UC-001"]
     assert not (repo.root / "design").exists()
+
+
+def test_typed_source_list_keeps_migrated_links_navigable(repo):
+    write_artifact(
+        repo,
+        "DES-001",
+        "design",
+        source=[{"type": "conversation", "file": "requirements/architecture.md", "section": "Intro"}],
+    )
+    write_artifact(
+        repo,
+        "DES-002",
+        "design",
+        source=[{"type": "document", "file": "requirements/architecture.md", "section": "Ownership"}],
+    )
+    resolver = LinkResolver(repo.load())
+    origin = resolver.snapshot.documents["DES-001"]
+    assert resolver.resolve(origin, "architecture.md#ownership").targets == ["DES-002"]
 
 
 def test_multiple_diagrams_and_fences():

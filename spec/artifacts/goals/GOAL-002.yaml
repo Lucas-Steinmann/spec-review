@@ -4,5 +4,6 @@ title: Review specification changes across Git history
 statement: Compare two Git revisions and understand which artifacts and categories were added, changed,
   or deleted, including prose and diagrams.
 source:
-  file: spec/sources/chat.md
-  section: Initial request
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Initial request"

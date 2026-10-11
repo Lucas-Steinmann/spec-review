@@ -11,5 +11,6 @@ description: Follow artifact IDs, canonical relative paths, overview links, and 
   Confirm the chooser, unresolved-target explanation, snapshot provenance, and navigation history work
   without reading legacy files.
 source:
-  file: spec/sources/chat.md
-  section: Approved implementation plan
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Approved implementation plan"

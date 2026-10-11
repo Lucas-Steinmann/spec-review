@@ -10,5 +10,6 @@ related:
 - REQ-016
 - REQ-020
 source:
-  file: spec/sources/chat.md
-  section: Confirmed scope
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Confirmed scope"

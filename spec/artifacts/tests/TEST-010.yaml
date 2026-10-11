@@ -8,5 +8,6 @@ description: Introduce malformed YAML and duplicate artifact IDs in a temporary 
   a renderer or trigger its timeout. Confirm affected documents and diagrams have visible diagnostics,
   duplicate targets are not silently selected, and unrelated browsing remains available.
 source:
-  file: spec/sources/chat.md
-  section: Approved implementation plan
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Approved implementation plan"

@@ -13,8 +13,9 @@ addresses:
 - REQ-005
 - REQ-020
 source:
-  file: spec/sources/chat.md
-  section: Show maintained views directly, October 10, 2026
-revision_source:
-  file: spec/sources/chat.md
-  section: Targeted artifact taxonomy cleanup, October 11, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Show maintained views directly, October 10, 2026"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Targeted artifact taxonomy cleanup, October 11, 2026"

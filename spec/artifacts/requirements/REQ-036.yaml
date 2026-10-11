@@ -3,16 +3,16 @@ type: requirement
 title: Preserve TUI document rendering in the WebUI
 category: browsing
 status: specified
-statement: Render browser documents with the same field formatting and content semantics as the TUI, including navigable crosslinks, Markdown and code blocks, Mermaid and PlantUML source with locally rendered images, source metadata, and list-valued preconditions and postconditions.
+statement: Render browser documents with the same field formatting and content semantics as the TUI, including navigable crosslinks, Markdown and code blocks, and Mermaid and PlantUML source with locally rendered images. Apply REQ-004's formatting for source metadata and list-valued preconditions and postconditions.
 derived_from:
 - UC-008
 related:
 - REQ-006
 - REQ-008
 - REQ-009
-- REQ-032
-- REQ-033
+- REQ-004
 - REQ-034
 source:
-  file: spec/sources/chat.md
-  section: Svelte frontend
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Svelte frontend"

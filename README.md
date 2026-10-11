@@ -1,6 +1,6 @@
 # spec-review
 
-A read-only terminal and browser application for reviewing and comparing specifications stored as YAML artifacts and generated Markdown, from local folders or repositories accessible through `gh`.
+A read-only terminal and browser application for reviewing and comparing specifications stored as YAML artifacts and maintained Markdown views, from local folders or repositories accessible through `gh`.
 
 ## Install and run
 
@@ -47,6 +47,20 @@ The private submodule requires GitHub authentication. By default, the CLI uses t
 ```sh
 uv run --project /path/to/spec-review spec-review --repo /path/to/project --spec-dir spec
 ```
+
+Live GitHub checks are opt-in and read-only. Authenticate a dedicated test account into an isolated config directory, then run the checks with the expected login. Set `SPEC_REVIEW_LIVE_GH_REPO` to a dedicated repository to exercise branch, pull request, commit, snapshot, and comparison routes:
+
+```sh
+GH_CONFIG_DIR="$PWD/.gh-config" gh auth login --hostname github.com --web
+GH_CONFIG_DIR="$PWD/.gh-config" gh auth status --hostname github.com
+SPEC_REVIEW_LIVE_GITHUB=1 \
+SPEC_REVIEW_LIVE_GH_CONFIG_DIR="$PWD/.gh-config" \
+SPEC_REVIEW_LIVE_GH_LOGIN=test-account \
+SPEC_REVIEW_LIVE_GH_REPO=test-account/spec-review-fixture \
+uv run pytest -m live_github
+```
+
+These tests reject token environment overrides, use only GitHub reads and Git fetches, bind the test server to loopback, and place the Git mirror cache under pytest's temporary directory. Ordinary test runs skip them.
 
 For a standalone installation, `uv tool install /path/to/spec-review` exposes `spec-review` on your PATH. Use `--repo` when invoking that installation outside the specification repository.
 

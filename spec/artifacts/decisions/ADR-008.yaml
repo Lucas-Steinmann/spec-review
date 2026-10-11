@@ -11,6 +11,7 @@ addresses:
 - REQ-023
 - REQ-026
 source:
-  file: spec/sources/chat.md
-  section: Approved implementation plan
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Approved implementation plan"
 superseded_by: ADR-010

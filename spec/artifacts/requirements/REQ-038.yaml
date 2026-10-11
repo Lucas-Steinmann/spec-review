@@ -9,5 +9,6 @@ derived_from:
 related:
 - REQ-034
 source:
-  file: spec/sources/chat.md
-  section: WebUI sidebar usability, October 7, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "WebUI sidebar usability, October 7, 2026"

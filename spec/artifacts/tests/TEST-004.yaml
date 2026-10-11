@@ -10,5 +10,6 @@ description: Use Options to disable rendering and select two-panel diff. Confirm
   no new renderer runs, and no images remain. Restart and confirm settings persist. Inspect user directories
   to confirm configuration and cached PNGs are outside the reviewed repository.
 source:
-  file: spec/sources/chat.md
-  section: Approved implementation plan
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Approved implementation plan"

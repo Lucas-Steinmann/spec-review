@@ -10,5 +10,6 @@ derived_from:
 related:
 - REQ-045
 source:
-  file: spec/sources/chat.md
-  section: Settings
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Settings"

@@ -10,6 +10,7 @@ Review canonical `spec/artifacts/`, maintained `spec/views/`, and `spec/sources/
 ## Core consistency checks
 
 - Find contradictions, duplicate intent, obsolete or unnecessary artifacts, and artifacts that combine independently testable concerns or split one concern unnaturally. Distinguish historical superseded statements from active conflicts.
+- **Artifact granularity:** For each artifact, ask whether it represents a stable concern that needs its own lifecycle, relationships, rationale, or verification. If it only records a minor detail owned by a broader artifact, recommend moving that detail into the broader artifact's description or fields. Keep an artifact separate when it has independent traceability or acceptance value; do not merge distinct concerns just to reduce the artifact count.
 - Trace actors and goals through use cases, requirements, constraints, decisions, designs, and acceptance scenarios. Check that each active chain has a clear outcome and that crosslinks convey the intended relationship, not merely an existing ID.
 - Check that design choices satisfy their requirements, have coherent boundaries, and do not silently add product behavior. Compare acceptance scenarios with executable tests, including the API or UI boundary, alternate modes, and failure cases.
 

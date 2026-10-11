@@ -4,5 +4,6 @@ title: Navigate and analyze structured specifications
 statement: Make a YAML specification, requirements, traceability, and planning document easier to navigate
   and analyze through terminal and browser applications.
 source:
-  file: spec/sources/chat.md
-  section: WebUI and GitHub support
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "WebUI and GitHub support"

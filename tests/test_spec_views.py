@@ -65,6 +65,10 @@ def test_web_api_serves_view_content_and_prefers_it_to_legacy_copy(repo, monkeyp
         repo, "UI-001", "ui_design",
         description="![Workspace](../../mockups/rendered/workspace.png)",
         related=["DES-001"],
+        source=[
+            {"type": "conversation", "file": "spec/sources/chat.md", "section": "Workspace"},
+            {"type": "document", "file": "design/ui.md", "section": "Workspace"},
+        ],
     )
     write_artifact(repo, "REQ-018", "requirement", statement="Compare parsed fields")
     write_artifact(repo, "ADR-002", "decision", status="superseded", superseded_by="REQ-018")
@@ -117,6 +121,10 @@ def test_web_api_serves_view_content_and_prefers_it_to_legacy_copy(repo, monkeyp
     image = ui_document["sections"][0]["blocks"][0]
     assert image["kind"] == "image"
     assert "spec%2Fmockups%2Frendered%2Fworkspace.png" in image["text"]
+    source = next(section for section in ui_document["sections"] if section["heading"] == "Source")
+    assert source["blocks"][0]["kind"] == "markdown"
+    assert "**conversation:** spec/sources/chat.md#Workspace" in source["blocks"][0]["text"]
+    assert "**document:** design/ui.md#Workspace" in source["blocks"][0]["text"]
 
     link = get("/api/local/link?" + urlencode({"id": "UI-001", "href": "DES-001"}))
     assert link["targets"] == ["DES-001"]

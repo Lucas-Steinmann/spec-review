@@ -6,9 +6,6 @@ status: specified
 statement: Keep parsing, snapshot access, link resolution, comparison, content blocks, and diagram rendering
   separate from terminal presentation so the WebUI can reuse the backend. Backend modules import
   without Textual and expose JSON-serializable models.
-revision_source:
-  file: spec/sources/chat.md
-  section: Targeted artifact taxonomy cleanup, October 11, 2026
 derived_from:
 - UC-001
 - UC-002
@@ -17,5 +14,9 @@ derived_from:
 - UC-007
 related: []
 source:
-  file: spec/sources/chat.md
-  section: Initial request
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Initial request"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Targeted artifact taxonomy cleanup, October 11, 2026"

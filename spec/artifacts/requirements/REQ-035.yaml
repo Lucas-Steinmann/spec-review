@@ -10,5 +10,6 @@ related:
 - REQ-034
 - REQ-039
 source:
-  file: spec/sources/chat.md
-  section: GitHub CLI scope correction, October 7, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "GitHub CLI scope correction, October 7, 2026"

@@ -10,5 +10,6 @@ addresses:
 - REQ-005
 - REQ-020
 source:
-  file: spec/sources/chat.md
-  section: Overview diffs
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Overview diffs"

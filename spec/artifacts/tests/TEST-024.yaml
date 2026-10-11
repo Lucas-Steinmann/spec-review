@@ -1,0 +1,11 @@
+id: TEST-024
+type: test
+title: Read GitHub.com through an isolated gh login
+verifies:
+- REQ-039
+- REQ-040
+description: With an explicit isolated GitHub CLI config directory, an expected test-account login, and optionally a dedicated test repository, start the WebUI on loopback. Confirm the account and repository-list routes use the expected github.com account. When a repository is configured, exercise its branch, pull-request, commit, overview, snapshot, and identical-revision comparison routes. Use only read requests and Git fetches, keep the mirror cache temporary, and skip these checks during ordinary offline test runs.
+source:
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Live GitHub.com checks through the isolated test login, October 11, 2026"

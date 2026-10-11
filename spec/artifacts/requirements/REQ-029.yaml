@@ -10,5 +10,6 @@ derived_from:
 - UC-006
 related: []
 source:
-  file: spec/sources/chat.md
-  section: Requested improvements, October 2, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Requested improvements, October 2, 2026"

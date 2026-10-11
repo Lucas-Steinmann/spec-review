@@ -25,5 +25,6 @@ addresses:
 - REQ-043
 - REQ-045
 source:
-  file: spec/sources/chat.md
-  section: Local-only browser scope and accessibility, October 7, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Local-only browser scope and accessibility, October 7, 2026"

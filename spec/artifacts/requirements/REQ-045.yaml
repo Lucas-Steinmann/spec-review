@@ -12,5 +12,6 @@ related:
 - REQ-021
 - REQ-030
 source:
-  file: spec/sources/chat.md
-  section: Browser artifact filters, October 11, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Browser artifact filters, October 11, 2026"

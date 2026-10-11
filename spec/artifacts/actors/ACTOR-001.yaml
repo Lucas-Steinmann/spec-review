@@ -5,5 +5,6 @@ description: A person who maintains or reviews structured engineering plans in a
   follows relationships, and inspects changes across local or gh-accessible repositories. The terminal reviewer
   may use Kitty for diagram images.
 source:
-  file: spec/sources/chat.md
-  section: GitHub CLI scope correction, October 7, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "GitHub CLI scope correction, October 7, 2026"

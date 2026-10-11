@@ -10,8 +10,9 @@ derived_from:
 related:
 - REQ-002
 source:
-  file: spec/sources/chat.md
-  section: Artifact authoring and UI design separation, October 10, 2026
-revision_source:
-  file: spec/sources/chat.md
-  section: Targeted artifact taxonomy cleanup, October 11, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Artifact authoring and UI design separation, October 10, 2026"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Targeted artifact taxonomy cleanup, October 11, 2026"

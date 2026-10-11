@@ -10,12 +10,10 @@ verifies:
 - REQ-006
 - REQ-025
 - REQ-027
-- REQ-032
-- REQ-033
 description: Open a repository containing all supported artifact types, an unknown type, an empty category,
   Markdown overviews, and multiline fields. Choose categories and select artifacts by mouse and keyboard.
-  Check the bottom categories, left artifact list, right content pane, bold headings, highlighted links, ID/title search, and faithful
-  unknown-field presentation. Confirm no ignored legacy documents are loaded.
+  Check the bottom categories, left artifact list, right content pane, bold headings, highlighted links, ID/title search, typed source references as a readable list (including multiple references), pre/postcondition lists, and faithful unknown-field presentation. Confirm no ignored legacy documents are loaded.
 source:
-  file: spec/sources/chat.md
-  section: Requested improvements, October 2, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Requested improvements, October 2, 2026"

@@ -228,3 +228,26 @@ In the browser review sidebar, provide a Hide superseded checkbox that starts ch
 In the browser detailed review view, put a Review/Compare selector before target revision selection. Hide Base in Review mode and show it in Compare mode. Apply a selected revision or revision pair only after the user presses Confirm.
 
 Retain the selected Review/Compare mode across browser page reloads.
+
+## Specification health review resolutions, October 11, 2026
+
+Fold the one-line source metadata and pre/postcondition list formatting rules into REQ-004's selected-content presentation requirement. Preserve REQ-032 and REQ-033 as superseded historical records pointing to REQ-004; keep their acceptance coverage attached to the broader requirement. Clarify that browser documents follow REQ-004 for these fields and record the browser revision-mode request as additional provenance for REQ-034. Describe maintained Markdown views as current review content; retain generated Markdown only as a historical fallback.
+
+## Live GitHub.com checks through the isolated test login, October 11, 2026
+
+> I stored the test login in `.gh-config` and asked for tests that use `gh` with GitHub.com.
+
+Ignore `.gh-config/` and provide opt-in, read-only live integration checks that explicitly use its GitHub CLI configuration, verify the expected test account, and optionally target a dedicated test repository. Keep the local server bound to loopback, the GitHub mirror cache temporary, and ordinary tests offline.
+
+
+## Typed source references and restrained provenance fields, October 12, 2026
+
+> There are some sections which are weirdly displayed. I'm not sure we should have such arbitrary additional sections. Maybe make source a list of sources with a type/identifier, and discourage creating arbitrary sections.
+
+Represent provenance as a typed list under `source`, render references as a readable list, and consolidate secondary provenance fields into that list. Keep historical source mappings readable. The authoring guide should discourage one-off metadata fields and additional source references that do not provide distinct evidence.
+
+## Keep source file and section separate, October 12, 2026
+
+> I did not mean that you have to conflate file and section into an "identifier" field. You can reverse that. I think it is better to keep them separate instead of having to do some weird parsing. Just add the "type" and also show the "type" in the UI.
+
+Use separate `type`, `file`, and optional `section` fields for each source reference. Display the type together with the file and section in the reviewer.

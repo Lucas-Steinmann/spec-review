@@ -23,8 +23,9 @@ related:
 decisions:
 - ADR-012
 source:
-  file: spec/sources/chat.md
-  section: Approved implementation plan
-revision_source:
-  file: spec/sources/chat.md
-  section: Targeted artifact taxonomy cleanup, October 11, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Approved implementation plan"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Targeted artifact taxonomy cleanup, October 11, 2026"

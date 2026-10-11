@@ -2,7 +2,7 @@ id: DES-001
 type: design
 title: Reusable review backend and frontend boundary
 description: |
-  The backend owns repository snapshots, canonical document models, relationship/link resolution, field comparisons, and diagram rendering. The terminal frontend owns layout, focus, selection, colors, dialogs, and Kitty image presentation. The WebUI uses the same backend services without importing Textual into the backend.
+  The backend owns repository snapshots, canonical document models, typed source-reference normalization, relationship/link resolution, field comparisons, and diagram rendering. The terminal frontend owns layout, focus, selection, colors, dialogs, and Kitty image presentation. The WebUI uses the same backend services without importing Textual into the backend.
 
   ```mermaid
   flowchart LR
@@ -39,5 +39,6 @@ addresses:
 decisions:
 - ADR-001
 source:
-  file: spec/sources/chat.md
-  section: Approved implementation plan
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Approved implementation plan"

@@ -17,5 +17,6 @@ description: Compare revisions containing additions, changes, deletions, and a t
   changes are marked. Inspect inline and two-panel diffs, including old-side links, target-only inline
   images, removed diagram source, and synchronized scrolling.
 source:
-  file: spec/sources/chat.md
-  section: Approved implementation plan
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Approved implementation plan"

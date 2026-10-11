@@ -5,6 +5,7 @@ import re
 from urllib.parse import unquote, urlsplit
 
 from .models import Document, LinkResult, Snapshot
+from .sources import source_location, source_records
 
 
 def slug(text: str) -> str:
@@ -23,13 +24,14 @@ class LinkResolver:
         self.paths = {d.path: d.id for d in snapshot.documents.values() if not d.error}
         self.sources: dict[str, list[Document]] = {}
         for doc in snapshot.documents.values():
-            source = doc.fields.get("source")
-            if (
-                isinstance(source, dict)
-                and isinstance(source.get("file"), str)
-                and not doc.error
-            ):
-                self.sources.setdefault(normalize(source["file"]), []).append(doc)
+            if doc.error:
+                continue
+            for source in source_records(doc.fields.get("source")):
+                file, _ = source_location(source)
+                if file:
+                    matches = self.sources.setdefault(normalize(file), [])
+                    if doc not in matches:
+                        matches.append(doc)
 
     def resolve(self, document: Document, href: str) -> LinkResult:
         if href in self.snapshot.unavailable_ids:
@@ -52,15 +54,14 @@ class LinkResolver:
         if relative in self.paths:
             return LinkResult("document", [self.paths[relative]], anchor)
         # Migrated prose retains paths relative to its original source document.
-        source = document.fields.get("source", {})
         candidates = [normalize(split.path)]
-        if isinstance(source, dict) and isinstance(source.get("file"), str):
-            candidates.insert(
-                0,
-                normalize(
-                    posixpath.join(posixpath.dirname(source["file"]), split.path)
-                ),
-            )
+        records = source_records(document.fields.get("source"))
+        for source in records:
+            file, _ = source_location(source)
+            if file:
+                candidates.insert(
+                    0, normalize(posixpath.join(posixpath.dirname(file), split.path))
+                )
         # Maintained views lack source metadata. Only match an exact source path.
         docs = []
         for candidate in dict.fromkeys(candidates):
@@ -86,8 +87,13 @@ class LinkResolver:
 
     @staticmethod
     def _section_matches(doc: Document, anchor: str) -> bool:
-        section = str(doc.fields.get("source", {}).get("section", ""))
-        if slug(section) == anchor.lower() or slug(doc.title) == anchor.lower():
+        sections = [
+            source_location(record)[1]
+            for record in source_records(doc.fields.get("source"))
+        ]
+        if any(slug(section) == anchor.lower() for section in sections) or slug(
+            doc.title
+        ) == anchor.lower():
             return True
         # Legacy UC-01 anchors map to migrated UC-001; do not guess arbitrary sections.
         match = re.match(

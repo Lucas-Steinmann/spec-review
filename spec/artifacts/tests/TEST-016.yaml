@@ -5,5 +5,6 @@ verifies:
 - REQ-041
 description: With at least 100 representative artifacts in a local Git fixture or complete local mirror, measure loading two already available revisions and computing their diff in less than one second. In a browser test, confirm selecting an artifact from a loaded revision displays its content within 200 milliseconds. Measure clone or fetch separately. Simulate an object-read timeout and confirm the HTTP response contains a repository diagnostic.
 source:
-  file: spec/sources/chat.md
-  section: Specification review corrections, October 7, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Specification review corrections, October 7, 2026"

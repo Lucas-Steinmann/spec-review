@@ -17,5 +17,6 @@ addresses:
 decisions:
 - ADR-009
 source:
-  file: spec/sources/chat.md
-  section: Frontend development and browser testing, October 7, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Frontend development and browser testing, October 7, 2026"

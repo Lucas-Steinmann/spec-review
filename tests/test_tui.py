@@ -90,7 +90,18 @@ async def test_source_and_condition_lists_render_in_terminal(repo):
         repo,
         "UC-001",
         "use_case",
-        source={"file": "spec/sources/chat.md", "section": "Initial request"},
+        source=[
+            {
+                "type": "conversation",
+                "file": "spec/sources/chat.md",
+                "section": "Initial request",
+            },
+            {
+                "type": "conversation",
+                "file": "spec/sources/chat.md",
+                "section": "Follow-up decision",
+            },
+        ],
         preconditions=["First condition", "Second condition"],
         postconditions=["Completed"],
     )
@@ -101,6 +112,7 @@ async def test_source_and_condition_lists_render_in_terminal(repo):
         await settle(app, pilot)
         rendered = "\n".join(widget.source_text for widget in app.query(ReviewMarkdown))
         assert "spec/sources/chat.md#Initial request" in rendered
+        assert "spec/sources/chat.md#Follow-up decision" in rendered
         assert "- First condition\n- Second condition" in rendered
         assert "- Completed" in rendered
 

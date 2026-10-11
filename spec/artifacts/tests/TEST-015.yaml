@@ -5,5 +5,6 @@ verifies:
 - REQ-038
 description: Run the Playwright browser test against the local Python API and Vite development server. At desktop and narrow viewport widths, verify the rendered Changes only checkbox remains adjacent to its label, category buttons stay inside the sidebar without horizontal overflow, and a category can be selected.
 source:
-  file: spec/sources/chat.md
-  section: WebUI sidebar usability, October 7, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "WebUI sidebar usability, October 7, 2026"

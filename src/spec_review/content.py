@@ -8,6 +8,7 @@ from difflib import SequenceMatcher
 from markdown_it import MarkdownIt
 
 from .models import Block, Comparison, Document
+from .sources import source_location, source_records
 
 RELATION_FIELDS = {
     "actors",
@@ -78,10 +79,13 @@ def _markdown_images(text: str) -> list[Block]:
 
 
 def field_text(key: str, value, document: Document) -> str:
-    if key == "source" and isinstance(value, dict):
-        file = value.get("file", "")
-        section = value.get("section", "")
-        return f"{file}#{section}" if section else str(file)
+    if key == "source":
+        records = source_records(value)
+        return "\n".join(
+            f"- **{record['type']}:** {record['file']}"
+            + (f"#{record['section']}" if record["section"] else "")
+            for record in records
+        ) or "—"
     if key.casefold().replace("_", "").replace("-", "") in {
         "precondition",
         "preconditions",
@@ -112,9 +116,10 @@ def field_blocks(key: str, value, doc: Document) -> list[Block]:
     } and isinstance(value, list):
         return blocks(text)
     if key == "description":
-        source = doc.fields.get("source", {})
-        name = source.get("file", "") if isinstance(source, dict) else ""
-        if str(name).endswith(".json"):
+        records = source_records(doc.fields.get("source"))
+        if any(
+            source_location(record)[0].endswith(".json") for record in records
+        ):
             return blocks(text, "json")
     if isinstance(value, (dict, list)) and key not in RELATION_FIELDS:
         return blocks(text, "json")

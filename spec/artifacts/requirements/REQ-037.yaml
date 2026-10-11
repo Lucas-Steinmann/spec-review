@@ -10,5 +10,6 @@ related:
 - REQ-034
 - REQ-036
 source:
-  file: spec/sources/chat.md
-  section: Working tree comparisons and WebUI diff presentation, October 4, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Working tree comparisons and WebUI diff presentation, October 4, 2026"

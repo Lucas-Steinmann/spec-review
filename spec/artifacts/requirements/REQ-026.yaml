@@ -11,5 +11,6 @@ derived_from:
 - UC-007
 related: []
 source:
-  file: spec/sources/chat.md
-  section: Artifact authoring and UI design separation, October 10, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Artifact authoring and UI design separation, October 10, 2026"

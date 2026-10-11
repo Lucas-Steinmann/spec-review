@@ -10,5 +10,6 @@ related:
 - REQ-035
 - REQ-039
 source:
-  file: spec/sources/chat.md
-  section: Multi-repository overview and pull request navigation, October 7, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Multi-repository overview and pull request navigation, October 7, 2026"

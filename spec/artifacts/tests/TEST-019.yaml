@@ -5,5 +5,6 @@ verifies:
 - REQ-042
 description: In a real browser, use only the keyboard to enter local review, select a revision and category, open an artifact and its relationship link, and inspect the named link-choice dialog. Confirm visible focus, focus return to the invoking link on dismissal, and focus on the destination heading after choosing a target. Confirm the GitHub Add dialog has a name and reachable controls.
 source:
-  file: spec/sources/chat.md
-  section: Local-only browser scope and accessibility, October 7, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Local-only browser scope and accessibility, October 7, 2026"

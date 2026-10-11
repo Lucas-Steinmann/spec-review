@@ -8,5 +8,6 @@ related:
 - REQ-023
 - REQ-028
 source:
-  file: spec/sources/chat.md
-  section: Settings
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Settings"

@@ -5,5 +5,6 @@ verifies:
 - REQ-034
 description: In the browser review workspace with no saved mode, confirm Review is the initial mode and the base revision selector is hidden. Change the target revision and verify no snapshot request is sent until Confirm is activated. Switch to Compare and verify the base selector appears; change the target and base and verify no comparison request is sent until Confirm is activated. Confirm the resulting snapshot or comparison request uses the selected revision values. Reload and reopen the workspace; confirm Compare and the base selector remain selected.
 source:
-  file: spec/sources/chat.md
-  section: Browser revision mode selector, October 11, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Browser revision mode selector, October 11, 2026"

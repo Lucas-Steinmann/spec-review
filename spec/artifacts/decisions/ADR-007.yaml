@@ -9,8 +9,9 @@ superseded_by: REQ-017
 addresses:
 - REQ-017
 source:
-  file: spec/sources/chat.md
-  section: Repository
-revision_source:
-  file: spec/sources/chat.md
-  section: Targeted artifact taxonomy cleanup, October 11, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Repository"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Targeted artifact taxonomy cleanup, October 11, 2026"

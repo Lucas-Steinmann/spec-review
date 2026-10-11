@@ -8,5 +8,6 @@ description: In a browser review, confirm Hide superseded starts checked and omi
   Reveal them by unchecking it, then enable Changes only in a comparison. Reload the page and reopen the review;
   confirm both saved checkbox values are restored and their filters still produce the expected artifact list.
 source:
-  file: spec/sources/chat.md
-  section: Browser artifact filters, October 11, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Browser artifact filters, October 11, 2026"

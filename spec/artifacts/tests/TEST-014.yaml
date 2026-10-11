@@ -7,5 +7,6 @@ verifies:
 - REQ-040
 description: With gh authenticated, add an accessible repository and confirm it remains in the left sidebar across reloads. Confirm pull requests and available Actions state, including unavailable checks, and open a repository or pull request in the detailed review view. Select the local folder while a GitHub overview request is pending and confirm the local selection remains available.
 source:
-  file: spec/sources/chat.md
-  section: Multi-repository overview and pull request navigation, October 7, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Multi-repository overview and pull request navigation, October 7, 2026"

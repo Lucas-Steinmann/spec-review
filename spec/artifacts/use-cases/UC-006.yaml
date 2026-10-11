@@ -17,5 +17,6 @@ main_flow: |-
   6. Follow links using the version from which they appear.
 postconditions: The reviewer can distinguish changes, additions, and removals and understand their content.
 source:
-  file: spec/sources/chat.md
-  section: Requested improvements, October 2, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Requested improvements, October 2, 2026"

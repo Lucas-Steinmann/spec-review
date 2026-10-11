@@ -15,5 +15,6 @@ main_flow: |-
   4. Activate Compare, or Cancel without changing the current review.
 postconditions: The tool displays a comparison without checking out either commit.
 source:
-  file: spec/sources/chat.md
-  section: Initial request
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Initial request"

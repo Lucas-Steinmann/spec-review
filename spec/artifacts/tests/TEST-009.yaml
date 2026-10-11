@@ -10,5 +10,6 @@ description: From spec-review, launch uv run spec-review --repo . and browse the
   to it. Validate views and confirm valid references. Compare the commit introducing this spec/ with its predecessor
   and confirm additions appear in every populated category.
 source:
-  file: spec/sources/chat.md
-  section: Artifact authoring and UI design separation, October 10, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Artifact authoring and UI design separation, October 10, 2026"

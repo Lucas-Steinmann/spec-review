@@ -11,8 +11,9 @@ addresses:
 - REQ-007
 - REQ-019
 source:
-  file: spec/sources/chat.md
-  section: Legacy links
-revision_source:
-  file: spec/sources/chat.md
-  section: Targeted artifact taxonomy cleanup, October 11, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Legacy links"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Targeted artifact taxonomy cleanup, October 11, 2026"

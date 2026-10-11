@@ -1,6 +1,10 @@
 # Choosing a specification artifact
 
-Use one artifact for one coherent fact or decision. Before adding one, search the existing IDs and titles; extend an existing artifact when it already owns the same intent. Keep the exact statement in one canonical artifact and link to it elsewhere. Every artifact needs a stable `id`, `type`, `title`, and `source` pointing to the section that supplied it. The ID remains stable if its title, file path, or category changes.
+Use one artifact for one coherent fact or decision. Before adding one, search the existing IDs and titles; extend an existing artifact when it already owns the same intent. Keep the exact statement in one canonical artifact and link to it elsewhere. Every artifact needs a stable `id`, `type`, `title`, and `source` list identifying the origin that supplied it. The ID remains stable if its title, file path, or category changes.
+
+`source` is a list of typed provenance references, each with `type`, `file`, and an optional `section`. Add a source only when it provides distinct evidence for the artifact; do not use source entries for commentary or labels. See [Artifact format](artifact-format.md) for rendering and compatibility details.
+
+The reader preserves unknown fields for forward compatibility; this does not make ad hoc fields a preferred authoring pattern. Use established fields and put explanatory context in the artifact's description. Add a new field only when it represents a reusable concept with clear meaning across artifacts, and document its schema and display behavior first.
 
 ## Where information belongs
 

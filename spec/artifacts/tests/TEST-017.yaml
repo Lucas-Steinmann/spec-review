@@ -3,9 +3,9 @@ type: test
 title: Review the current directory and formatted fields
 verifies:
 - REQ-031
-- REQ-032
-- REQ-033
+- REQ-004
 description: Launch from a temporary repository without --repo and confirm ./spec/ is selected. Launch from the spec-review submodule with --repo . and confirm its own specification is selected. Open an artifact in the terminal and browser with source metadata and list-valued preconditions and postconditions; confirm source appears on one line as file#section and list values appear as Markdown bullets.
 source:
-  file: spec/sources/chat.md
-  section: Specification review corrections, October 7, 2026
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Specification review corrections, October 7, 2026"
