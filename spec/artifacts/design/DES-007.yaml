@@ -6,8 +6,10 @@ description: |
   through the read-only Python HTTP server. The local provider reads the selected folder and Git history.
   The browser holds repository selection and review workspace state while metadata or comparison requests
   are pending, so an in-flight response cannot replace a newer selection. Render the same document blocks
-  and snapshot-aware links used by the terminal client. GitHub retrieval is specified by DES-008; development
-  and distribution are specified by DES-009; the interface layout and interaction states are specified by UI-002.
+  and snapshot-aware links used by the terminal client. Store shared browser filter preferences in local storage,
+  defaulting Hide superseded to true and Changes only to false. Filter status-superseded artifacts before
+  presenting list results. GitHub retrieval is specified by DES-008; development and distribution are specified
+  by DES-009; interface layout and interaction states are specified by UI-002.
 addresses:
 - REQ-034
 - REQ-035
@@ -19,6 +21,7 @@ addresses:
 - REQ-041
 - REQ-042
 - REQ-043
+- REQ-045
 related:
 - UI-002
 decisions:

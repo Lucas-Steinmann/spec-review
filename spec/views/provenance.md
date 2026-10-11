@@ -14,5 +14,6 @@ The [conversation record](../sources/chat.md) is the source for user requirement
 | Direct display of maintained views | [Show maintained views directly](../sources/chat.md#show-maintained-views-directly-october-10-2026) |
 | Artifact type guide and UI design category | [Artifact authoring and UI design separation](../sources/chat.md#artifact-authoring-and-ui-design-separation-october-10-2026) |
 | Targeted category and decision cleanup | [Targeted artifact taxonomy cleanup](../sources/chat.md#targeted-artifact-taxonomy-cleanup-october-11-2026) |
+| Browser filters and persistence | [Browser artifact filters](../sources/chat.md#browser-artifact-filters-october-11-2026) |
 
 Start with the [overview](overview.md) when reading the current plan. Use this source map when you need to check a choice against the original request.

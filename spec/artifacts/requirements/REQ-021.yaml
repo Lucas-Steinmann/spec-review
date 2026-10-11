@@ -4,10 +4,11 @@ title: Persist user options across launches
 category: configuration
 status: specified
 statement: Persist presentation and rendering preferences in the user configuration directory. Store diagram
-  caches outside the specification repository.
+  caches outside the specification repository. Persist browser review filter preferences across page reloads.
 derived_from:
 - UC-004
-related: []
+related:
+- REQ-045
 source:
   file: spec/sources/chat.md
   section: Settings

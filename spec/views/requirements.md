@@ -18,6 +18,8 @@ What can the reviewer read? [Canonical artifacts and overviews](../artifacts/req
 
 [WebUI review](../artifacts/requirements/REQ-034.yaml), [saved repository navigation](../artifacts/requirements/REQ-035.yaml), [GitHub revisions](../artifacts/requirements/REQ-039.yaml), and [pull requests and Actions](../artifacts/requirements/REQ-040.yaml) define the browser scope. [Responsive comparisons](../artifacts/requirements/REQ-041.yaml), [keyboard access](../artifacts/requirements/REQ-042.yaml), and [navigation during loading](../artifacts/requirements/REQ-043.yaml) define usability.
 
+[REQ-045](../artifacts/requirements/REQ-045.yaml) adds a default-on filter for superseded artifacts and persistence for both browser sidebar filters.
+
 ## Maintaining this plan
 
 [REQ-026](../artifacts/requirements/REQ-026.yaml) requires this repository's own linked specification and reader-oriented overview guides. Follow [design](architecture.md#self-specification-and-maintained-views) and [acceptance](acceptance.md#self-specification) for the maintenance route.

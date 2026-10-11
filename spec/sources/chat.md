@@ -214,3 +214,9 @@ Document the purpose and boundary of each artifact type in an authoring guide re
 > Implement the plan.
 
 Keep a targeted taxonomy cleanup. Label technical `design` artifacts **Technical Design** in the reviewer and keep `ui_design` for screens, navigation, feedback, and mockups. Keep engineering decisions only where a chosen approach has meaningful rationale. Reclassify the mandatory backend/frontend separation as a constraint without changing REQ-016's ID. State diagram responsiveness as an observable requirement, with renderer mechanics in technical design. Preserve former decision IDs as superseded historical records, link each to the requirement now owning its behavior, and keep source provenance and crosslinks navigable. Keep build, deployment, packaging, and specification tooling in technical design.
+
+## Browser artifact filters, October 11, 2026
+
+> Please implement a way to hide superseded artifacts. Also make the checkbox(es) persist across page reloads
+
+In the browser review sidebar, provide a Hide superseded checkbox that starts checked and filters artifacts marked `status: superseded`. Persist it and the existing Changes only checkbox in browser local storage, shared across repositories. Default Changes only to unchecked. Both controls retain their saved values after a page reload.

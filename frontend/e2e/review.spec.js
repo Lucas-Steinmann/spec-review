@@ -229,6 +229,54 @@ test('local revision selection, both working-tree directions, filter, and render
   expect(comparisons).toEqual([['base', ''], ['', 'base']]);
 });
 
+test('superseded and changes-only filters persist across reloads', async ({ page }) => {
+  const activeGoal = { id: 'GOAL-001', type: 'goal', title: 'Current goal', status: 'specified', path: 'spec/artifacts/goals/GOAL-001.yaml' };
+  const supersededGoal = { id: 'GOAL-OLD', type: 'goal', title: 'Former goal', status: 'superseded', path: 'spec/artifacts/goals/GOAL-OLD.yaml' };
+  const currentSnapshot = (ref) => ({
+    revision: ref || 'working tree',
+    documents: { 'GOAL-001': activeGoal, 'GOAL-OLD': supersededGoal },
+    diagnostics: [],
+    categories: { goal: 'Goals' },
+  });
+  await mockApi(page, (url) => {
+    if (url.pathname === '/api/status') return { repo: '/tmp/sample', spec_dir: 'spec' };
+    if (url.pathname === '/api/local/commits') return { branches: [], commits: [{ sha: 'base', subject: 'Base' }] };
+    if (url.pathname === '/api/local/snapshot') return currentSnapshot(url.searchParams.get('ref'));
+    if (url.pathname === '/api/local/compare') return {
+      base: currentSnapshot('base'),
+      target: currentSnapshot('target'),
+      changes: {
+        'GOAL-001': { id: 'GOAL-001', status: 'changed', old: activeGoal, new: activeGoal },
+        'GOAL-OLD': { id: 'GOAL-OLD', status: 'unchanged', old: supersededGoal, new: supersededGoal },
+      },
+    };
+    if (url.pathname === '/api/local/document') return { document: activeGoal, revision: 'target', sections: [] };
+  });
+
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Open review' }).click();
+  const hideSuperseded = page.getByRole('checkbox', { name: 'Hide superseded' });
+  await expect(hideSuperseded).toBeChecked();
+  await expect(page.locator('.document-list')).not.toContainText('GOAL-OLD');
+
+  await hideSuperseded.uncheck();
+  await expect(page.locator('.document-list')).toContainText('GOAL-OLD');
+  await page.getByRole('button', { name: 'Compare', exact: true }).click();
+  const changesOnly = page.getByRole('checkbox', { name: 'Changes only' });
+  await expect(changesOnly).not.toBeChecked();
+  await changesOnly.check();
+  await expect(page.locator('.document-list')).not.toContainText('GOAL-OLD');
+
+  await page.reload();
+  await page.getByRole('button', { name: 'Open review' }).click();
+  await expect(page.getByRole('checkbox', { name: 'Hide superseded' })).not.toBeChecked();
+  await expect(page.locator('.document-list')).toContainText('GOAL-OLD');
+  await page.getByRole('button', { name: 'Compare', exact: true }).click();
+  await expect(page.getByRole('checkbox', { name: 'Changes only' })).toBeChecked();
+  await expect(page.locator('.document-list')).toContainText('GOAL-001');
+  await expect(page.locator('.document-list')).not.toContainText('GOAL-OLD');
+});
+
 test('browser document formatting, links, and diagram fallback', async ({ page }) => {
   await mockApi(page, (url) => {
     if (url.pathname === '/api/status') return { repo: '/tmp/sample', spec_dir: 'spec' };

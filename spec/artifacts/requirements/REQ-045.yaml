@@ -1,0 +1,16 @@
+id: REQ-045
+type: requirement
+title: Hide superseded artifacts and remember browser filters
+category: browsing
+status: specified
+statement: Provide a browser sidebar control that hides artifacts marked superseded, checked by default. Persist
+  its value and the Changes only comparison filter across page reloads, shared across repositories. Default
+  Changes only to unchecked.
+derived_from:
+- UC-008
+related:
+- REQ-021
+- REQ-030
+source:
+  file: spec/sources/chat.md
+  section: Browser artifact filters, October 11, 2026

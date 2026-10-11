@@ -2,6 +2,11 @@
   import { onMount, tick } from 'svelte';
   import DocumentBody from './DocumentBody.svelte';
 
+  function readBooleanPreference(key, fallback) {
+    const value = localStorage.getItem(key);
+    return value === null ? fallback : value === 'true';
+  }
+
   let status = null;
   let source = 'local';
   let repo = '';
@@ -25,7 +30,8 @@
   let categories = {};
   let category = 'goal';
   let search = '';
-  let changesOnly = false;
+  let changesOnly = readBooleanPreference('spec-review-changes-only', false);
+  let hideSuperseded = readBooleanPreference('spec-review-hide-superseded', true);
   let selectedId = '';
   let currentDocument = null;
   let compareDocuments = null;
@@ -238,7 +244,8 @@
       ? Object.values(comparison.changes).map((change) => ({ document: change.new || change.old, status: change.status }))
       : Object.values(snapshot?.documents || {}).map((document) => ({ document, status: 'unchanged' }));
     return rows.filter(({ document, status }) => document.type === category
-      && (!changesOnly || status !== 'unchanged')
+      && (!hideSuperseded || document.status !== 'superseded')
+      && (!changesOnly || !comparison || status !== 'unchanged')
       && `${document.id} ${document.title}`.toLowerCase().includes(search.toLowerCase()))
       .sort((left, right) => left.document.id.localeCompare(right.document.id));
   }
@@ -410,7 +417,8 @@
 <main class="workspace">
   <aside class="sidebar">
     <div class="filters"><input bind:value={search} placeholder="Filter ID or title" aria-label="Filter documents" />
-      {#if comparison}<label class="checkbox"><input type="checkbox" bind:checked={changesOnly} /> Changes only</label>{/if}
+      <label class="checkbox"><input type="checkbox" bind:checked={hideSuperseded} on:change={() => localStorage.setItem('spec-review-hide-superseded', String(hideSuperseded))} /> Hide superseded</label>
+      {#if comparison}<label class="checkbox"><input type="checkbox" bind:checked={changesOnly} on:change={() => localStorage.setItem('spec-review-changes-only', String(changesOnly))} /> Changes only</label>{/if}
     </div>
     <div class="category-list">
       {#each Object.entries(categories) as [key, label]}

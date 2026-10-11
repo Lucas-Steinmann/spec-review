@@ -14,7 +14,7 @@ These artifacts describe expected behavior. They do not claim a test has passed.
 
 ## Browser and GitHub
 
-[TEST-012](../artifacts/tests/TEST-012.yaml) checks document semantics in the WebUI. [TEST-014](../artifacts/tests/TEST-014.yaml) and [TEST-018](../artifacts/tests/TEST-018.yaml) cover repository, pull request, and GitHub revision review. [TEST-015](../artifacts/tests/TEST-015.yaml), [TEST-019](../artifacts/tests/TEST-019.yaml), and [TEST-020](../artifacts/tests/TEST-020.yaml) cover sidebar, keyboard, and loading usability.
+[TEST-012](../artifacts/tests/TEST-012.yaml) checks document semantics in the WebUI. [TEST-014](../artifacts/tests/TEST-014.yaml) and [TEST-018](../artifacts/tests/TEST-018.yaml) cover repository, pull request, and GitHub revision review. [TEST-015](../artifacts/tests/TEST-015.yaml), [TEST-019](../artifacts/tests/TEST-019.yaml), and [TEST-020](../artifacts/tests/TEST-020.yaml) cover sidebar, keyboard, and loading usability. [TEST-022](../artifacts/tests/TEST-022.yaml) verifies superseded filtering and persistence of both browser filters.
 
 ## Self-specification
 

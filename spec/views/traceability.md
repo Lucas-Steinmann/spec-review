@@ -11,6 +11,7 @@ Use this page to move from a user journey to its key requirement, design, and ac
 | [Compare revisions](../artifacts/use-cases/UC-006.yaml) | [REQ-018](../artifacts/requirements/REQ-018.yaml) | [DES-003](../artifacts/design/DES-003.yaml), [UI-001](../artifacts/ui-design/UI-001.yaml) | [TEST-006](../artifacts/tests/TEST-006.yaml) |
 | [Review this repository](../artifacts/use-cases/UC-007.yaml) | [REQ-026](../artifacts/requirements/REQ-026.yaml) | [DES-006](../artifacts/design/DES-006.yaml) | [TEST-009](../artifacts/tests/TEST-009.yaml) |
 | [Use the browser](../artifacts/use-cases/UC-008.yaml) | [REQ-034](../artifacts/requirements/REQ-034.yaml) | [DES-007](../artifacts/design/DES-007.yaml), [UI-002](../artifacts/ui-design/UI-002.yaml) | [TEST-011](../artifacts/tests/TEST-011.yaml) |
+| [Filter browser artifacts](../artifacts/use-cases/UC-008.yaml) | [REQ-045](../artifacts/requirements/REQ-045.yaml) | [DES-007](../artifacts/design/DES-007.yaml), [UI-002](../artifacts/ui-design/UI-002.yaml) | [TEST-022](../artifacts/tests/TEST-022.yaml) |
 | [Review GitHub work](../artifacts/use-cases/UC-009.yaml) | [REQ-039](../artifacts/requirements/REQ-039.yaml) | [DES-008](../artifacts/design/DES-008.yaml) | [TEST-018](../artifacts/tests/TEST-018.yaml) |
 
 For a wider set of requirements, use the [requirement guide](requirements.md). Each linked YAML artifact carries relationships to the next layer.
