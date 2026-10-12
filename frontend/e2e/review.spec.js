@@ -180,7 +180,7 @@ test('local revision selection, both working-tree directions, filter, and render
       if (id === 'REQ-001') return { document: addedRequirement, revision: ref || 'working tree', sections: [section('Statement', 'New requirement text')] };
       if (id === 'DES-001') return { document: deletedDesign, revision: ref || 'working tree', sections: [section('Description', 'Old design text')] };
       const old = ref === 'base';
-      return { document: old ? oldGoal : newGoal, revision: ref || 'working tree', sections: [section('Description', old ? 'The **old label** stays' : 'The **new label** stays')] };
+      return { document: old ? oldGoal : newGoal, revision: ref || 'working tree', sections: [section('Description', old ? 'The **old label** stays' : 'The **new label** stays'), section('Main Flow', old ? '1. Read the old label\n2. Continue old work' : '1. Read the new label\n2. Continue new work')] };
     }
   });
   await page.goto('/');
@@ -215,8 +215,10 @@ test('local revision selection, both working-tree directions, filter, and render
   await expect(page.locator('.category-list button').first()).toContainText('★');
   await page.locator('.document-item', { hasText: 'GOAL-001' }).click();
   await expect(page.locator('.diff-side')).toHaveCount(2);
-  await expect(page.locator('.diff-side').first().locator('.changed-line .diff-text.removed')).toHaveText('old');
-  await expect(page.locator('.diff-side').last().locator('.changed-line .diff-text.added')).toHaveText('new');
+  await expect(page.locator('.diff-side').first().locator('.changed-line .diff-text.removed').first()).toHaveText('old');
+  await expect(page.locator('.diff-side').last().locator('.changed-line .diff-text.added').first()).toHaveText('new');
+  await expect(page.locator('.diff-side').first().locator('ol[start="2"]')).toContainText('Continue old work');
+  await expect(page.locator('.diff-side').last().locator('ol[start="2"]')).toContainText('Continue new work');
   await page.getByRole('button', { name: 'Requirements' }).click();
   await page.locator('.document-item', { hasText: 'REQ-001' }).click();
   await expect(page.locator('.diff-side').first()).toContainText('Document absent');
@@ -278,8 +280,8 @@ test('review and compare modes apply selected revisions only on confirmation', a
 });
 
 test('superseded and changes-only filters persist across reloads', async ({ page }) => {
-  const activeGoal = { id: 'GOAL-001', type: 'goal', title: 'Current goal', status: 'specified', path: 'spec/artifacts/goals/GOAL-001.yaml' };
-  const supersededGoal = { id: 'GOAL-OLD', type: 'goal', title: 'Former goal', status: 'superseded', path: 'spec/artifacts/goals/GOAL-OLD.yaml' };
+  const activeGoal = { id: 'GOAL-001', type: 'goal', title: 'Current goal', fields: { status: 'specified' }, path: 'spec/artifacts/goals/GOAL-001.yaml' };
+  const supersededGoal = { id: 'GOAL-OLD', type: 'goal', title: 'Former goal', fields: { status: 'superseded' }, path: 'spec/artifacts/goals/GOAL-OLD.yaml' };
   const currentSnapshot = (ref) => ({
     revision: ref || 'working tree',
     documents: { 'GOAL-001': activeGoal, 'GOAL-OLD': supersededGoal },

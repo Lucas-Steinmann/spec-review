@@ -248,7 +248,7 @@
       ? Object.values(comparison.changes).map((change) => ({ document: change.new || change.old, status: change.status }))
       : Object.values(snapshot?.documents || {}).map((document) => ({ document, status: 'unchanged' }));
     return rows.filter(({ document, status }) => document.type === category
-      && (!hideSuperseded || document.status !== 'superseded')
+      && (!hideSuperseded || document.fields?.status !== 'superseded')
       && (!changesOnly || !comparison || status !== 'unchanged')
       && `${document.id} ${document.title}`.toLowerCase().includes(search.toLowerCase()))
       .sort((left, right) => left.document.id.localeCompare(right.document.id));

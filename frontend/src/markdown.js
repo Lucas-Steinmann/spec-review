@@ -115,8 +115,9 @@ export function renderMarkdown(source) {
     }
     if (/^\s*\d+[.)]\s+/.test(line)) {
       flush(); const items = [];
+      const start = Number(lines[index].match(/^\s*(\d+)[.)]\s+/)[1]);
       while (index < lines.length && /^\s*\d+[.)]\s+/.test(lines[index])) { items.push(lines[index++].replace(/^\s*\d+[.)]\s+/, '')); }
-      output.push(`<ol>${items.map((item) => `<li>${inline(item)}</li>`).join('')}</ol>`); continue;
+      output.push(`<ol${start === 1 ? '' : ` start="${start}"`}>${items.map((item) => `<li>${inline(item)}</li>`).join('')}</ol>`); continue;
     }
     if (/^>\s?/.test(line)) { flush(); output.push(`<blockquote><p>${inline(line.replace(/^>\s?/, ''))}</p></blockquote>`); index += 1; continue; }
     paragraph.push(line.trim()); index += 1;
