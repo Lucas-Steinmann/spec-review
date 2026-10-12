@@ -20,6 +20,10 @@ These artifacts describe expected behavior. They do not claim a test has passed.
 
 Browser mode persistence and revision confirmation are covered by [TEST-023](../artifacts/tests/TEST-023.yaml).
 
+[TEST-026](../artifacts/tests/TEST-026.yaml) covers system-following and saved appearance modes across the browser workbench and its narrow layout.
+
+[TEST-012](../artifacts/tests/TEST-012.yaml) also verifies responsive browser specification images, keyboard access to the modal viewer, zoom controls, and focus return.
+
 ## Self-specification
 
 [TEST-009](../artifacts/tests/TEST-009.yaml) checks that the tool can read its own specification and that maintained views have valid links and an overview-first navigation route. [TEST-007](../artifacts/tests/TEST-007.yaml) checks reuse of the backend, and [TEST-008](../artifacts/tests/TEST-008.yaml) checks submodule packaging.

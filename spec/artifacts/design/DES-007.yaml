@@ -7,7 +7,9 @@ description: |
   The browser holds repository selection and review workspace state while metadata or comparison requests
   are pending, so an in-flight response cannot replace a newer selection. Render the same document blocks
   and snapshot-aware links used by the terminal client. Store shared browser filter preferences in local storage,
-  defaulting Hide superseded to true and Changes only to false. Filter status-superseded artifacts before
+  defaulting Hide superseded to true and Changes only to false. Store the System, Paper, or Dark appearance
+  selection in local storage and resolve System through the browser's `prefers-color-scheme` media query.
+  Filter status-superseded artifacts before
   presenting list results. GitHub retrieval is specified by DES-008; development and distribution are specified
   by DES-009; interface layout and interaction states are specified by UI-002.
 addresses:
@@ -22,6 +24,8 @@ addresses:
 - REQ-042
 - REQ-043
 - REQ-045
+- REQ-047
+- REQ-048
 related:
 - UI-002
 decisions:
@@ -30,3 +34,6 @@ source:
   - type: conversation
     file: "spec/sources/chat.md"
     section: "WebUI and GitHub support"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Responsive specification images and image viewer, October 12, 2026"

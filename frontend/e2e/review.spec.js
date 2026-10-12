@@ -17,6 +17,7 @@ const comparison = (base = 'base', target = 'working tree') => ({
   },
 });
 const section = (heading, text) => ({ heading, blocks: [{ kind: 'markdown', text, language: '' }] });
+const wideImage = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1200" viewBox="0 0 2400 1200"><rect width="2400" height="1200" fill="#d9e5dc"/><circle cx="1200" cy="600" r="250" fill="#315e50"/></svg>')}`;
 
 async function mockApi(page, answer) {
   await page.route('**/api/**', async (route) => {
@@ -35,6 +36,17 @@ async function tabTo(page, locator) {
   await expect(locator).toBeFocused();
 }
 
+async function setAppearance(page, value) {
+  const settings = page.getByRole('button', { name: 'Settings' });
+  await settings.click();
+  const dialog = page.getByRole('dialog', { name: 'Settings' });
+  const appearance = dialog.getByRole('combobox', { name: 'Appearance' });
+  await expect(appearance).toBeFocused();
+  await appearance.selectOption(value);
+  await dialog.getByRole('button', { name: 'Done' }).click();
+  await expect(settings).toBeFocused();
+}
+
 test('local overview loads without contacting gh until requested', async ({ page }) => {
   const paths = [];
   await mockApi(page, (url) => {
@@ -44,12 +56,119 @@ test('local overview loads without contacting gh until requested', async ({ page
     if (url.pathname === '/api/local/snapshot') return snapshot('working tree');
   });
   await page.goto('/');
-  await expect(page.locator('.repo-sidebar')).toContainText('/tmp/sample');
+  await expect(page.locator('.repo-sidebar')).toContainText('sample');
+  await expect(page.locator('.repo-sidebar')).not.toContainText('/tmp/sample');
+  await expect(page.getByText('Available')).toHaveCount(0);
+  await expect(page.locator('.local-panel')).toContainText('LOCAL SOURCE');
+  const folderGlyph = await page.locator('.repo-glyph svg').first().boundingBox();
+  const folderGlyphBox = await page.locator('.repo-glyph').first().boundingBox();
+  expect(Math.abs(folderGlyph.x + folderGlyph.width / 2 - folderGlyphBox.x - folderGlyphBox.width / 2)).toBeLessThan(1);
   await expect(page.getByRole('button', { name: 'Open review' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Add', exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Add repository' })).toBeVisible();
   await page.getByRole('button', { name: 'Open review' }).click();
+  await expect(page.locator('.local-path strong')).toHaveText('sample');
+  await expect(page.locator('.revision-context')).toHaveCount(0);
   await expect(page.locator('.document-list')).toContainText('GOAL-001');
   expect(paths.every((path) => !path.startsWith('/api/gh/'))).toBe(true);
+});
+
+test('browser appearance follows the system, persists overrides, and keeps the workbench usable', async ({ page }) => {
+  await mockApi(page, (url) => {
+    if (url.pathname === '/api/status') return { repo: '/tmp/sample', spec_dir: 'spec' };
+    if (url.pathname === '/api/local/commits') return { branches: [], commits: [{ sha: 'target', subject: 'Target' }, { sha: 'base', subject: 'Base' }] };
+    if (url.pathname === '/api/local/snapshot') return snapshot('working tree');
+    if (url.pathname === '/api/local/compare') return comparison(url.searchParams.get('base'), url.searchParams.get('target'));
+    if (url.pathname === '/api/local/document') {
+      const ref = url.searchParams.get('ref');
+      return { document: newGoal, revision: ref || 'working tree', sections: [section('Description', ref === 'base' ? 'Old review text' : 'New review text')] };
+    }
+    if (url.pathname === '/api/gh/account') return { login: 'reviewer' };
+    if (url.pathname === '/api/gh/repos') return [{ full_name: 'owner/project', default_branch: 'main', private: true }];
+  });
+  await page.emulateMedia({ colorScheme: 'dark' });
+  await page.goto('/');
+  const root = page.locator('html');
+  await page.getByRole('button', { name: 'Settings' }).click();
+  const settingsDialog = page.getByRole('dialog', { name: 'Settings' });
+  const appearance = settingsDialog.getByRole('combobox', { name: 'Appearance' });
+  await expect(appearance).toHaveValue('system');
+  await expect(appearance).toBeFocused();
+  const closeSettings = settingsDialog.getByRole('button', { name: 'Close settings' });
+  await expect(closeSettings).toBeVisible();
+  expect(await closeSettings.evaluate((element) => element.getBoundingClientRect().width)).toBeLessThan(40);
+  const closeBox = await closeSettings.boundingBox();
+  const settingsBox = await settingsDialog.boundingBox();
+  expect(closeBox.x + closeBox.width).toBeGreaterThan(settingsBox.x + settingsBox.width - 60);
+  const settingsIcon = await page.locator('.settings-button svg').boundingBox();
+  const settingsButton = await page.locator('.settings-button').boundingBox();
+  expect(Math.abs(settingsIcon.x + settingsIcon.width / 2 - settingsButton.x - settingsButton.width / 2)).toBeLessThan(1);
+  await expect(root).toHaveAttribute('data-theme', 'dark');
+  const darkCanvas = await root.evaluate((element) => getComputedStyle(element).getPropertyValue('--canvas').trim());
+  expect(darkCanvas).toBe('#111613');
+
+  await appearance.selectOption('paper');
+  await expect(root).toHaveAttribute('data-theme', 'paper');
+  const paperCanvas = await root.evaluate((element) => getComputedStyle(element).getPropertyValue('--canvas').trim());
+  expect(paperCanvas).toBe('#f4f4f0');
+  await settingsDialog.getByRole('button', { name: 'Done' }).click();
+  await page.reload();
+  await page.getByRole('button', { name: 'Settings' }).click();
+  await expect(page.getByRole('dialog', { name: 'Settings' }).getByRole('combobox', { name: 'Appearance' })).toHaveValue('paper');
+  await page.getByRole('dialog', { name: 'Settings' }).getByRole('button', { name: 'Done' }).click();
+  await expect(root).toHaveAttribute('data-theme', 'paper');
+  await page.getByRole('button', { name: 'Open review' }).click();
+  await expect(page.locator('.document-list')).toContainText('GOAL-001');
+  await page.locator('.document-item', { hasText: 'GOAL-001' }).click();
+  await expect(page.locator('.document-body')).toContainText('New review text');
+  await page.getByRole('button', { name: /Repositories/ }).click();
+
+  await setAppearance(page, 'system');
+  await expect(root).toHaveAttribute('data-theme', 'dark');
+  await page.emulateMedia({ colorScheme: 'light' });
+  await expect(root).toHaveAttribute('data-theme', 'paper');
+  await setAppearance(page, 'dark');
+  await expect(root).toHaveAttribute('data-theme', 'dark');
+  await page.reload();
+  await page.getByRole('button', { name: 'Settings' }).click();
+  await expect(page.getByRole('dialog', { name: 'Settings' }).getByRole('combobox', { name: 'Appearance' })).toHaveValue('dark');
+  await page.getByRole('dialog', { name: 'Settings' }).getByRole('button', { name: 'Done' }).click();
+
+  await page.getByRole('button', { name: 'Open review' }).click();
+  await expect(page.getByRole('combobox', { name: 'Target revision' })).toBeVisible();
+  await expect(page.locator('.document-list')).toContainText('GOAL-001');
+  await expect(page.locator('.sidebar')).toBeVisible();
+  await expect(page.locator('.content-pane')).toBeVisible();
+  const darkPrimary = await page.locator('.confirm-button').evaluate((element) => getComputedStyle(element).backgroundColor);
+  expect(darkPrimary).not.toBe('rgba(0, 0, 0, 0)');
+  await page.locator('.document-item', { hasText: 'GOAL-001' }).click();
+  await expect(page.locator('.document-body')).toContainText('New review text');
+  await page.getByRole('combobox', { name: 'Review or compare' }).selectOption('compare');
+  await page.getByRole('combobox', { name: 'Base revision' }).selectOption('base');
+  await page.getByRole('button', { name: 'Apply revision' }).click();
+  await page.locator('.document-item', { hasText: 'GOAL-001' }).click();
+  await expect(page.locator('.diff-side')).toHaveCount(2);
+  await expect(page.locator('.diff-side').first()).toContainText('Old review text');
+  await expect(page.locator('.diff-side').last()).toContainText('New review text');
+
+  await page.setViewportSize({ width: 430, height: 900 });
+  const layout = await page.locator('.workspace').evaluate((element) => ({
+    direction: getComputedStyle(element).flexDirection,
+    overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    sidebarWidth: element.querySelector('.sidebar').getBoundingClientRect().width,
+    contentWidth: element.querySelector('.content-pane').getBoundingClientRect().width,
+  }));
+  expect(layout.direction).toBe('column');
+  expect(layout.overflow).toBeLessThanOrEqual(1);
+  expect(layout.sidebarWidth).toBeGreaterThan(0);
+  expect(layout.contentWidth).toBeGreaterThan(0);
+
+  await page.getByRole('button', { name: /Repositories/ }).click();
+  await page.getByRole('button', { name: 'Add repository' }).first().click();
+  const addDialog = page.getByRole('dialog', { name: 'Add GitHub repository' });
+  await expect(addDialog).toBeVisible();
+  const dialogSurface = await addDialog.evaluate((element) => getComputedStyle(element).backgroundColor);
+  expect(dialogSurface).not.toBe('rgba(0, 0, 0, 0)');
+  await addDialog.getByRole('button', { name: 'Cancel' }).click();
 });
 
 test('gh CLI repositories, saved overview, Actions, and pull comparison', async ({ page }) => {
@@ -72,7 +191,7 @@ test('gh CLI repositories, saved overview, Actions, and pull comparison', async 
     }
   });
   await page.goto('/');
-  await tabTo(page, page.getByRole('button', { name: 'Add', exact: true }));
+  await tabTo(page, page.getByRole('button', { name: 'Add repository' }));
   await page.keyboard.press('Enter');
   const dialog = page.getByRole('dialog', { name: 'Add GitHub repository' });
   await expect(dialog).toBeVisible();
@@ -88,13 +207,13 @@ test('gh CLI repositories, saved overview, Actions, and pull comparison', async 
   await expect.poll(() => loadedRevisions.at(-1)).toBe('main');
   await page.getByRole('combobox', { name: 'Target revision' }).selectOption('feature');
   await expect.poll(() => loadedRevisions.at(-1)).toBe('main');
-  await page.getByRole('button', { name: 'Confirm' }).click();
+  await page.getByRole('button', { name: 'Apply revision' }).click();
   await expect.poll(() => loadedRevisions.at(-1)).toBe('feature');
   await page.getByRole('combobox', { name: 'Target revision' }).selectOption('base');
-  await page.getByRole('button', { name: 'Confirm' }).click();
+  await page.getByRole('button', { name: 'Apply revision' }).click();
   await expect.poll(() => loadedRevisions.at(-1)).toBe('base');
   expect(loadedRevisions).toEqual(['main', 'feature', 'base']);
-  await page.getByRole('button', { name: /Overview/ }).click();
+  await page.getByRole('button', { name: /Repositories/ }).click();
   await page.reload();
   await expect(page.locator('.repo-sidebar')).toContainText('owner/project');
   await expect(page.locator('.pull-card').first()).toContainText('Improve review');
@@ -102,7 +221,7 @@ test('gh CLI repositories, saved overview, Actions, and pull comparison', async 
   await expect(page.locator('.revision-summary')).toContainText('base → head');
   await expect(page.locator('.category-list button').first()).toContainText('★');
   await page.getByRole('combobox', { name: 'Target revision' }).selectOption('main');
-  await page.getByRole('button', { name: 'Confirm' }).click();
+  await page.getByRole('button', { name: 'Apply revision' }).click();
   await expect(page.locator('.document-list')).toContainText('GOAL-001');
 });
 
@@ -120,7 +239,7 @@ test('local selection remains available during a pending gh overview refresh', a
     await route.fulfill({ contentType: 'application/json', body: JSON.stringify(body) });
   });
   await page.goto('/');
-  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.getByRole('button', { name: 'Add repository' }).click();
   await page.getByRole('dialog', { name: 'Add GitHub repository' }).getByRole('button', { name: 'Add repository' }).click();
   await expect(page.getByRole('status')).toContainText('Loading pull requests');
   await page.getByRole('button', { name: /Local folder/ }).click();
@@ -136,7 +255,7 @@ test('gh sign-in failure is explained at the browser boundary', async ({ page })
     if (url.pathname === '/api/gh/account') return { status: 400, body: { error: 'GitHub CLI is not authenticated; run `gh auth login`' } };
   });
   await page.goto('/');
-  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.getByRole('button', { name: 'Add repository' }).click();
   await expect(page.getByRole('alert')).toContainText('gh auth login');
   await expect(page.getByRole('dialog', { name: 'Add GitHub repository' })).not.toBeVisible();
   await expect(page.getByRole('button', { name: 'Open review' })).toBeVisible();
@@ -155,7 +274,7 @@ test('repository discovery keeps the local overview usable while gh responds', a
     await route.fulfill({ contentType: 'application/json', body: JSON.stringify(body) });
   });
   await page.goto('/');
-  await page.getByRole('button', { name: 'Add', exact: true }).click();
+  await page.getByRole('button', { name: 'Add repository' }).click();
   await expect(page.getByRole('status')).toContainText('Loading GitHub repositories');
   await page.getByRole('button', { name: /Local folder/ }).click();
   await expect(page.getByRole('button', { name: 'Open review' })).toBeVisible();
@@ -187,7 +306,7 @@ test('local revision selection, both working-tree directions, filter, and render
   await page.getByRole('button', { name: 'Open review' }).click();
   await expect(page.locator('.document-list')).toContainText('GOAL-001');
   await page.getByRole('combobox', { name: 'Target revision' }).selectOption('base');
-  await page.getByRole('button', { name: 'Confirm' }).click();
+  await page.getByRole('button', { name: 'Apply revision' }).click();
   await page.getByRole('button', { name: 'Use Cases' }).click();
   await page.locator('.document-item', { hasText: 'UC-001' }).click();
   await expect(page.locator('.content-pane')).toContainText('Review use case');
@@ -211,7 +330,7 @@ test('local revision selection, both working-tree directions, filter, and render
 
   await page.getByRole('combobox', { name: 'Target revision' }).selectOption('');
   await page.getByRole('combobox', { name: 'Review or compare' }).selectOption('compare');
-  await page.getByRole('button', { name: 'Confirm' }).click();
+  await page.getByRole('button', { name: 'Apply revision' }).click();
   await expect(page.locator('.category-list button').first()).toContainText('★');
   await page.locator('.document-item', { hasText: 'GOAL-001' }).click();
   await expect(page.locator('.diff-side')).toHaveCount(2);
@@ -234,7 +353,7 @@ test('local revision selection, both working-tree directions, filter, and render
   await page.getByRole('combobox', { name: 'Base revision' }).selectOption('');
   await page.getByRole('combobox', { name: 'Target revision' }).selectOption('base');
   await page.getByRole('combobox', { name: 'Review or compare' }).selectOption('compare');
-  await page.getByRole('button', { name: 'Confirm' }).click();
+  await page.getByRole('button', { name: 'Apply revision' }).click();
   expect(comparisons).toEqual([['base', ''], ['', 'base']]);
 });
 
@@ -261,7 +380,7 @@ test('review and compare modes apply selected revisions only on confirmation', a
   await expect(page.getByRole('combobox', { name: 'Base revision' })).toHaveCount(0);
   await target.selectOption('target');
   expect(snapshots).toEqual(['']);
-  await page.getByRole('button', { name: 'Confirm' }).click();
+  await page.getByRole('button', { name: 'Apply revision' }).click();
   await expect.poll(() => snapshots.at(-1)).toBe('target');
 
   await mode.selectOption('compare');
@@ -269,7 +388,7 @@ test('review and compare modes apply selected revisions only on confirmation', a
   await page.getByRole('combobox', { name: 'Base revision' }).selectOption('base');
   await target.selectOption('');
   expect(comparisons).toEqual([]);
-  await page.getByRole('button', { name: 'Confirm' }).click();
+  await page.getByRole('button', { name: 'Apply revision' }).click();
   await expect.poll(() => comparisons.length).toBe(1);
   expect(comparisons).toEqual([['base', '']]);
 
@@ -312,7 +431,7 @@ test('superseded and changes-only filters persist across reloads', async ({ page
   await hideSuperseded.uncheck();
   await expect(page.locator('.document-list')).toContainText('GOAL-OLD');
   await page.getByRole('combobox', { name: 'Review or compare' }).selectOption('compare');
-  await page.getByRole('button', { name: 'Confirm' }).click();
+  await page.getByRole('button', { name: 'Apply revision' }).click();
   const changesOnly = page.getByRole('checkbox', { name: 'Changes only' });
   await expect(changesOnly).not.toBeChecked();
   await changesOnly.check();
@@ -323,7 +442,7 @@ test('superseded and changes-only filters persist across reloads', async ({ page
   await expect(page.getByRole('checkbox', { name: 'Hide superseded' })).not.toBeChecked();
   await expect(page.locator('.document-list')).toContainText('GOAL-OLD');
   await page.getByRole('combobox', { name: 'Review or compare' }).selectOption('compare');
-  await page.getByRole('button', { name: 'Confirm' }).click();
+  await page.getByRole('button', { name: 'Apply revision' }).click();
   await expect(page.getByRole('checkbox', { name: 'Changes only' })).toBeChecked();
   await expect(page.locator('.document-list')).toContainText('GOAL-001');
   await expect(page.locator('.document-list')).not.toContainText('GOAL-OLD');
@@ -344,6 +463,7 @@ test('browser document formatting, links, and diagram fallback', async ({ page }
           section('Preconditions', '- First\n- Second'),
           section('Postconditions', '- Done'),
           { heading: 'Diagram', blocks: [{ kind: 'diagram', text: 'flowchart LR\nA --> B', language: 'mermaid' }] },
+          { heading: 'Image', blocks: [{ kind: 'image', text: wideImage, language: 'Wide image' }] },
         ],
       };
     }
@@ -363,6 +483,36 @@ test('browser document formatting, links, and diagram fallback', async ({ page }
   await expect(page.locator('.document-body ul li')).toHaveCount(3);
   await expect(page.locator('.diagram pre')).toContainText('flowchart LR');
   await expect(page.locator('.diagram-error')).toContainText('Renderer unavailable');
+  const image = page.getByRole('button', { name: 'Wide image (open image viewer)' });
+  const preview = page.locator('.spec-image img');
+  await expect(preview).toBeVisible();
+  const previewBox = await preview.boundingBox();
+  const contentBox = await page.locator('.content-pane').boundingBox();
+  expect(previewBox.width).toBeLessThanOrEqual(contentBox.width);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(1280);
+  await image.click();
+  const viewer = page.getByRole('dialog', { name: 'Image viewer' });
+  const viewerImage = viewer.locator('.image-viewer-image');
+  await expect(viewer).toBeVisible();
+  await expect(viewer.locator('output')).toHaveText('100%');
+  const fitImageWidth = (await viewerImage.boundingBox()).width;
+  await viewer.getByRole('button', { name: 'Zoom in' }).click();
+  await expect(viewer.locator('output')).toHaveText('125%');
+  await expect.poll(async () => (await viewerImage.boundingBox()).width).toBeGreaterThan(fitImageWidth);
+  await viewer.getByRole('button', { name: 'Zoom out' }).click();
+  await expect(viewer.locator('output')).toHaveText('100%');
+  await viewer.getByRole('button', { name: 'Fit to window' }).click();
+  await viewer.getByRole('button', { name: 'Close image viewer' }).click();
+  await expect(viewer).not.toBeVisible();
+  await expect(image).toBeFocused();
+  await image.press('Enter');
+  await expect(viewer).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(viewer).not.toBeVisible();
+  await expect(image).toBeFocused();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(preview).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   await page.locator('.document-body a', { hasText: 'missing' }).click();
   await expect(page.getByRole('alert')).toContainText('Target is unavailable');
   await page.getByRole('button', { name: 'Dismiss' }).click();
@@ -401,7 +551,7 @@ test('keyboard opens review and navigates a named link dialog with focus return'
   await expect(page.getByRole('combobox', { name: 'Target revision' })).toBeFocused();
   await page.keyboard.press('ArrowDown');
   await expect.poll(() => selectedRevisions.at(-1)).toBe('');
-  await page.getByRole('button', { name: 'Confirm' }).click();
+  await page.getByRole('button', { name: 'Apply revision' }).click();
   await expect.poll(() => selectedRevisions.at(-1)).toBe('base');
   await tabTo(page, page.getByRole('button', { name: 'Use Cases' }));
   await expect(page.getByRole('button', { name: 'Use Cases' })).toBeFocused();
@@ -445,12 +595,12 @@ test('a pending local comparison leaves filtering and overview navigation availa
   await page.goto('/');
   await page.getByRole('button', { name: 'Open review' }).click();
   await page.getByRole('combobox', { name: 'Review or compare' }).selectOption('compare');
-  await page.getByRole('button', { name: 'Confirm' }).click();
+  await page.getByRole('button', { name: 'Apply revision' }).click();
   await expect(page.getByRole('status')).toContainText('Loading revision');
   await page.getByRole('button', { name: 'Use Cases' }).click();
   await page.getByRole('textbox', { name: 'Filter documents' }).fill('UC-001');
   await expect(page.locator('.document-list')).toContainText('UC-001');
-  await page.getByRole('button', { name: /Overview/ }).click();
+  await page.getByRole('button', { name: /Repositories/ }).click();
   await expect(page.getByRole('button', { name: 'Open review' })).toBeVisible();
   await page.getByRole('button', { name: 'Open review' }).click();
   await expect(page.locator('.document-list')).toContainText('UC-001');

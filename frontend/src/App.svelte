@@ -1,5 +1,6 @@
 <script>
   import { onMount, tick } from 'svelte';
+  import { ArrowLeft, ArrowRight, ChevronRight, ExternalLink, Folder, GitBranch, Plus, Settings, X } from '@lucide/svelte';
   import DocumentBody from './DocumentBody.svelte';
 
   function readBooleanPreference(key, fallback) {
@@ -45,10 +46,21 @@
   let busy = false;
   let viewRequest = 0;
   let linkDialog;
+  let settingsDialog;
+  let settingsButton;
   let linkChoices = [];
   let linkAnchor = '';
   let pendingLinkContext = null;
   let page = 'overview';
+  let themeMode = ['system', 'dark', 'paper'].includes(localStorage.getItem('spec-review-theme'))
+    ? localStorage.getItem('spec-review-theme')
+    : 'system';
+  let prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  $: resolvedTheme = themeMode === 'system' ? (prefersDark ? 'dark' : 'paper') : themeMode;
+  $: {
+    document.documentElement.dataset.theme = resolvedTheme;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', resolvedTheme === 'dark' ? '#111613' : '#f4f4f0');
+  }
   async function api(path, options = {}) {
     const response = await fetch(path, options);
     const result = await response.json();
@@ -243,14 +255,14 @@
     return changed;
   }
 
-  function entries() {
-    let rows = comparison
-      ? Object.values(comparison.changes).map((change) => ({ document: change.new || change.old, status: change.status }))
-      : Object.values(snapshot?.documents || {}).map((document) => ({ document, status: 'unchanged' }));
-    return rows.filter(({ document, status }) => document.type === category
-      && (!hideSuperseded || document.fields?.status !== 'superseded')
-      && (!changesOnly || !comparison || status !== 'unchanged')
-      && `${document.id} ${document.title}`.toLowerCase().includes(search.toLowerCase()))
+  function entries(sourceSnapshot, sourceComparison, selectedCategory, filterText, onlyChanges, hideSupersededItems) {
+    let rows = sourceComparison
+      ? Object.values(sourceComparison.changes).map((change) => ({ document: change.new || change.old, status: change.status }))
+      : Object.values(sourceSnapshot?.documents || {}).map((document) => ({ document, status: 'unchanged' }));
+    return rows.filter(({ document, status }) => document.type === selectedCategory
+      && (!hideSupersededItems || document.fields?.status !== 'superseded')
+      && (!onlyChanges || !sourceComparison || status !== 'unchanged')
+      && `${document.id} ${document.title}`.toLowerCase().includes(filterText.toLowerCase()))
       .sort((left, right) => left.document.id.localeCompare(right.document.id));
   }
 
@@ -356,43 +368,72 @@
 
   function showError(problem) { error = problem?.message || String(problem); }
 
-  onMount(initialize);
+  onMount(() => {
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const updatePreference = (event) => { prefersDark = event.matches; };
+    media.addEventListener?.('change', updatePreference);
+    initialize();
+    return () => media.removeEventListener?.('change', updatePreference);
+  });
+
+  function setThemeMode(value) {
+    themeMode = value;
+    localStorage.setItem('spec-review-theme', value);
+  }
+
+  function localFolderName(path) {
+    const normalized = (path || '').replace(/[\\/]+$/, '');
+    return normalized.split(/[\\/]/).pop() || path || '';
+  }
+
+  function repositoryDisplayName() {
+    return source === 'local' ? localFolderName(status?.repo) : repo || status?.repo || '';
+  }
+
+  async function openSettings() {
+    settingsDialog?.showModal();
+    await tick();
+    settingsDialog?.querySelector('select')?.focus();
+  }
 </script>
 
 <svelte:head><title>spec-review</title></svelte:head>
 
 <header class="topbar">
-  <a class="brand" href="/">spec-review</a>
+  <a class="brand" href="/" aria-label="spec-review home"><span class="brand-mark" aria-hidden="true">s</span><span>spec<span class="brand-light">review</span></span></a>
   {#if page === 'detail'}
-    <button on:click={openOverview}>← Overview</button>
-    <div class="local-path">{repo || status?.repo || ''} <span>{status?.spec_dir || ''}</span></div>
+    <button class="quiet-button back-button" on:click={openOverview}><ArrowLeft size={15} aria-hidden="true" /> Repositories</button>
+    <div class="local-path"><strong>{repositoryDisplayName()}</strong><span>{status?.spec_dir || ''}</span></div>
   {:else}
-    <span class="overview-title">Projects and pull requests</span><span class="spacer"></span>
-    <button class="primary" on:click={openAddRepo} disabled={addBusy}>Add</button>
+    <span class="topbar-context">Repository overview</span>
   {/if}
+  <div class="topbar-actions">
+    <button class="settings-button" bind:this={settingsButton} aria-label="Settings" title="Settings" on:click={openSettings}><Settings size={18} strokeWidth={1.8} aria-hidden="true" /></button>
+    {#if page === 'overview'}<button class="primary" on:click={openAddRepo} disabled={addBusy}><Plus size={15} aria-hidden="true" /> Add repository</button>{/if}
+  </div>
 </header>
-{#if error}<div class="error-banner" role="alert">{error}<button aria-label="Dismiss" on:click={() => error = ''}>×</button></div>{/if}
+  {#if error}<div class="error-banner" role="alert">{error}<button aria-label="Dismiss" on:click={() => error = ''}><X size={16} aria-hidden="true" /></button></div>{/if}
 
 {#if page === 'overview'}
 <main class="overview-layout">
-  <aside class="repo-sidebar"><h2>Repositories</h2>
-    <button class:active={overviewRepo === '__local__'} on:click={() => { overviewRepo = '__local__'; refreshOverview(); }}>Local folder · {status?.repo || ''}</button>
+  <aside class="repo-sidebar"><div class="sidebar-heading"><span class="eyebrow">WORKSPACES</span><h2>Repositories</h2></div>
+    <div class="repo-list"><button class="repo-entry" class:active={overviewRepo === '__local__'} on:click={() => { overviewRepo = '__local__'; refreshOverview(); }}><span class="repo-glyph local-glyph"><Folder size={15} aria-hidden="true" /></span><span class="repo-copy"><strong>Local folder</strong><small>{localFolderName(status?.repo) || 'This workspace'}</small></span><ChevronRight class="repo-chevron" size={16} aria-hidden="true" /></button>
     {#each savedRepos as item (item.full_name)}
-      <button class:active={overviewRepo === item.full_name} on:click={() => { overviewRepo = item.full_name; refreshOverview(); }}>{item.full_name}</button>
-    {/each}
+      <button class="repo-entry" class:active={overviewRepo === item.full_name} on:click={() => { overviewRepo = item.full_name; refreshOverview(); }}><span class="repo-glyph"><GitBranch size={15} aria-hidden="true" /></span><span class="repo-copy"><strong>{item.full_name}</strong><small>GitHub repository</small></span><ChevronRight class="repo-chevron" size={16} aria-hidden="true" /></button>
+    {/each}</div>
   </aside>
   <section class="overview-content">
     {#if addBusy}<p role="status">Loading GitHub repositories…</p>{/if}
     {#if overviewRepo === '__local__'}
-      <div class="overview-heading"><div><p>Local repository</p><h1>{status?.repo || 'Local folder'}</h1></div><button class="primary" on:click={openLocalRepository}>Open review</button></div>
-      <p>Review the local specification and compare its revisions.</p>
+      <div class="overview-heading"><div><p class="eyebrow">LOCAL WORKSPACE</p><h1>{localFolderName(status?.repo) || 'Local folder'}</h1><p class="overview-subtitle">Review the current specification or compare it with another revision.</p></div><button class="primary" on:click={openLocalRepository}>Open review <ExternalLink size={14} aria-hidden="true" /></button></div>
+      <section class="overview-panel local-panel"><div class="panel-heading"><div><span class="eyebrow">LOCAL SOURCE</span><h2>Specification workspace</h2></div></div><p>Browse artifacts, follow references, and inspect changes across revisions from one focused workspace.</p></section>
     {:else}
-      <div class="overview-heading"><div><p>GitHub repository · {ghAccount || 'gh CLI'}</p><h1>{overviewRepo}</h1></div><button class="primary" on:click={() => openRepository(savedRepos.find((item) => item.full_name === overviewRepo))}>Open review</button></div>
-      <h2>Open pull requests</h2>
+      <div class="overview-heading"><div><p class="eyebrow">GITHUB WORKSPACE · {ghAccount || 'GH CLI'}</p><h1>{overviewRepo}</h1><p class="overview-subtitle">Choose a pull request to compare or open the repository’s current revision.</p></div><button class="primary" on:click={() => openRepository(savedRepos.find((item) => item.full_name === overviewRepo))}>Open review <ExternalLink size={14} aria-hidden="true" /></button></div>
+      <div class="section-heading"><div><span class="eyebrow">REVIEW QUEUE</span><h2>Open pull requests</h2></div><span class="count-pill">{overviewPulls.length}</span></div>
       {#if overviewBusy}<p role="status">Loading pull requests…</p>
       {:else if overviewPulls.length}
         <div class="pull-list">{#each overviewPulls as pull (pull.number)}
-          <button class="pull-card" on:click={() => openRepository(savedRepos.find((item) => item.full_name === overviewRepo), pull)}><span class="pull-number">#{pull.number}</span><span class="pull-title"><strong>{pull.title}</strong><small>{pull.head_ref} → {pull.base_ref}</small></span><span class="checks {pull.checks}">{pull.checks === 'unavailable' ? 'Actions unavailable' : pull.checks.replace('_', ' ')}</span></button>
+          <button class="pull-card" on:click={() => openRepository(savedRepos.find((item) => item.full_name === overviewRepo), pull)}><span class="pull-number">#{pull.number}</span><span class="pull-title"><strong>{pull.title}</strong><small><code>{pull.head_ref}</code><ArrowRight size={12} aria-hidden="true" /><code>{pull.base_ref}</code></small></span><span class="checks {pull.checks}"><i></i>{pull.checks === 'unavailable' ? 'Actions unavailable' : pull.checks.replace('_', ' ')}</span><ExternalLink class="pull-open" size={14} aria-hidden="true" /></button>
         {/each}</div>
       {:else}<p class="empty">No open pull requests.</p>{/if}
     {/if}
@@ -405,25 +446,25 @@
 </dialog>
 {:else}
 <nav class="revision-bar">
-  <label>Mode
+  <label><span>Mode</span>
     <select aria-label="Review or compare" bind:value={reviewMode} on:change={() => localStorage.setItem('spec-review-mode', reviewMode)}>
       <option value="review">Review</option>
       <option value="compare">Compare</option>
     </select>
   </label>
-  <label>Target
+  <label><span>Target</span>
     <select aria-label="Target revision" bind:value={revision} on:change={revisionChanged}>
       {#each revisions as item}<option value={item.value}>{item.label}</option>{/each}
     </select>
   </label>
-  {#if reviewMode === 'compare'}<label>Base
+  {#if reviewMode === 'compare'}<label><span>Base</span>
     <select aria-label="Base revision" bind:value={base}>
       {#each revisions as item}<option value={item.value}>{item.label}</option>{/each}
     </select>
   </label>{/if}
-  <button class="primary" on:click={confirmSelection} disabled={busy}>Confirm</button>
+  <button class="primary confirm-button" on:click={confirmSelection} disabled={busy}>{busy ? 'Loading…' : 'Apply revision'}</button>
   <span class="spacer"></span>
-  {#if history.length}<button on:click={goBack}>← Back</button>{/if}
+  {#if history.length}<button on:click={goBack}><ArrowLeft size={14} aria-hidden="true" /> Back</button>{/if}
   {#if comparison}<span class="revision-summary">{comparison.base.revision.slice(0, 10)} → {comparison.target.revision.slice(0, 10)}</span>{/if}
 </nav>
 
@@ -440,9 +481,9 @@
     </div>
     <div class="document-list">
       {#if busy}<p class="loading-status" role="status">Loading revision…</p>{/if}
-      {#if entries().length === 0}<p class="empty">No documents in this category.</p>
+      {#if entries(snapshot, comparison, category, search, changesOnly, hideSuperseded).length === 0}<p class="empty">No documents in this category.</p>
       {:else}
-        {#each entries() as row (row.document.id)}
+        {#each entries(snapshot, comparison, category, search, changesOnly, hideSuperseded) as row (row.document.id)}
           <button class="document-item" class:active={selectedId === row.document.id} on:click={() => selectDocument(row.document.id)}>
             <span class={`change ${row.status}`}>{row.status === 'added' ? '+' : row.status === 'deleted' ? '−' : row.status === 'changed' ? '~' : ''}</span>
             <strong>{row.document.id}</strong><span>{row.document.title}</span>
@@ -481,3 +522,10 @@
   <button class="cancel" on:click={() => linkDialog?.close()}>Cancel</button>
 </dialog>
 {/if}
+<dialog bind:this={settingsDialog} class="link-dialog settings-dialog" aria-labelledby="settings-title" on:close={() => settingsButton?.focus()}>
+  <div class="settings-heading"><div><span class="eyebrow">PREFERENCES</span><h2 id="settings-title">Settings</h2></div><button class="icon-close" aria-label="Close settings" on:click={() => settingsDialog?.close()}><X size={18} aria-hidden="true" /></button></div>
+  <label class="setting-row"><span><strong>Appearance</strong><small>Choose how the workspace looks.</small></span><select aria-label="Appearance" value={themeMode} on:change={(event) => setThemeMode(event.currentTarget.value)}>
+    <option value="system">System</option><option value="paper">Paper</option><option value="dark">Dark</option>
+  </select></label>
+  <div class="dialog-actions"><button class="primary" on:click={() => settingsDialog?.close()}>Done</button></div>
+</dialog>

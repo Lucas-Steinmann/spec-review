@@ -8,6 +8,8 @@ What can the reviewer read? [Canonical artifacts and overviews](../artifacts/req
 
 [REQ-046](../artifacts/requirements/REQ-046.yaml) adds computed, navigable backlinks to artifacts that reference the current artifact in the selected snapshot.
 
+[REQ-048](../artifacts/requirements/REQ-048.yaml) keeps browser specification images within the document pane and provides an accessible zoom viewer.
+
 ## Comparison
 
 [Revision selection](../artifacts/requirements/REQ-011.yaml) and [checkout safety](../artifacts/requirements/REQ-023.yaml) precede [stable-ID comparison](../artifacts/requirements/REQ-018.yaml). [Statuses](../artifacts/requirements/REQ-012.yaml), [changed categories](../artifacts/requirements/REQ-013.yaml), [diff layouts](../artifacts/requirements/REQ-014.yaml), and [stored overview comparison](../artifacts/requirements/REQ-020.yaml) make changes visible. [Snapshot provenance](../artifacts/requirements/REQ-022.yaml) keeps followed links in the right revision.
@@ -21,6 +23,8 @@ What can the reviewer read? [Canonical artifacts and overviews](../artifacts/req
 [WebUI review](../artifacts/requirements/REQ-034.yaml) defines the persistent Review/Compare selector and confirm-driven revision loading, alongside [saved repository navigation](../artifacts/requirements/REQ-035.yaml), [GitHub revisions](../artifacts/requirements/REQ-039.yaml), and [pull requests and Actions](../artifacts/requirements/REQ-040.yaml). [Responsive comparisons](../artifacts/requirements/REQ-041.yaml), [keyboard access](../artifacts/requirements/REQ-042.yaml), and [navigation during loading](../artifacts/requirements/REQ-043.yaml) define usability.
 
 [REQ-045](../artifacts/requirements/REQ-045.yaml) adds a default-on filter for superseded artifacts and persistence for both browser sidebar filters.
+
+[REQ-047](../artifacts/requirements/REQ-047.yaml) defines the cohesive browser review workbench and its System, Paper, and Dark appearance modes, including saved overrides and accessible presentation.
 
 ## Maintaining this plan
 

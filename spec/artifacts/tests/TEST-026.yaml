@@ -1,0 +1,20 @@
+id: TEST-026
+type: test
+title: Use appearance modes across the browser review workbench
+verifies:
+- REQ-047
+description: |
+  Open Settings from the gear icon and verify the dialog focuses its appearance selector. Open the browser app
+  with System selected and verify it follows both light and dark operating-system
+  preferences. Select Paper and Dark overrides and reload; verify each choice persists and applies across the
+  overview, revision controls, artifact list, document content, dialogs, statuses, and comparison highlights.
+  Verify closing Settings restores focus to the gear button. In the local workspace, verify the top bar shows
+  only the folder name and the revision controls do not repeat the repository name. Verify icon glyphs are
+  centered in their controls and the Settings close button stays compact at the heading's right edge.
+  In each mode, verify the overview and detail workspace remain readable and controls retain accessible names
+  and visible keyboard focus. At a narrow viewport, verify repository navigation remains reachable and the
+  artifact list and document pane stack without horizontal page overflow.
+source:
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Browser workbench redesign, October 12, 2026"

@@ -1,0 +1,24 @@
+id: REQ-047
+type: requirement
+title: Provide a coherent browser review workbench and appearance modes
+category: presentation
+status: specified
+statement: |
+  Present the browser overview and detailed review as a cohesive, responsive developer workbench with a
+  consistent visual hierarchy for navigation, revision controls, artifact lists, document content, and
+  actions. Provide System, Paper, and Dark appearance modes. System follows the operating-system color
+  preference; a manually selected Paper or Dark mode overrides it. Persist the selected mode across reloads.
+  Maintain readable text, status, and difference cues and accessible names and visible keyboard focus in
+  every mode.
+derived_from:
+- UC-008
+verifies:
+- TEST-026
+related:
+- REQ-034
+- REQ-041
+- REQ-042
+source:
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Browser workbench redesign, October 12, 2026"

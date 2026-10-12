@@ -2,21 +2,36 @@ id: UI-002
 type: ui_design
 title: Browser repository overview and review workspace
 description: |
-  Open on a repository overview with the local folder and saved gh-accessible repositories in a left list.
-  Show open pull requests and available Actions state. Selecting a repository or pull request opens the
-  detailed revision and comparison workspace. Display documents, categories, links, diagrams, and field or
-  Markdown differences. Mark changed Markdown lines with side-specific bars and light backgrounds, and
-  changed words with stronger color. Keep filters and category buttons usable at narrow widths. Show loading
-  status while requests are pending without blocking other navigation. Provide Hide superseded, checked by
-  default, and the Changes only comparison filter; retain both checkbox values across page reloads. Give
-  controls and dialogs accessible names, show keyboard focus, and restore focus when a dialog closes. In the
-  document view, show a computed Referenced by section with navigable links to artifacts that point to the
-  current artifact through relationship fields in the selected snapshot. Place a Review/Compare selector
-  before the target revision selector in the revision bar and retain its value
-  across page reloads. Hide the base selector in Review mode and show it in Compare mode. Confirm applies the selection for the chosen mode;
-  changing a selection alone does not load a revision or comparison.
+  Present the browser app as a focused developer review workbench. The overview has repository navigation
+  beside a clear repository heading and a pull request queue. The detail workspace has repository context,
+  revision and mode controls, artifact filters and categories, a selectable artifact list, and a readable
+  document or diff pane. Use a deliberate type scale, compact spacing, layered surfaces, and restrained
+  accent colors. Primary actions are filled; secondary navigation is quiet or outlined; inputs and selects
+  share consistent proportions, border treatment, and focus states. Avoid generic framework-default controls.
 
-  ![Browser review workspace mockup](../../mockups/rendered/browser-workspace.png)
+  Use Lucide Svelte for interface icons. Offer System, Paper, and Dark appearance modes in a Settings dialog
+  opened by a gear icon in the application header. System follows the operating
+  system color preference; Paper uses warm light surfaces and Dark uses layered graphite surfaces. Users can
+  override System and their selection persists across reloads. Apply theme tokens consistently to overview,
+  workspace, dialogs, Markdown, code, status, and diff highlights. Keep repository navigation and workspace
+  panels usable at narrow widths by stacking the review list and content pane and making repository choices
+  horizontally navigable. The top bar shows the local folder name without its absolute path; revision controls
+  do not repeat the repository name.
+
+  Preserve the existing workflows: local and saved GitHub repositories, open pull requests and Actions state,
+  revision review and comparison, filters, links, diagrams, loading feedback, and error handling. Give controls
+  accessible names, preserve keyboard operation and visible focus, and retain readable status and diff cues.
+  Keep specification images within the document pane. Open them in a modal viewer with fit-to-window, zoom,
+  reset, and close controls; opening and closing images must remain keyboard accessible.
+
+  ![Paper overview](../../mockups/rendered/browser-workspace-paper.png)
+  ![Dark overview](../../mockups/rendered/browser-workspace-dark.png)
+  ![Paper overview at narrow width](../../mockups/rendered/browser-workspace-paper-mobile.png)
+  ![Dark overview at narrow width](../../mockups/rendered/browser-workspace-dark-mobile.png)
+  ![Paper review workspace](../../mockups/rendered/browser-review-paper.png)
+  ![Dark review workspace](../../mockups/rendered/browser-review-dark.png)
+  ![Paper review workspace at narrow width](../../mockups/rendered/browser-review-paper-mobile.png)
+  ![Dark review workspace at narrow width](../../mockups/rendered/browser-review-dark-mobile.png)
 addresses:
 - REQ-034
 - REQ-035
@@ -29,8 +44,12 @@ addresses:
 - REQ-043
 - REQ-045
 - REQ-046
+- REQ-047
+- REQ-048
 tests:
+- TEST-012
 - TEST-023
+- TEST-026
 related:
 - DES-007
 source:
@@ -49,3 +68,12 @@ source:
   - type: conversation
     file: "spec/sources/chat.md"
     section: "Local-only browser scope and accessibility, October 7, 2026"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Browser workbench redesign, October 12, 2026"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Settings dialog and compact local repository context, October 12, 2026"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Responsive specification images and image viewer, October 12, 2026"

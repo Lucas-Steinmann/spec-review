@@ -158,6 +158,22 @@ The user reported that selecting a GitHub snapshot timed out after 30 seconds in
 
 Store planning visuals under `spec/mockups/`: editable static HTML/CSS source under `src/` and generated PNG previews under `rendered/`. Render the previews with the repository's local Playwright and Chromium setup. Use HTML/CSS previews for user-interface design and Mermaid/PlantUML only when an architecture or interaction relationship is clearer as a diagram. Canonical design artifacts embed UI-preview images and carry the architecture/flow diagrams; generated Markdown views remain derived from those artifacts.
 
+## Settings dialog and compact local repository context, October 12, 2026
+
+> Please move the appearance settings to a modal which opens when clicking settings icon in the same location. Also what is the "revision" in the bar where we select the version. It shows the folder, but I already see the folder in the top bar. Can we also reduce that to just the folder name and not the full path?
+
+Move the System, Paper, and Dark appearance selector into a Settings dialog opened by a gear icon in the existing top bar position. Remove the duplicate repository name from the revision controls. Display the local workspace folder name in the top bar and overview, without its absolute path.
+
+The Settings dialog's close button must remain a compact control at the right side of its heading. Do not present a hard-coded "Available" label as workspace status; identify the local source directly.
+
+The user pointed out that the settings gear and local-folder glyph looked hand drawn and off center, and asked whether other design decisions avoided packages. Use a maintained icon pack for functional interface icons and keep each icon centered in its control.
+
+## Responsive specification images and image viewer, October 12, 2026
+
+> Some images (e.g. in DES-002) now overflows the width of the page. Can we limit the width to the available size. Maybe we can also allow the user to click on the image which opens it in an image viewer/maximize view allow zooming?
+
+Constrain browser specification images to the available content width. Let reviewers open an image in a focused viewer that fits it to the window and provides zoom controls.
+
 ## Specification review corrections, October 7, 2026
 
 > 1. list should be on the left. Update wrong artifacts
@@ -245,6 +261,16 @@ Ignore `.gh-config/` and provide opt-in, read-only live integration checks that 
 > There are some sections which are weirdly displayed. I'm not sure we should have such arbitrary additional sections. Maybe make source a list of sources with a type/identifier, and discourage creating arbitrary sections.
 
 Represent provenance as a typed list under `source`, render references as a readable list, and consolidate secondary provenance fields into that list. Keep historical source mappings readable. The authoring guide should discourage one-off metadata fields and additional source references that do not provide distinct evidence.
+
+## Browser workbench redesign, October 12, 2026
+
+> Let's please improve the design of the app. Add a dark mode and a lite (paper) mode. The design should look productive, but modern, as many AI tools are. Ask questions about the design if you have any.
+>
+> What new tools/frameworks etc. do you plan to use? Is there any change needed/useful?
+>
+> I mean I did not say to just use a new color scheme. I asked for an improved design. E.g. I also don't like the buttons which look like the default bootstrap buttons, nothing any serious company would use in production. Please think about the whole design and make it better.
+
+Redesign the browser app as a cohesive, polished developer review workbench. Rework the overview, repository navigation, revision controls, artifact navigation, reading/diff pane, dialogs, states, and responsive behavior while preserving current workflows. Provide System, Paper, and Dark appearance modes, with System following OS preference and overrides persisted. Use bespoke controls and a restrained design system; do not add a UI framework dependency.
 
 ## Keep source file and section separate, October 12, 2026
 

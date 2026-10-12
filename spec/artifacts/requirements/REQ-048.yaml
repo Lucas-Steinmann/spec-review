@@ -1,0 +1,20 @@
+id: REQ-048
+type: requirement
+title: Fit and zoom browser specification images
+category: browsing
+status: specified
+statement: |
+  In the browser review workspace, constrain specification images to the available document width. Let the
+  reviewer open an image in a focused viewer, fit it to the window, zoom in and out, and close the viewer
+  with keyboard-accessible controls.
+derived_from:
+- UC-008
+addresses:
+- DES-007
+- UI-002
+verifies:
+- TEST-012
+source:
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Responsive specification images and image viewer, October 12, 2026"
