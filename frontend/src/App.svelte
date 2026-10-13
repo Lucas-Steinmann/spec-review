@@ -8,6 +8,11 @@
   import SettingsDialog from './components/SettingsDialog.svelte';
   import DocumentBody from './DocumentBody.svelte';
 
+  const categoryOrder = [
+    'goal', 'actor', 'use_case', 'requirement', 'constraint', 'decision',
+    'design', 'ui_design', 'test', 'risk', 'assumption', 'question', 'overview',
+  ];
+
   function readBooleanPreference(key, fallback) {
     const value = localStorage.getItem(key);
     return value === null ? fallback : value === 'true';
@@ -361,6 +366,15 @@
     return changed;
   }
 
+  function orderedCategoryEntries() {
+    return Object.entries(categories).sort(([left], [right]) => {
+      const leftIndex = categoryOrder.indexOf(left);
+      const rightIndex = categoryOrder.indexOf(right);
+      return (leftIndex < 0 ? categoryOrder.length : leftIndex)
+        - (rightIndex < 0 ? categoryOrder.length : rightIndex);
+    });
+  }
+
   function entries(sourceSnapshot, sourceComparison, selectedCategory, filterText, onlyChanges, hideSupersededItems) {
     let rows = sourceComparison
       ? Object.values(sourceComparison.changes).map((change) => ({ document: change.new || change.old, status: change.status }))
@@ -601,7 +615,7 @@
       {#if comparison}<label class="checkbox"><input type="checkbox" bind:checked={changesOnly} on:change={() => localStorage.setItem('spec-review-changes-only', String(changesOnly))} /> Changes only</label>{/if}
     </div>
     <div class="category-list">
-      {#each Object.entries(categories) as [key, label]}
+      {#each orderedCategoryEntries() as [key, label]}
         <button class:active={category === key} on:click={() => category = key}>{label}{#if changedCategories().has(key)} ★{/if}</button>
       {/each}
     </div>

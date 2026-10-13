@@ -84,6 +84,26 @@ test('local overview loads without contacting gh until requested', async ({ page
   expect(paths.every((path) => !path.startsWith('/api/gh/'))).toBe(true);
 });
 
+test('artifact categories follow the terminal order even when the API map arrives unordered', async ({ page }) => {
+  const ordered = [
+    ['goal', 'Goals'], ['actor', 'Actors'], ['use_case', 'Use Cases'],
+    ['requirement', 'Requirements'], ['constraint', 'Constraints'], ['decision', 'Decisions'],
+    ['design', 'Technical Design'], ['ui_design', 'UI Design'], ['test', 'Tests'],
+    ['risk', 'Risks'], ['assumption', 'Assumptions'], ['question', 'Questions'],
+    ['overview', 'Overviews'], ['custom_type', 'Custom Type'],
+  ];
+  await mockApi(page, (url) => {
+    if (url.pathname === '/api/status') return { repo: '/tmp/sample', spec_dir: 'spec' };
+    if (url.pathname === '/api/local/commits') return { branches: [], commits: [] };
+    if (url.pathname === '/api/local/snapshot') {
+      return { ...snapshot('working tree'), categories: Object.fromEntries([...ordered].reverse()) };
+    }
+  });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Open review' }).click();
+  await expect(page.locator('.category-list button')).toHaveText(ordered.map(([, label]) => label));
+});
+
 test('browser appearance follows the system, persists overrides, and keeps the workbench usable', async ({ page }) => {
   await mockApi(page, (url) => {
     if (url.pathname === '/api/status') return { repo: '/tmp/sample', spec_dir: 'spec' };

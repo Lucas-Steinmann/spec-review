@@ -5,7 +5,7 @@ description: 'Present the browser app as a focused developer review workbench. T
 
   beside a clear repository heading and a pull request queue. The detail workspace has repository context,
 
-  revision and mode controls, artifact filters and categories, a selectable artifact list, and a readable
+  revision and mode controls, artifact filters and categories ordered like the terminal interface, a selectable artifact list, and a readable
 
   document or diff pane. Use a deliberate type scale, compact spacing, layered surfaces, and restrained
 

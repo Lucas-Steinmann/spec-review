@@ -24,6 +24,8 @@ What can the reviewer read? [Canonical artifacts and overviews](../artifacts/req
 
 [REQ-045](../artifacts/requirements/REQ-045.yaml) adds a default-on filter for superseded artifacts and persistence for both browser sidebar filters.
 
+[REQ-038](../artifacts/requirements/REQ-038.yaml) also keeps WebUI artifact categories in the terminal interface's order.
+
 [REQ-047](../artifacts/requirements/REQ-047.yaml) defines the cohesive browser review workbench and its System, Paper, and Dark appearance modes, including saved overrides and accessible presentation.
 
 ## Maintaining this plan

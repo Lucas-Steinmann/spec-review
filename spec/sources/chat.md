@@ -334,3 +334,9 @@ and spec/ for project artifacts and maintained guides. Update baselines support
 three-way reconciliation; unresolved semantic conflicts require clarification.
 Review remains read-only; explicit setup/update commands write kit files. The
 existing submodule distribution remains supported alongside the portable kit.
+
+## WebUI artifact category order, October 13, 2026
+
+> Please order the artifact categories in the web ui as it is done in the terminal.
+
+Keep the browser artifact category buttons in the same order as the terminal interface.

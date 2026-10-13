@@ -1,9 +1,9 @@
 id: TEST-015
 type: test
-title: Keep review sidebar controls usable at narrow widths
+title: Keep review sidebar controls usable and categories ordered
 verifies:
 - REQ-038
-description: Run the Playwright browser test against the local Python API and Vite development server. At desktop and narrow viewport widths, verify the rendered Changes only checkbox remains adjacent to its label, category buttons stay inside the sidebar without horizontal overflow, and a category can be selected.
+description: Run the Playwright browser test against the local Python API and Vite development server. Verify category buttons follow the terminal category order even when the API response map arrives in a different order. At desktop and narrow viewport widths, verify the rendered Changes only checkbox remains adjacent to its label, category buttons stay inside the sidebar without horizontal overflow, and a category can be selected.
 source:
   - type: conversation
     file: "spec/sources/chat.md"
