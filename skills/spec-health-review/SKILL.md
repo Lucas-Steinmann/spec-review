@@ -1,11 +1,11 @@
 ---
 name: spec-health-review
-description: Review this project's maintained specification and its fit with implementation, tests, documentation, and product risks during a periodic consistency check. Use for a requested spec audit or product-owner cleanup review, not routine feature edits.
+description: Review a project’s maintained specification and its fit with implementation, tests, documentation, and product risks during a periodic consistency check. Use for a requested spec audit or product-owner cleanup review, not routine feature edits.
 ---
 
 # Specification health review
 
-Review canonical `spec/artifacts/`, maintained `spec/views/`, and `spec/sources/chat.md`; read `spec/AGENTS.md` before proposing changes. Validate the views directly. Preserve stable IDs, supersession history, provenance, and the user's uncommitted work. A review request authorizes analysis and checks; edit artifacts or code when the user also asks for fixes.
+Review canonical `spec/artifacts/`, maintained `spec/views/`, and `spec/sources/chat.md`; read `spec/AGENTS.md` before proposing changes. Read `docs/spec-review/maintenance.md` and `docs/spec-review/artifact-authoring.md`. Paths are relative to the repository root; for a custom spec directory, use the path in `docs/spec-review/.kit/state.json`. Validate with `spec-review validate --repo .`, passing `--spec-dir` when needed. Preserve stable IDs, supersession history, provenance, and the user's uncommitted work. A review request authorizes analysis and checks; edit artifacts or code when the user also asks for fixes.
 
 ## Core consistency checks
 
@@ -25,6 +25,6 @@ Review canonical `spec/artifacts/`, maintained `spec/views/`, and `spec/sources/
 - **Operational reality:** Examine authentication and trust boundaries, credential and cache handling, error/recovery behavior, build and distribution steps, external dependencies, and what happens when a service or tool is unavailable. Prioritize credible user or data impact over hypothetical hazards.
 - **Interaction quality:** Check keyboard journeys, accessible names and focus behavior, loading feedback, and whether navigation remains usable during slow operations. Cover these at the browser boundary when they are product requirements.
 - **Evidence quality:** Separate planned acceptance scenarios from passing automated tests. Check whether fixtures and mocks exercise the actual boundary, whether representative workloads support performance claims, whether live/manual checks remain, and whether suites complete reliably. Run relevant validation when practical; report commands, results, and limits.
-- **Maintained views:** Validate unique IDs and references, provenance, and generated-view freshness. Do not hand-edit generated files. Check for stale examples and defaults in README and package metadata.
+- **Maintained views:** Validate unique IDs and references, provenance, and maintained-view freshness. Edit maintained views alongside canonical artifacts; preserve historical generated files. Check for stale examples and defaults in README and package metadata.
 
 Report findings by severity with exact artifact or code references, the user-visible consequence, and a concrete correction. State where a check found no issue. Mark inference and unverified behavior clearly. Avoid turning the review into an unsolicited redesign.

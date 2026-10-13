@@ -21,3 +21,5 @@ Start with the [overview](overview.md) when reading the current plan. Use this s
 [Local folder addition and worktree review](../sources/chat.md#local-folder-addition-and-worktree-review-october-12-2026) records the request and confirmed workflow choices.
 
 [Frontend dialog styling and component refactor](../sources/chat.md#frontend-dialog-styling-and-component-refactor-october-12-2026) records the screenshot reproduction, diagnosis, and refactor authorization.
+
+[Portable kit decisions](../sources/chat.md#portable-specification-kit-october-13-2026) establish the CLI initializer, copied kit, docs placement, explicit skills, and customization-aware update workflow.

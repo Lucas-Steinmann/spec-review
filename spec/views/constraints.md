@@ -11,3 +11,5 @@
 ## Historical boundary
 
 [CON-001](../artifacts/constraints/CON-001.yaml) records the superseded terminal-only first-release scope. The current read-only boundary is [CON-004](../artifacts/constraints/CON-004.yaml), which includes the browser.
+
+Explicit kit setup and update commands may write kit files, as clarified in [CON-004](../artifacts/constraints/CON-004.yaml); terminal and browser review remain read-only.

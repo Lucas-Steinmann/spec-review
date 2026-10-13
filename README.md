@@ -66,6 +66,24 @@ These tests reject token environment overrides, use only GitHub reads and Git fe
 
 For a standalone installation, `uv tool install /path/to/spec-review` exposes `spec-review` on your PATH. Use `--repo` when invoking that installation outside the specification repository.
 
+## Add a specification to another project
+
+Install the tool separately or invoke it from this checkout with `uv run spec-review`:
+
+```sh
+spec-review init --repo /path/to/project --dry-run
+spec-review init --repo /path/to/project
+spec-review validate --repo /path/to/project
+spec-review update --repo /path/to/project --dry-run
+```
+
+Initialization installs a committed kit of references under `docs/spec-review/`,
+workflows under `skills/`, a minimal root instruction block, and an empty `spec/`
+scaffold. Existing application files and project specification content are preserved.
+A reviewer submodule is optional. Use `--spec-dir` for a custom spec directory.
+Updates preserve local customizations and provide an update skill for conflicts.
+See [setup and update instructions](docs/spec-review/setup.md).
+
 ## Review spec-review itself
 
 The tool's own [specification](spec/README.md) captures the original requirements and decisions from the project conversation, with linked artifacts, acceptance scenarios, and maintained views.
@@ -85,10 +103,10 @@ uv run python scripts/validate_spec_views.py
 
 ## Specification format
 
-See the [artifact format and field display reference](docs/artifact-format.md) for supported keys, special rendering rules, comparison behavior, and validation.
+See the [artifact format and field display reference](docs/spec-review/artifact-format.md) for supported keys, special rendering rules, comparison behavior, and validation.
 
 - `spec/artifacts/**/*.yaml` (or `.yml`): one artifact per file, with string `id`, `type`, and `title`. All other fields are retained. Stable IDs identify documents across revisions and file moves.
-- Supported types: `goal`, `actor`, `use_case`, `requirement`, `constraint`, `decision`, `design`, `ui_design`, `test`, `risk`, `assumption`, and `question`. Additional types get their own category. See the [artifact authoring guide](docs/artifact-authoring.md) for what belongs in each type.
+- Supported types: `goal`, `actor`, `use_case`, `requirement`, `constraint`, `decision`, `design`, `ui_design`, `test`, `risk`, `assumption`, and `question`. Additional types get their own category. See the [artifact authoring guide](docs/spec-review/artifact-authoring.md) for what belongs in each type.
 - Relationship fields (`actors`, `goal_refs`, `derived_from`, `related`, `addresses`, `decisions`, `verifies`) contain artifact IDs and appear as navigable links.
 - `spec/views/**/*.md`: maintained overviews, displayed and compared as committed. Historical `spec/generated/` files remain readable where no matching view exists.
 - Optional `source: {file, section}` metadata resolves links retained from old source documents into migrated artifacts. Ambiguous targets open a chooser. Missing targets show an explanation; legacy documents are never loaded.

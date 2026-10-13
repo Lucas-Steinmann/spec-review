@@ -1,0 +1,16 @@
+id: REQ-051
+type: requirement
+title: Initialize a portable specification kit safely
+category: distribution
+status: specified
+statement: Provide a CLI initializer for new project folders and existing repositories, with a dry run and custom
+  relative spec directory. Install a versioned local copy of instructions, docs, skills, and an empty specification
+  scaffold. Preserve existing project content and root instructions, avoid duplicate instruction blocks on repeated
+  initialization, and report conflicting kit files before writes. Do not import requirements, initialize Git, install
+  dependencies, or require a submodule.
+derived_from:
+- UC-010
+source:
+- type: conversation
+  file: spec/sources/chat.md
+  section: Portable specification kit, October 13, 2026

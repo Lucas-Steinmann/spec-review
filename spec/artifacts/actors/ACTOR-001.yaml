@@ -2,7 +2,8 @@ id: ACTOR-001
 type: actor
 title: Specification author or reviewer
 description: A person who maintains or reviews structured engineering plans in a terminal or browser,
-  follows relationships, and inspects changes across local or gh-accessible repositories.
+  follows relationships, and inspects changes across local or gh-accessible repositories. The author also adopts
+  and updates specification instructions through explicit CLI kit commands.
 source:
   - type: conversation
     file: "spec/sources/chat.md"
@@ -10,3 +11,6 @@ source:
   - type: conversation
     file: "spec/sources/chat.md"
     section: "Scope, journey overlap, and computed backlinks, October 12, 2026"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Portable specification kit, October 13, 2026"

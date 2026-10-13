@@ -33,5 +33,5 @@ The validator reads this repository's canonical artifacts and maintained views, 
 
 Change the smallest relevant set of artifacts and views, then validate them. Keep requirement statements separate from design choices. Record new user decisions with their provenance; do not infer new product requirements from the current implementation.
 
-See [`AGENTS.md`](AGENTS.md) for the review checklist to follow when editing canonical specification artifacts. The user-facing [artifact format reference](../docs/artifact-format.md) documents how this tool displays fields.
-The [artifact authoring guide](../docs/artifact-authoring.md) explains what belongs in each type and how to separate technical and interface design.
+See [`AGENTS.md`](AGENTS.md) for the review checklist to follow when editing canonical specification artifacts. The user-facing [artifact format reference](../docs/spec-review/artifact-format.md) documents how this tool displays fields.
+The [artifact authoring guide](../docs/spec-review/artifact-authoring.md) explains what belongs in each type and how to separate technical and interface design.

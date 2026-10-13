@@ -56,6 +56,6 @@ Mockup source lives in `spec/mockups/src/`; rendered previews live in `spec/mock
 - Keep requirements about observable outcomes and designs about choices. Include measurable targets where a quality claim needs one.
 - Link active requirements to the relevant journey, technical or UI design, and acceptance scenario. A requirement can address both design types when both are needed.
 - Check that journeys and requirements identify applicable surfaces or modes where behavior differs, that new journeys have been reconciled with overlapping journeys, and that relationships use canonical direction rather than duplicated backlinks.
-- Update affected views and run `uv run python scripts/validate_spec_views.py` after editing the specification.
+- Update affected views and run `spec-review validate --repo .` after editing the specification.
 
-For YAML field syntax and display rules, see [Artifact format](artifact-format.md). For this repository's specific editing rules, see [spec/AGENTS.md](../spec/AGENTS.md).
+For YAML field syntax and display rules, see [Artifact format](artifact-format.md). For this repository's specific editing rules, see [spec/AGENTS.md](../../spec/AGENTS.md).

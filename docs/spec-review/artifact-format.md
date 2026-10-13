@@ -31,4 +31,4 @@ Comparisons use artifact IDs, then compare parsed field values. YAML formatting 
 
 The loader requires `id`, `type`, and `title` to be non-empty strings and requires YAML values to be JSON-compatible. Malformed files and duplicate IDs appear in Diagnostics. Duplicate IDs are excluded as link targets. Relationship references that do not resolve remain visible but do not navigate to an artifact. The repository validator rejects broken relation and supersession IDs.
 
-`spec/views/` contains maintained review views shown directly in the Overviews category. Edit them alongside canonical YAML and validate with `uv run python scripts/validate_spec_views.py`. Historical `spec/generated/` files remain readable when an older revision has no matching maintained view.
+`spec/views/` contains maintained review views shown directly in the Overviews category. Edit them alongside canonical YAML and validate with `spec-review validate --repo .`. Historical `spec/generated/` files remain readable when an older revision has no matching maintained view.

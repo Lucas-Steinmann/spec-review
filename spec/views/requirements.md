@@ -33,3 +33,7 @@ What can the reviewer read? [Canonical artifacts and overviews](../artifacts/req
 [REQ-035](../artifacts/requirements/REQ-035.yaml) unifies local folder and GitHub addition. [REQ-049](../artifacts/requirements/REQ-049.yaml) enables current-file worktree comparisons; [REQ-050](../artifacts/requirements/REQ-050.yaml) defines selectable default bases.
 
 [REQ-047](../artifacts/requirements/REQ-047.yaml) requires consistent, non-overlapping dialogs down to 320px width.
+
+## Portable specification kit
+
+[REQ-051](../artifacts/requirements/REQ-051.yaml) defines safe initialization; [REQ-052](../artifacts/requirements/REQ-052.yaml) defines updates and skill-assisted reconciliation; [REQ-053](../artifacts/requirements/REQ-053.yaml) defines portable validation and packaged resources. The copied kit supplements [submodule distribution](../artifacts/requirements/REQ-017.yaml).

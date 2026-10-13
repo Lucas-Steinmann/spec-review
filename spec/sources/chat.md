@@ -313,3 +313,24 @@ The implementation diagnosis was shared global descendant styling: Add and Setti
 Required outcomes: coherent control styling and non-overlapping responsive dialog layouts, with keyboard behavior preserved. The refactor uses scoped Button, Dialog, and FormField primitives, explicit control classes, separate Add/Settings/link-choice components, and shared native-dialog focus behavior. Regression coverage checks actual rendered controls in both themes at desktop, 360px, and 320px widths. New dialog previews render the compiled application with deterministic data instead of separate dialog markup.
 
 The shared dialog also contains forward and reverse keyboard focus and restores focus after close-related state updates. Canceling Add invalidates pending discovery or validation responses so a closed dialog cannot add a source later.
+
+## Portable specification kit, October 13, 2026
+
+The user requested a process to set up a new repository or add spec-review, or at
+least its specification component, to an existing repository. Instructions,
+including reference documentation, should be installed with a minimal root
+AGENTS.md that references them.
+
+During planning the user selected a CLI initializer, a committed copy of a
+versioned kit, an empty scaffold rather than automatic import, reference docs
+under docs/, and skills loaded by explicit file references. The user requested
+both initialization and updates, including an update skill that interweaves
+upstream changes with customizations made to repository skills. The user then
+requested implementation of the proposed plan.
+
+The accepted implementation choices use docs/spec-review/ for references and
+maintenance rules, skills/ for authoring, health review, and kit update workflows,
+and spec/ for project artifacts and maintained guides. Update baselines support
+three-way reconciliation; unresolved semantic conflicts require clarification.
+Review remains read-only; explicit setup/update commands write kit files. The
+existing submodule distribution remains supported alongside the portable kit.

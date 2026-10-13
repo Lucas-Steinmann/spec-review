@@ -7,8 +7,9 @@ description: |
   --repo selects another path; resolve specification content from ./spec unless --spec-dir overrides it.
   Store canonical YAML artifacts in spec/artifacts, source provenance in spec/sources/chat.md, and
   maintained Markdown guides in spec/views. Load those guides directly in the reviewer. Keep artifact
-  authoring guidance in docs/artifact-authoring.md and link it from agent instructions. Validate IDs,
-  relationships, supersession targets, and guide links with scripts/validate_spec_views.py.
+  authoring guidance in docs/spec-review/artifact-authoring.md and link it from agent instructions. Validate IDs,
+  relationships, supersession targets, and guide links with spec-review validate; scripts/validate_spec_views.py remains a compatibility wrapper.
+  Portable kit installation and updates are specified in DES-011.
 
   ```mermaid
   flowchart LR
@@ -23,6 +24,8 @@ addresses:
 - REQ-017
 - REQ-026
 - REQ-031
+related:
+- DES-011
 source:
   - type: conversation
     file: "spec/sources/chat.md"
@@ -30,3 +33,6 @@ source:
   - type: conversation
     file: "spec/sources/chat.md"
     section: "Targeted artifact taxonomy cleanup, October 11, 2026"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Portable specification kit, October 13, 2026"

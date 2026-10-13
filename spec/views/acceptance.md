@@ -31,3 +31,7 @@ Browser mode persistence and revision confirmation are covered by [TEST-023](../
 [TEST-027](../artifacts/tests/TEST-027.yaml) covers folder addition and persistence; [TEST-028](../artifacts/tests/TEST-028.yaml) covers current-file worktree comparisons, default bases, source provenance, and unchanged Git state. Executable regressions live in tests/test_local_web.py and frontend/e2e/local-sources.spec.js.
 
 [TEST-029](../artifacts/tests/TEST-029.yaml) checks actual dialog geometry, consistent controls, theme appearance, and keyboard behavior at desktop and narrow widths.
+
+## Portable specification kit
+
+[TEST-030](../artifacts/tests/TEST-030.yaml) covers CLI setup, validation and wheel portability. [TEST-031](../artifacts/tests/TEST-031.yaml) covers customization preservation, conflict acknowledgment, and interrupted updates. Executable coverage lives in tests/test_kit.py.

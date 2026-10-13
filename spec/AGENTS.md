@@ -2,7 +2,7 @@
 
 Apply these checks whenever you add, revise, or remove canonical artifacts under `spec/`.
 
-Read [`docs/artifact-authoring.md`](../docs/artifact-authoring.md) before adding or reclassifying an artifact. It defines the canonical role of each type, including the boundary between technical `design` and `ui_design`.
+Read [`docs/spec-review/artifact-authoring.md`](../docs/spec-review/artifact-authoring.md) before adding or reclassifying an artifact. It defines the canonical role of each type, including the boundary between technical `design` and `ui_design`.
 Reserve `decision` for engineering choices with a meaningful rationale. Keep required behavior in `requirement`, mandatory solution boundaries in `constraint`, implementation in technical `design`, and screen behavior in `ui_design`.
 
 ## Keep the plan coherent
@@ -31,5 +31,5 @@ Reserve `decision` for engineering choices with a meaningful rationale. Keep req
 - Preserve source provenance. Update `spec/sources/chat.md` when the user's request, clarification, or decision is the source of a change.
 - Keep requirements about observable outcomes separate from implementation choices. Put implementation detail in design artifacts and link it to the requirements it satisfies.
 - Maintain reader-oriented guides under `spec/views/` when the plan changes. Start with principal artifacts and keep topic routes linked to canonical detail; do not duplicate full artifact fields.
-- Validate canonical artifacts and maintained views with `uv run python scripts/validate_spec_views.py`. The views under `spec/views/` are edited directly and reviewed as committed Markdown.
+- Validate canonical artifacts and maintained views with `spec-review validate --repo .`. The views under `spec/views/` are edited directly and reviewed as committed Markdown.
 - Ensure acceptance scenarios describe expected behavior; do not imply that a test passed unless it was actually run.

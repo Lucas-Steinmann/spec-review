@@ -21,3 +21,7 @@ Start with [DES-001](../artifacts/design/DES-001.yaml): shared review services o
 [DES-007](../artifacts/design/DES-007.yaml) defines local discovery endpoints, saved source identities, worktree membership validation, and source-aware document/link/image requests. [DES-003](../artifacts/design/DES-003.yaml) retains each comparison side’s worktree context.
 
 Shared component styling and actual-application dialog previews are specified in [DES-007](../artifacts/design/DES-007.yaml) and [DES-009](../artifacts/design/DES-009.yaml).
+
+## Portable specification kit
+
+[DES-011](../artifacts/design/DES-011.yaml) defines kit resources, a marked root instruction block, three-way baselines and journaled updates, and reusable validation. Kit commands write explicitly; review interfaces retain their read-only behavior.

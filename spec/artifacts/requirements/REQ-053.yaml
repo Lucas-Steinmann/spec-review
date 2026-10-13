@@ -1,0 +1,15 @@
+id: REQ-053
+type: requirement
+title: Validate specification kits independently of this checkout
+category: validation
+status: specified
+statement: Provide a read-only validation command accepting a project root and custom specification directory. Validate
+  loader diagnostics, artifact relationships, supersession targets, and maintained guide links including nested
+  guides. An empty initialized scaffold must validate. Installed package resources must support initialization,
+  validation, and updates without the source checkout or built browser assets.
+derived_from:
+- UC-010
+source:
+- type: conversation
+  file: spec/sources/chat.md
+  section: Portable specification kit, October 13, 2026

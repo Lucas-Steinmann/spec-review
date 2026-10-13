@@ -1,0 +1,16 @@
+id: TEST-030
+type: test
+title: Initialize and validate a kit through the CLI
+verifies:
+- REQ-051
+- REQ-053
+description: 'Initialize a new folder and an existing repository, including custom nested paths and paths with spaces.
+  Confirm dry runs write nothing, existing content survives, conflicts and symlink destinations fail before writes,
+  and repeated setup adds no duplicate root block. Validate empty and populated specifications, nested guides, anchors
+  and .yml links; reject malformed or duplicate artifacts, unresolved relationships, invalid relationship shapes
+  and supersession references. Build a wheel without frontend artifacts and invoke its CLI outside the checkout.
+  Executable coverage: tests/test_kit.py.'
+source:
+- type: conversation
+  file: spec/sources/chat.md
+  section: Portable specification kit, October 13, 2026

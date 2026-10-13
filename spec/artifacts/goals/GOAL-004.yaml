@@ -1,0 +1,9 @@
+id: GOAL-004
+type: goal
+title: Adopt specification maintenance across projects
+statement: Let new and existing projects maintain a traceable specification with portable instructions and reusable
+  skills, and keep those workflows current without losing project-specific customizations.
+source:
+- type: conversation
+  file: spec/sources/chat.md
+  section: Portable specification kit, October 13, 2026

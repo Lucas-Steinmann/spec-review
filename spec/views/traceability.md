@@ -23,3 +23,7 @@ Use this page to move from a user journey to its key requirement, design, and ac
 | [Use browser dialogs](../artifacts/use-cases/UC-008.yaml) | [REQ-047](../artifacts/requirements/REQ-047.yaml) | [DES-007](../artifacts/design/DES-007.yaml), [UI-002](../artifacts/ui-design/UI-002.yaml) | [TEST-029](../artifacts/tests/TEST-029.yaml) |
 
 For a wider set of requirements, use the [requirement guide](requirements.md). Each linked YAML artifact carries relationships to the next layer.
+
+## Portable specification kit
+
+[UC-010](../artifacts/use-cases/UC-010.yaml) derives [initialization](../artifacts/requirements/REQ-051.yaml), [updates](../artifacts/requirements/REQ-052.yaml), and [portable validation](../artifacts/requirements/REQ-053.yaml). [DES-011](../artifacts/design/DES-011.yaml) realizes them; [TEST-030](../artifacts/tests/TEST-030.yaml) and [TEST-031](../artifacts/tests/TEST-031.yaml) verify the CLI boundaries.

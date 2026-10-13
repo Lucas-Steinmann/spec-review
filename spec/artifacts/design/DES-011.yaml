@@ -1,0 +1,20 @@
+id: DES-011
+type: design
+title: Portable kit packaging and three-way upgrade journal
+addresses:
+- REQ-051
+- REQ-052
+- REQ-053
+description: Package canonical docs/spec-review references, repository skills, spec editing instructions, and empty
+  starter templates as Python resources. Add init, update, and validate CLI commands while retaining existing review
+  flags. A marked root AGENTS.md block loads maintenance instructions for implementation changes. Store upstream
+  content and version in docs/spec-review/.kit/state.json. Keep scaffold starters outside managed update files.
+  Compare base/local/incoming text; journal operations and conflicts before atomic replacements, reject concurrent
+  edits during replay, and acknowledge all resolved paths with update --accept-merge and repeated --resolved flags.
+  Verify the same bundled target throughout a pending update. Explicit deletion can be preserved as a customization.
+  Shared validator code replaces the repository-specific implementation; its original script remains a compatibility
+  wrapper. Browser assets are bundled when available but are not required to build a kit-only wheel.
+source:
+- type: conversation
+  file: spec/sources/chat.md
+  section: Portable specification kit, October 13, 2026

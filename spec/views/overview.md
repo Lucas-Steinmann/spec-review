@@ -26,3 +26,7 @@ The main user journeys are [browsing](../artifacts/use-cases/UC-001.yaml), [comp
 The [goal guide](goals.md) and [actor guide](actors.md) give short starting points. Follow artifact links for exact statements, statuses, relationships, and source references. The guides summarize the current plan; they do not replace canonical detail.
 
 Local folders and GitHub repositories share Add and persistent source navigation. [Local review](../artifacts/use-cases/UC-008.yaml) includes a [worktree review queue](../artifacts/requirements/REQ-049.yaml) and [selectable default bases](../artifacts/requirements/REQ-050.yaml).
+
+## Set up a specification in another project
+
+[GOAL-004](../artifacts/goals/GOAL-004.yaml) establishes portable specification maintenance. [Kit adoption](../artifacts/use-cases/UC-010.yaml) covers initialization and upgrades. Follow [setup requirements](requirements.md#portable-specification-kit), [technical design](architecture.md#portable-specification-kit), and [acceptance](acceptance.md#portable-specification-kit).

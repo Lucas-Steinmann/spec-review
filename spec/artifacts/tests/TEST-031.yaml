@@ -1,0 +1,15 @@
+id: TEST-031
+type: test
+title: Upgrade customized kit files and resume interrupted updates
+verifies:
+- REQ-052
+description: 'Through the CLI, preview and apply upstream changes; retain local edits and deletions when upstream
+  is unchanged. When both changed, inspect baseline/local/incoming conflicts and preserve local content until explicitly
+  reconciled. Reject incomplete acknowledgments, merge markers and changed target versions. Accept reviewed merged
+  files or intentional deletion, then verify subsequent updates preserve the customization. Interrupt writes after
+  journaling and resume; reject concurrent edits to pending operations. Preserve project artifacts, provenance,
+  views and root instructions outside the kit block. Executable coverage: tests/test_kit.py.'
+source:
+- type: conversation
+  file: spec/sources/chat.md
+  section: Portable specification kit, October 13, 2026

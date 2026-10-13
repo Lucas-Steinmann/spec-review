@@ -1,0 +1,17 @@
+id: REQ-052
+type: requirement
+title: Update kit instructions while preserving project customizations
+category: distribution
+status: specified
+statement: Provide kit updates and dry runs backed by upstream baselines. Replace unchanged kit files, retain customizations
+  when upstream is unchanged, and preserve locally edited or deleted files when both versions differ. Expose old,
+  local, and incoming versions to a repository update skill that reconciles instructions and skills, seeking clarification
+  for contradictory project policy. Require explicit acknowledgment of each resolved conflict before advancing baselines.
+  Preserve project specification content and instructions outside the managed root block; resume interrupted updates
+  safely.
+derived_from:
+- UC-010
+source:
+- type: conversation
+  file: spec/sources/chat.md
+  section: Portable specification kit, October 13, 2026

@@ -1,0 +1,18 @@
+id: UC-010
+type: use_case
+title: Adopt and maintain a portable specification kit
+actors:
+- ACTOR-001
+goal_refs:
+- GOAL-004
+description: A project maintainer initializes a specification kit in a new folder or existing repository, captures
+  project requirements through the authoring workflow, validates the specification, and later updates instructions
+  while preserving project customizations.
+main_flow: Preview and initialize the kit. Review the installed root instruction block, docs, skills, and empty
+  scaffold. Author or adopt actual requirements with provenance. Validate. Preview and apply a kit update; reconcile
+  conflicts using the update skill and explicitly acknowledge each resolved path.
+postconditions: The project commits its specification and local kit, without requiring the reviewer as a submodule.
+source:
+- type: conversation
+  file: spec/sources/chat.md
+  section: Portable specification kit, October 13, 2026
