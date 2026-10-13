@@ -12,7 +12,7 @@
 
 - For every bug fix or behavior change, add an automated regression test at the layer where the failure occurred. For user-visible behavior, exercise the relevant API or UI boundary, including request/query serialization and response handling where applicable; a helper-only unit test is not enough when the defect crossed a boundary.
 - Derive regression cases from the reported reproduction and the related requirement/acceptance scenario. Cover both directions or modes when the requirement promises both.
-- Run the focused regression test after adding it, then run the broader relevant suite when practical. Report any test you could not run and why.
+- Run the focused regression test after adding it, then run the broader relevant suite when practical. Do not promote, merge, or fast-forward a change until its focused regression passes. If the environment blocks execution, use an available approved path to run it; if it remains blocked, report the blocker and leave promotion pending. Report any broader test you could not run and why.
 - Keep canonical test artifacts aligned with executable coverage; update `spec/` and validate its maintained views whenever acceptance behavior changes.
 
 ## Periodic specification health reviews

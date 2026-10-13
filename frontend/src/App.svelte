@@ -366,8 +366,8 @@
     return changed;
   }
 
-  function orderedCategoryEntries() {
-    return Object.entries(categories).sort(([left], [right]) => {
+  function orderedCategoryEntries(sourceCategories) {
+    return Object.entries(sourceCategories || {}).sort(([left], [right]) => {
       const leftIndex = categoryOrder.indexOf(left);
       const rightIndex = categoryOrder.indexOf(right);
       return (leftIndex < 0 ? categoryOrder.length : leftIndex)
@@ -615,7 +615,7 @@
       {#if comparison}<label class="checkbox"><input type="checkbox" bind:checked={changesOnly} on:change={() => localStorage.setItem('spec-review-changes-only', String(changesOnly))} /> Changes only</label>{/if}
     </div>
     <div class="category-list">
-      {#each orderedCategoryEntries() as [key, label]}
+      {#each orderedCategoryEntries(categories) as [key, label]}
         <button class:active={category === key} on:click={() => category = key}>{label}{#if changedCategories().has(key)} ★{/if}</button>
       {/each}
     </div>
