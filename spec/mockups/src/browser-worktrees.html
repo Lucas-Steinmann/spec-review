@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en" data-theme="paper"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Worktree overview mockup</title><link rel="stylesheet" href="browser-workspace.css"><style>.section-title button,.section-title select{font:inherit;color:var(--text,#27372e);background:var(--surface,#fff);border:1px solid #ccd5ce;border-radius:7px;padding:8px 12px}.section-title label{display:flex;align-items:center;gap:8px}</style></head>
+<body>
+  <header class="topbar"><div class="brand"><span class="brand-mark">s</span><span>spec<span class="brand-light">review</span></span></div><span class="topbar-context">Repository overview</span><div class="top-actions"><button class="settings-icon" aria-label="Settings" title="Settings">⚙</button><button class="primary">＋ Add repository</button></div></header>
+  <main class="overview-layout">
+    <aside class="repo-sidebar"><div class="eyebrow">WORKSPACES</div><h2>Repositories</h2>
+      <button class="repo active"><span class="glyph">⌂</span><span><strong>companion_app</strong><small>Local folder · spec</small></span><b>›</b></button>
+      <button class="repo"><span class="glyph">⌘</span><span><strong>spec-review</strong><small>GitHub repository</small></span><b>›</b></button>
+      <button class="repo"><span class="glyph">⌘</span><span><strong>design-system</strong><small>GitHub repository</small></span><b>›</b></button>
+    </aside>
+    <section class="main"><div class="heading"><div><div class="eyebrow">LOCAL WORKSPACE</div><h1>companion_app</h1><p>Review current files or compare worktrees against a base branch.</p></div><button class="primary">Open review ↗</button></div>
+      <div class="section-title"><div><div class="eyebrow">REVIEW QUEUE</div><h2>Worktrees</h2></div><label>Base branch <select><option>main</option><option>release</option></select></label><button>Refresh</button></div>
+      <div class="pull"><span class="number">⌘</span><span class="pull-copy"><strong>main</strong><small>/home/lucas/projects/companion_app</small><small>a19cdb8 · Update specification</small></span><span>Compare with main</span><span class="arrow">↗</span></div>
+      <div class="pull"><span class="number">⌘</span><span class="pull-copy"><strong>agent/browser-review</strong><small>/home/lucas/worktrees/browser-review</small><small>c9e21a4 · Refine review navigation</small></span><span>Compare with main</span><span class="arrow">↗</span></div>
+      <div class="pull"><span class="number">⌘</span><span class="pull-copy"><strong>Detached HEAD</strong><small>/home/lucas/worktrees/diagram-review</small><small>d64b0f2 · Render diagrams</small></span><span>Compare with main</span><span class="arrow">↗</span></div>
+    </section>
+  </main>
+  <script>if(location.hash==='#dark')document.documentElement.dataset.theme='dark';</script>
+</body></html>

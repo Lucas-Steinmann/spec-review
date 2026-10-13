@@ -1,0 +1,17 @@
+id: TEST-027
+type: test
+title: Add and retain multiple local folders
+verifies:
+- REQ-035
+- REQ-034
+- REQ-031
+description: Start with an empty browser overview. Use keyboard-accessible Add controls to navigate child and parent
+  folders, jump by path, and save multiple folders with default and custom relative spec directories. Reload and
+  confirm sources persist. Reject invalid folders and escaping spec directories; preserve unavailable saved folders
+  with a diagnostic. Prevent duplicate canonical root/spec pairs. Review plain folders and absent spec directories
+  without Git comparisons or gh calls. Load historical GitHub saved entries and confirm they remain usable. Verify
+  keyboard focus and narrow layouts.
+source:
+- type: conversation
+  file: spec/sources/chat.md
+  section: Local folder addition and worktree review, October 12, 2026

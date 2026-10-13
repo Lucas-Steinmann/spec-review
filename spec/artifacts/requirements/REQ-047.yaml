@@ -3,13 +3,25 @@ type: requirement
 title: Provide a coherent browser review workbench and appearance modes
 category: presentation
 status: specified
-statement: |
-  Present the browser overview and detailed review as a cohesive, responsive developer workbench with a
+statement: 'Present the browser overview and detailed review as a cohesive, responsive developer workbench with
+  a
+
   consistent visual hierarchy for navigation, revision controls, artifact lists, document content, and
+
   actions. Provide System, Paper, and Dark appearance modes. System follows the operating-system color
+
   preference; a manually selected Paper or Dark mode overrides it. Persist the selected mode across reloads.
+
   Maintain readable text, status, and difference cues and accessible names and visible keyboard focus in
+
   every mode.
+
+
+
+  Browser dialogs use consistent text-input, select, and action appearances. At viewport widths of at least 320
+  pixels, labels and controls do not overlap or cause horizontal dialog overflow. Long content remains reachable
+  through scrolling. Primary actions retain their distinct appearance and icon actions remain compact. Dialogs support
+  Escape, initial focus, and returning focus to their opener.'
 derived_from:
 - UC-008
 verifies:
@@ -19,6 +31,9 @@ related:
 - REQ-041
 - REQ-042
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Browser workbench redesign, October 12, 2026"
+- type: conversation
+  file: spec/sources/chat.md
+  section: Browser workbench redesign, October 12, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Frontend dialog styling and component refactor, October 12, 2026

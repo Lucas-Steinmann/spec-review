@@ -3,15 +3,19 @@ type: requirement
 title: Use the current directory and spec folder by default
 category: cli
 status: specified
-statement: When --repo is omitted, use the current working directory as the repository and ./spec/ as
-  the specification directory. Allow --repo and --spec-dir to override these defaults explicitly.
+statement: In the terminal interface, when --repo is omitted, use the current working directory and ./spec/ as the
+  specification directory. Allow --repo and --spec-dir to override these TUI defaults. Browser sources are selected
+  through Add as specified by REQ-035.
 derived_from:
 - UC-007
 related: []
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Requested improvements, October 2, 2026"
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Targeted artifact taxonomy cleanup, October 11, 2026"
+- type: conversation
+  file: spec/sources/chat.md
+  section: Requested improvements, October 2, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Targeted artifact taxonomy cleanup, October 11, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Local folder addition and worktree review, October 12, 2026

@@ -1,17 +1,45 @@
 id: DES-007
 type: design
 title: Browser review service integration and state
-description: |
-  The Svelte WebUI consumes snapshot, comparison, content-block, link-resolution, and diagram services
+description: 'The Svelte WebUI consumes snapshot, comparison, content-block, link-resolution, and diagram services
+
   through the read-only Python HTTP server. The local provider reads the selected folder and Git history.
+
   The browser holds repository selection and review workspace state while metadata or comparison requests
+
   are pending, so an in-flight response cannot replace a newer selection. Render the same document blocks
+
   and snapshot-aware links used by the terminal client. Store shared browser filter preferences in local storage,
+
   defaulting Hide superseded to true and Changes only to false. Store the System, Paper, or Dark appearance
-  selection in local storage and resolve System through the browser's `prefers-color-scheme` media query.
+
+  selection in local storage and resolve System through the browser''s `prefers-color-scheme` media query.
+
   Filter status-superseded artifacts before
+
   presenting list results. GitHub retrieval is specified by DES-008; development and distribution are specified
+
   by DES-009; interface layout and interaction states are specified by UI-002.
+
+
+
+  Browser startup is independent of a selected Repository. Local discovery endpoints list readable folders, validate
+  canonical absolute roots and relative specification directories, and report Git capability, branches, default
+  base, and worktrees. Saved sources use browser local storage, with local identity based on canonical root plus
+  spec directory; migrate GitHub entries that lack a source discriminator. Keep unavailable sources saved. Local
+  requests carry root and spec_dir; snapshot/document/link/asset requests may carry worktree, and compare requests
+  carry base_worktree and target_worktree separately. Validate worktree membership against freshly discovered git
+  worktree list --porcelain -z data. Snapshot refs are immutable commit SHAs or working tree. Image URLs carry their
+  source context, with historical assets read from Git blobs and current assets contained inside the selected spec
+  directory. Default branch detection and overview base persistence realize REQ-050. Git operations remain read-only.
+
+
+  Reusable Button, Dialog, and FormField components own scoped appearance and interaction layout. Text inputs and
+  selects opt into shared control styling explicitly. Separate Add, Settings, and link-choice components present
+  state supplied by the application coordinator; native-dialog shells centralize accessible headings, initial focus,
+  Escape, viewport bounds, and focus restoration. The image viewer uses the same dialog shell and icon buttons.
+  Global CSS owns tokens, resets, page layout, and document content rather than generic dialog descendant styles.
+  Use grid columns minmax(0, 1fr) and auto for a path field beside Go.'
 addresses:
 - REQ-034
 - REQ-035
@@ -26,14 +54,22 @@ addresses:
 - REQ-045
 - REQ-047
 - REQ-048
+- REQ-049
+- REQ-050
 related:
 - UI-002
 decisions:
 - ADR-009
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "WebUI and GitHub support"
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Responsive specification images and image viewer, October 12, 2026"
+- type: conversation
+  file: spec/sources/chat.md
+  section: WebUI and GitHub support
+- type: conversation
+  file: spec/sources/chat.md
+  section: Responsive specification images and image viewer, October 12, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Local folder addition and worktree review, October 12, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Frontend dialog styling and component refactor, October 12, 2026

@@ -27,3 +27,7 @@ Browser mode persistence and revision confirmation are covered by [TEST-023](../
 ## Self-specification
 
 [TEST-009](../artifacts/tests/TEST-009.yaml) checks that the tool can read its own specification and that maintained views have valid links and an overview-first navigation route. [TEST-007](../artifacts/tests/TEST-007.yaml) checks reuse of the backend, and [TEST-008](../artifacts/tests/TEST-008.yaml) checks submodule packaging.
+
+[TEST-027](../artifacts/tests/TEST-027.yaml) covers folder addition and persistence; [TEST-028](../artifacts/tests/TEST-028.yaml) covers current-file worktree comparisons, default bases, source provenance, and unchanged Git state. Executable regressions live in tests/test_local_web.py and frontend/e2e/local-sources.spec.js.
+
+[TEST-029](../artifacts/tests/TEST-029.yaml) checks actual dialog geometry, consistent controls, theme appearance, and keyboard behavior at desktop and narrow widths.

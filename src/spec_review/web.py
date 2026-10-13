@@ -17,6 +17,7 @@ from .content import compare, document_blocks
 from .diagrams import DiagramRenderer
 from .github import GitHubCLI
 from .links import LinkResolver
+from .local import folders, local_repository, overview, select_worktree
 from .models import CATEGORIES, Block
 from .repository import Repository, RepositoryError, git
 from .settings import Settings
@@ -30,38 +31,59 @@ WEB_ROOT = (
 )
 
 
-def serve(repository: Repository, host="127.0.0.1", port=8765):
+def serve(repository: Repository | None = None, host="127.0.0.1", port=8765):
     github = GitHubCLI()
     snapshot_cache = OrderedDict()
     cache_lock = Lock()
+
+    def selected_repository(q, side=""):
+        root = q.get("root", [str(repository.root) if repository else ""])[0]
+        if not root:
+            raise RepositoryError("Select a local folder using Add")
+        repo = local_repository(
+            root, q.get("spec_dir", [repository.spec_dir if repository else "spec"])[0]
+        )
+        return select_worktree(repo, q.get(f"{side}worktree", [None])[0])
 
     def load_snapshot(remote, q):
         revision = q.get("ref", [None])[0] or None
         if not remote:
             if revision == "working tree":
                 revision = None
-            return repository.load(revision)
-        key = (q["owner"][0], q["repo"][0], revision)
+            return selected_repository(q).load(revision)
+        spec_dir = q.get("spec_dir", [repository.spec_dir if repository else "spec"])[0]
+        key = (q["owner"][0], q["repo"][0], revision, spec_dir)
         if not revision:
             raise RepositoryError("GitHub revision is required")
         with cache_lock:
             if key not in snapshot_cache:
-                snapshot_cache[key] = github.snapshot(*key, repository.spec_dir)
+                snapshot_cache[key] = github.snapshot(*key)
                 if len(snapshot_cache) > 8:
                     snapshot_cache.popitem(last=False)
             snapshot_cache.move_to_end(key)
             return snapshot_cache[key]
 
-    def mockup_path(document, value):
+    def mockup_path(document, value, spec_dir):
         path = PurePosixPath(
             posixpath.normpath(str(PurePosixPath(document.path).parent / value))
         )
-        spec_root = PurePosixPath(repository.spec_dir)
-        if path.is_absolute() or ".." in path.parts or not path.is_relative_to(spec_root):
-            raise RepositoryError("Specification image must stay inside the spec directory")
+        spec_root = PurePosixPath(spec_dir)
+        if (
+            path.is_absolute()
+            or ".." in path.parts
+            or not path.is_relative_to(spec_root)
+        ):
+            raise RepositoryError(
+                "Specification image must stay inside the spec directory"
+            )
         return path.as_posix()
 
-    def sections(document, snapshot):
+    def sections(document, snapshot, q, remote=False):
+        spec_dir = (
+            q.get("spec_dir", [repository.spec_dir if repository else "spec"])[0]
+            if remote
+            else selected_repository(q).spec_dir
+        )
         return [
             {
                 "heading": heading,
@@ -70,8 +92,20 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
                         **asdict(block),
                         **(
                             {
-                                "text": "/api/local/asset?"
-                                + urlencode({"path": mockup_path(document, block.text)})
+                                "text": (
+                                    "/api/gh/asset?" if remote else "/api/local/asset?"
+                                )
+                                + urlencode(
+                                    {
+                                        **{key: values[0] for key, values in q.items()},
+                                        "ref": snapshot.revision,
+                                        "path": mockup_path(
+                                            document,
+                                            block.text,
+                                            spec_dir,
+                                        ),
+                                    }
+                                )
                             }
                             if block.kind == "image"
                             else {}
@@ -89,7 +123,9 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
                 data["categories"] = {
                     **CATEGORIES,
                     **{
-                        doc["type"]: CATEGORIES.get(doc["type"], doc["type"].replace("_", " ").title())
+                        doc["type"]: CATEGORIES.get(
+                            doc["type"], doc["type"].replace("_", " ").title()
+                        )
                         for doc in data["documents"].values()
                     },
                 }
@@ -97,7 +133,9 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
                 for side in ("base", "target"):
                     snap = data[side]
                     snap["categories"] = {
-                        doc["type"]: CATEGORIES.get(doc["type"], doc["type"].replace("_", " ").title())
+                        doc["type"]: CATEGORIES.get(
+                            doc["type"], doc["type"].replace("_", " ").title()
+                        )
                         for doc in snap["documents"].values()
                     }
             body = json.dumps(
@@ -117,40 +155,78 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
                 if parsed.path == "/api/status":
                     return self.send_json(
                         {
-                            "repo": str(repository.root),
-                            "spec_dir": repository.spec_dir,
+                            "repo": str(repository.root) if repository else None,
+                            "spec_dir": repository.spec_dir if repository else "spec",
                         }
                     )
+                if parsed.path == "/api/local/folders":
+                    return self.send_json(folders(q.get("path", [None])[0]))
+                if parsed.path in {"/api/local/validate", "/api/local/overview"}:
+                    return self.send_json(overview(selected_repository(q)))
                 if parsed.path == "/api/local/commits":
-                    return self.send_json(
-                        {
-                            "branches": git(
-                                repository.root, "branch", "--format=%(refname:short)"
-                            ).splitlines(),
-                            "commits": [c.__dict__ for c in repository.commits(0, 100)],
-                        }
+                    repo = selected_repository(q)
+                    metadata = overview(repo)
+                    metadata["commits"] = (
+                        [c.__dict__ for c in repo.commits(0, 100)]
+                        if metadata["default_base"]
+                        else []
                     )
+                    return self.send_json(metadata)
                 if parsed.path == "/api/local/snapshot":
-                    return self.send_json(
-                        repository.load(q.get("ref", [None])[0] or None).to_dict()
-                    )
-                if parsed.path == "/api/local/asset":
+                    return self.send_json(load_snapshot(False, q).to_dict())
+                if parsed.path in {"/api/local/asset", "/api/gh/asset"}:
+                    remote = parsed.path.startswith("/api/gh/")
+                    if remote:
+                        spec_dir = q.get("spec_dir", ["spec"])[0]
+                        github.snapshot(
+                            q["owner"][0], q["repo"][0], q["ref"][0], spec_dir
+                        )
+                        repo = Repository(
+                            github.mirror_path(q["owner"][0], q["repo"][0]), spec_dir
+                        )
+                    else:
+                        repo = selected_repository(q)
                     path = PurePosixPath(q["path"][0])
-                    spec_root = (repository.root / repository.spec_dir).resolve()
-                    asset = (repository.root / path).resolve()
                     if (
                         path.is_absolute()
                         or ".." in path.parts
-                        or not asset.is_relative_to(spec_root)
-                        or not asset.is_file()
+                        or not path.is_relative_to(PurePosixPath(repo.spec_dir))
                     ):
-                        self.send_error(404)
-                        return
-                    body = asset.read_bytes()
+                        raise RepositoryError(
+                            "Specification image must stay inside the spec directory"
+                        )
+                    ref = q.get("ref", [""])[0]
+                    if ref and ref != "working tree":
+                        sha = repo.resolve_commit(ref)
+                        listing = git(
+                            repo.root,
+                            "ls-tree",
+                            "-z",
+                            sha,
+                            "--",
+                            path.as_posix(),
+                            binary=True,
+                        )
+                        if not listing or not listing.startswith(b"100"):
+                            raise RepositoryError(
+                                "Image is unavailable in this revision"
+                            )
+                        oid = listing.split(b"\t", 1)[0].split()[-1].decode()
+                        body = git(repo.root, "cat-file", "blob", oid, binary=True)
+                    else:
+                        asset = (repo.root / path).resolve()
+                        if (
+                            not asset.is_relative_to(
+                                (repo.root / repo.spec_dir).resolve()
+                            )
+                            or not asset.is_file()
+                        ):
+                            raise RepositoryError("Specification image is unavailable")
+                        body = asset.read_bytes()
                     self.send_response(200)
                     self.send_header(
                         "Content-Type",
-                        mimetypes.guess_type(asset.name)[0]
+                        mimetypes.guess_type(path.name)[0]
                         or "application/octet-stream",
                     )
                     self.send_header("Content-Length", str(len(body)))
@@ -168,7 +244,9 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
                         {
                             "document": asdict(doc),
                             "revision": snapshot.revision,
-                            "sections": sections(doc, snapshot),
+                            "sections": sections(
+                                doc, snapshot, q, parsed.path.startswith("/api/gh/")
+                            ),
                         }
                     )
                 if parsed.path in {"/api/local/link", "/api/gh/link"}:
@@ -186,8 +264,8 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
                 if parsed.path == "/api/local/compare":
                     base_ref = q.get("base", ["HEAD^"])[0] or None
                     target_ref = q.get("target", ["HEAD"])[0] or None
-                    before = repository.load(base_ref)
-                    after = repository.load(target_ref)
+                    before = selected_repository(q, "base_").load(base_ref)
+                    after = selected_repository(q, "target_").load(target_ref)
                     return self.send_json(compare(before, after).to_dict())
                 if parsed.path == "/api/gh/account":
                     return self.send_json({"login": github.account()})
@@ -202,23 +280,39 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
                             for row in github.repos()
                         ]
                     )
-                if parsed.path in {"/api/gh/branches", "/api/gh/pulls", "/api/gh/commits"}:
+                if parsed.path in {
+                    "/api/gh/branches",
+                    "/api/gh/pulls",
+                    "/api/gh/commits",
+                }:
                     owner, name = q["owner"][0], q["repo"][0]
                     if parsed.path.endswith("branches"):
                         return self.send_json(
-                            [{"name": row["name"], "sha": row["commit"]["sha"]} for row in github.branches(owner, name)]
+                            [
+                                {"name": row["name"], "sha": row["commit"]["sha"]}
+                                for row in github.branches(owner, name)
+                            ]
                         )
                     if parsed.path.endswith("pulls"):
                         return self.send_json(
                             [
-                                {"number": row["number"], "title": row["title"],
-                                 "state": row["state"], "head": row["head"]["sha"],
-                                 "base": row["base"]["sha"]}
+                                {
+                                    "number": row["number"],
+                                    "title": row["title"],
+                                    "state": row["state"],
+                                    "head": row["head"]["sha"],
+                                    "base": row["base"]["sha"],
+                                }
                                 for row in github.pull_requests(owner, name)
                             ]
                         )
                     return self.send_json(
-                        [item.__dict__ for item in github.commits(owner, name, q.get("ref", [""])[0])]
+                        [
+                            item.__dict__
+                            for item in github.commits(
+                                owner, name, q.get("ref", [""])[0]
+                            )
+                        ]
                     )
                 if parsed.path == "/api/gh/overview":
                     owner, name = q["owner"][0], q["repo"][0]
@@ -227,22 +321,46 @@ def serve(repository: Repository, host="127.0.0.1", port=8765):
                     def summary(pull):
                         checks_state = "unavailable"
                         try:
-                            checks = github.check_runs(owner, name, pull["head"]["sha"]).get("check_runs", [])
+                            checks = github.check_runs(
+                                owner, name, pull["head"]["sha"]
+                            ).get("check_runs", [])
                             if checks:
-                                statuses = [check.get("conclusion") or check.get("status") for check in checks]
+                                statuses = [
+                                    check.get("conclusion") or check.get("status")
+                                    for check in checks
+                                ]
                                 checks_state = (
-                                    "failure" if any(s in {"failure", "timed_out", "cancelled", "action_required"} for s in statuses)
-                                    else "in_progress" if any(s in {"queued", "in_progress", "pending"} for s in statuses)
-                                    else "success" if all(s == "success" for s in statuses)
+                                    "failure"
+                                    if any(
+                                        s
+                                        in {
+                                            "failure",
+                                            "timed_out",
+                                            "cancelled",
+                                            "action_required",
+                                        }
+                                        for s in statuses
+                                    )
+                                    else "in_progress"
+                                    if any(
+                                        s in {"queued", "in_progress", "pending"}
+                                        for s in statuses
+                                    )
+                                    else "success"
+                                    if all(s == "success" for s in statuses)
                                     else "neutral"
                                 )
                         except RepositoryError:
                             pass
                         return {
-                            "number": pull["number"], "title": pull["title"],
-                            "head": pull["head"]["sha"], "head_ref": pull["head"].get("ref", ""),
-                            "base": pull["base"]["sha"], "base_ref": pull["base"].get("ref", ""),
-                            "html_url": pull.get("html_url", ""), "checks": checks_state,
+                            "number": pull["number"],
+                            "title": pull["title"],
+                            "head": pull["head"]["sha"],
+                            "head_ref": pull["head"].get("ref", ""),
+                            "base": pull["base"]["sha"],
+                            "base_ref": pull["base"].get("ref", ""),
+                            "html_url": pull.get("html_url", ""),
+                            "checks": checks_state,
                         }
 
                     with ThreadPoolExecutor(max_workers=8) as pool:

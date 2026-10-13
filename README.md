@@ -15,17 +15,17 @@ uv sync --locked
 uv run spec-review --repo ..
 ```
 
-Run the browser interface against the same local folder:
+Run the browser interface, then use **Add repository → Local folder** to select a folder:
 
 ```sh
-uv run spec-review --web --repo /path/to/project --spec-dir spec
+uv run spec-review --web
 ```
 
-It listens on `127.0.0.1:8765` by default. The WebUI is read-only and supports local working-tree browsing and Git comparisons. To expose it on another interface, pass `--host` and `--port`.
+It listens on `127.0.0.1:8765` by default. The WebUI saves multiple local folders and GitHub repositories. Its folder browser starts at the server user’s home and supports parent navigation and direct path entry, with a relative spec directory defaulting to `spec`. Plain folders support current-file review. Local Git repositories show worktree cards like PRs: choose a base branch, then open a card to compare committed and uncommitted specification changes without switching branches. Ordinary comparisons default to the default branch (local `origin/HEAD`, then `main`, `master`, `HEAD`); explicit PR comparisons keep their base/head. Use Refresh to rediscover worktrees and Apply revision to reread current files. The WebUI is read-only. To expose it on another interface, pass `--host` and `--port`.
 
 ### GitHub repositories through gh
 
-Install [GitHub CLI](https://cli.github.com/) and sign in on the machine running the WebUI with `gh auth login`. The overview's **Add** action lists repositories available to that account. Saved repositories appear in the left sidebar; their branches, commits, pull requests, and available Actions state can be reviewed in the browser. Revision files are fetched into a local bare Git mirror. GitHub App credentials and direct Python GitHub API access are not used.
+Install [GitHub CLI](https://cli.github.com/) and sign in on the machine running the WebUI with `gh auth login`. The overview's **Add repository** dialog offers a folder browser for local folders and lists GitHub repositories available to that account. Local folders do not require gh authentication. Saved repositories appear in the left sidebar; their branches, commits, pull requests, and available Actions state can be reviewed in the browser. Revision files are fetched into a local bare Git mirror. GitHub App credentials and direct Python GitHub API access are not used.
 
 The server uses the signed-in `gh` account for every browser visitor. Keep this version on a trusted local interface; a hosted multiuser version needs a separate access model.
 
@@ -33,16 +33,18 @@ The browser frontend is implemented in Svelte. Its compiled static assets are se
 
 ### Frontend development
 
+See [frontend component and verification conventions](frontend/README.md) for reusable controls, scoped styling, and live dialog layout checks.
+
 Install frontend dependencies once with `npm ci --prefix frontend`. Run the Python API and Vite in separate terminals from the project root:
 
 ```sh
-uv run spec-review --web --repo . --spec-dir spec
+uv run spec-review --web
 cd frontend && npm run dev
 ```
 
 Open `http://127.0.0.1:5173`. Vite proxies `/api` requests to the Python server on port 8765 and reloads Svelte and CSS changes as you edit. To run browser regression tests, install Playwright Chromium with `cd frontend && npx playwright install chromium`, then run `npm run test:e2e`. For production assets, run `npm run build` in `frontend`; Vite writes ignored output to `frontend/dist`, which the Python server serves. Build frontend assets before building a Python wheel.
 
-The private submodule requires GitHub authentication. By default, the CLI uses the current directory as the repository and `./spec/` as the specification directory. Override the spec folder with `--spec-dir`, or select another repository with `--repo`:
+The private submodule requires GitHub authentication. For the TUI, the CLI uses the current directory as the repository and `./spec/` as the specification directory. For the TUI, override the spec folder with `--spec-dir`, or select another repository with `--repo`. Browser mode selects folders through Add and rejects these flags:
 
 ```sh
 uv run --project /path/to/spec-review spec-review --repo /path/to/project --spec-dir spec
@@ -147,7 +149,7 @@ Inline diffs show line hunks within named fields with unchanged context. Two-pan
 
 Inline diagram images use only target blocks, while removed diagrams remain source text. Two-panel mode shows each side's diagrams. Diagram source changes stay visible in both modes.
 
-Git objects are read directly. The tool does not check out commits, change branches, fetch, or write specification files.
+Local Git objects and worktree files are read directly. Local review does not check out commits, change branches, fetch, or write specification files. GitHub review may fetch into its cache mirror.
 
 ## Diagrams and settings
 

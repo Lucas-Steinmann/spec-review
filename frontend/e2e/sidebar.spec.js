@@ -1,4 +1,10 @@
 import { expect, test } from '@playwright/test';
+import { fileURLToPath } from 'node:url';
+
+test.beforeEach(async ({ page }) => {
+  const root = fileURLToPath(new URL('../..', import.meta.url)).replace(/\/$/, '');
+  await page.addInitScript((root) => { localStorage.setItem('spec-review-repositories', JSON.stringify([{ source: 'local', id: 'fixture', root, spec_dir: 'spec' }])); }, root);
+});
 
 test('comparison controls and categories fit the sidebar at desktop and mobile widths', async ({ page }) => {
   await page.goto('/');
@@ -46,4 +52,21 @@ test('comparison controls and categories fit the sidebar at desktop and mobile w
   const requirements = categoryButtons.filter({ hasText: 'Requirement' });
   await requirements.click();
   await expect(requirements).toHaveClass(/active/);
+});
+
+test('the real server adds a local folder through the browser and reviews its files', async ({ page }) => {
+  const root = fileURLToPath(new URL('../..', import.meta.url)).replace(/\/$/, '');
+  await page.addInitScript(() => localStorage.removeItem('spec-review-repositories'));
+  await page.goto('/');
+  await expect(page.getByRole('heading', { name: 'Add a workspace' })).toBeVisible();
+  await page.getByRole('button', { name: 'Add repository', exact: true }).click();
+  const dialog = page.getByRole('dialog', { name: 'Add repository', exact: true });
+  await expect(dialog.getByRole('button', { name: 'Go', exact: true })).toBeEnabled();
+  await dialog.getByRole('textbox', { name: 'Folder path' }).fill(root);
+  await dialog.getByRole('button', { name: 'Go', exact: true }).click();
+  await expect(dialog.locator('.folder-browser')).toContainText('spec');
+  await dialog.getByRole('button', { name: 'Add repository', exact: true }).click();
+  await expect(page.locator('.repo-entry')).toHaveCount(1);
+  await page.getByRole('button', { name: 'Open review' }).click();
+  await expect(page.locator('.document-list')).toContainText('GOAL-001');
 });

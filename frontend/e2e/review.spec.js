@@ -19,10 +19,22 @@ const comparison = (base = 'base', target = 'working tree') => ({
 const section = (heading, text) => ({ heading, blocks: [{ kind: 'markdown', text, language: '' }] });
 const wideImage = `data:image/svg+xml;charset=utf-8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="2400" height="1200" viewBox="0 0 2400 1200"><rect width="2400" height="1200" fill="#d9e5dc"/><circle cx="1200" cy="600" r="250" fill="#315e50"/></svg>')}`;
 
+const localSource = { source: 'local', id: 'fixture-local', root: '/tmp/sample', spec_dir: 'spec' };
+const localMetadata = { root: '/tmp/sample', spec_dir: 'spec', is_git: true, default_base: 'base', branches: [], worktrees: [] };
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript((source) => {
+    if (!localStorage.getItem('spec-review-repositories')) localStorage.setItem('spec-review-repositories', JSON.stringify([source]));
+  }, localSource);
+});
+
 async function mockApi(page, answer) {
   await page.route('**/api/**', async (route) => {
     const url = new URL(route.request().url());
-    const result = answer(url, route.request());
+    let result;
+    if (url.pathname === '/api/local/overview') result = localMetadata;
+    else if (url.pathname === '/api/local/folders') result = { path: '/tmp', parent: '/', folders: [] };
+    else result = answer(url, route.request());
+    if (url.pathname === '/api/local/commits' && result) result = { ...localMetadata, ...result };
     if (result === undefined) throw new Error(`Unexpected API request: ${url}`);
     await route.fulfill({ status: result.status || 200, contentType: 'application/json', body: JSON.stringify(result.body ?? result) });
   });
@@ -64,7 +76,7 @@ test('local overview loads without contacting gh until requested', async ({ page
   const folderGlyphBox = await page.locator('.repo-glyph').first().boundingBox();
   expect(Math.abs(folderGlyph.x + folderGlyph.width / 2 - folderGlyphBox.x - folderGlyphBox.width / 2)).toBeLessThan(1);
   await expect(page.getByRole('button', { name: 'Open review' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Add repository' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Add repository', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Open review' }).click();
   await expect(page.locator('.local-path strong')).toHaveText('sample');
   await expect(page.locator('.revision-context')).toHaveCount(0);
@@ -163,8 +175,8 @@ test('browser appearance follows the system, persists overrides, and keeps the w
   expect(layout.contentWidth).toBeGreaterThan(0);
 
   await page.getByRole('button', { name: /Repositories/ }).click();
-  await page.getByRole('button', { name: 'Add repository' }).first().click();
-  const addDialog = page.getByRole('dialog', { name: 'Add GitHub repository' });
+  await page.getByRole('button', { name: 'Add repository', exact: true }).first().click();
+  const addDialog = page.getByRole('dialog', { name: 'Add repository', exact: true });
   await expect(addDialog).toBeVisible();
   const dialogSurface = await addDialog.evaluate((element) => getComputedStyle(element).backgroundColor);
   expect(dialogSurface).not.toBe('rgba(0, 0, 0, 0)');
@@ -191,12 +203,14 @@ test('gh CLI repositories, saved overview, Actions, and pull comparison', async 
     }
   });
   await page.goto('/');
-  await tabTo(page, page.getByRole('button', { name: 'Add repository' }));
+  await tabTo(page, page.getByRole('button', { name: 'Add repository', exact: true }));
   await page.keyboard.press('Enter');
-  const dialog = page.getByRole('dialog', { name: 'Add GitHub repository' });
+  const dialog = page.getByRole('dialog', { name: 'Add repository', exact: true });
   await expect(dialog).toBeVisible();
-  await expect(dialog.getByRole('combobox', { name: 'Repository' })).toBeFocused();
-  await tabTo(page, dialog.getByRole('button', { name: 'Add repository' }));
+  await expect(dialog.getByRole('combobox', { name: 'Source type' })).toBeFocused();
+  await dialog.getByRole('combobox', { name: 'Source type' }).selectOption('gh');
+  await expect(dialog.getByRole('combobox', { name: 'Repository' })).toHaveValue('owner/project');
+  await tabTo(page, dialog.getByRole('button', { name: 'Add repository', exact: true }));
   await page.keyboard.press('Enter');
   await expect(page.locator('.repo-sidebar')).toContainText('owner/project');
   await expect(page.locator('.pull-card').first()).toContainText('Improve review');
@@ -232,6 +246,8 @@ test('local selection remains available during a pending gh overview refresh', a
     const url = new URL(route.request().url());
     let body;
     if (url.pathname === '/api/status') body = { repo: '/tmp/sample', spec_dir: 'spec' };
+    else if (url.pathname === '/api/local/overview') body = localMetadata;
+    else if (url.pathname === '/api/local/folders') body = { path: '/tmp', parent: '/', folders: [] };
     else if (url.pathname === '/api/gh/account') body = { login: 'reviewer' };
     else if (url.pathname === '/api/gh/repos') body = [{ full_name: 'owner/project', default_branch: 'main', private: true }];
     else if (url.pathname === '/api/gh/overview') { await pending; body = []; }
@@ -239,8 +255,9 @@ test('local selection remains available during a pending gh overview refresh', a
     await route.fulfill({ contentType: 'application/json', body: JSON.stringify(body) });
   });
   await page.goto('/');
-  await page.getByRole('button', { name: 'Add repository' }).click();
-  await page.getByRole('dialog', { name: 'Add GitHub repository' }).getByRole('button', { name: 'Add repository' }).click();
+  await page.getByRole('button', { name: 'Add repository', exact: true }).click();
+  await page.getByRole('combobox', { name: 'Source type' }).selectOption('gh');
+  await page.getByRole('dialog', { name: 'Add repository', exact: true }).getByRole('button', { name: 'Add repository', exact: true }).click();
   await expect(page.getByRole('status')).toContainText('Loading pull requests');
   await page.getByRole('button', { name: /Local folder/ }).click();
   await expect(page.getByRole('button', { name: 'Open review' })).toBeVisible();
@@ -255,9 +272,11 @@ test('gh sign-in failure is explained at the browser boundary', async ({ page })
     if (url.pathname === '/api/gh/account') return { status: 400, body: { error: 'GitHub CLI is not authenticated; run `gh auth login`' } };
   });
   await page.goto('/');
-  await page.getByRole('button', { name: 'Add repository' }).click();
+  await page.getByRole('button', { name: 'Add repository', exact: true }).click();
+  await page.getByRole('combobox', { name: 'Source type' }).selectOption('gh');
   await expect(page.getByRole('alert')).toContainText('gh auth login');
-  await expect(page.getByRole('dialog', { name: 'Add GitHub repository' })).not.toBeVisible();
+  await expect(page.getByRole('dialog', { name: 'Add repository', exact: true })).toBeVisible();
+  await page.getByRole('dialog', { name: 'Add repository', exact: true }).getByRole('button', { name: 'Cancel' }).click();
   await expect(page.getByRole('button', { name: 'Open review' })).toBeVisible();
 });
 
@@ -268,18 +287,22 @@ test('repository discovery keeps the local overview usable while gh responds', a
     const url = new URL(route.request().url());
     let body;
     if (url.pathname === '/api/status') body = { repo: '/tmp/sample', spec_dir: 'spec' };
+    else if (url.pathname === '/api/local/overview') body = localMetadata;
+    else if (url.pathname === '/api/local/folders') body = { path: '/tmp', parent: '/', folders: [] };
     else if (url.pathname === '/api/gh/account') { await pending; body = { login: 'reviewer' }; }
     else if (url.pathname === '/api/gh/repos') body = [{ full_name: 'owner/project', default_branch: 'main', private: true }];
     else throw new Error(`Unexpected API request: ${url}`);
     await route.fulfill({ contentType: 'application/json', body: JSON.stringify(body) });
   });
   await page.goto('/');
-  await page.getByRole('button', { name: 'Add repository' }).click();
-  await expect(page.getByRole('status')).toContainText('Loading GitHub repositories');
+  await page.getByRole('button', { name: 'Add repository', exact: true }).click();
+  await page.getByRole('combobox', { name: 'Source type' }).selectOption('gh');
+  await expect(page.getByRole('status')).toContainText('Loading');
+  await page.getByRole('dialog', { name: 'Add repository', exact: true }).getByRole('button', { name: 'Cancel' }).click();
   await page.getByRole('button', { name: /Local folder/ }).click();
   await expect(page.getByRole('button', { name: 'Open review' })).toBeVisible();
   releaseAccount();
-  await expect(page.getByRole('dialog', { name: 'Add GitHub repository' })).toBeVisible();
+  await expect(page.getByRole('dialog', { name: 'Add repository', exact: true })).not.toBeVisible();
 });
 
 test('local revision selection, both working-tree directions, filter, and rendered diff', async ({ page }) => {
@@ -517,8 +540,8 @@ test('browser document formatting, links, and diagram fallback', async ({ page }
   await expect(page.getByRole('alert')).toContainText('Target is unavailable');
   await page.getByRole('button', { name: 'Dismiss' }).click();
   await page.locator('.document-body a', { hasText: 'choice' }).click();
-  await expect(page.locator('.link-dialog', { hasText: 'Choose a linked artifact' })).toBeVisible();
-  await page.locator('.link-dialog', { hasText: 'Choose a linked artifact' }).getByRole('button', { name: /GOAL-001/ }).click();
+  await expect(page.getByRole('dialog', { name: 'Choose a linked artifact', exact: true })).toBeVisible();
+  await page.getByRole('dialog', { name: 'Choose a linked artifact', exact: true }).getByRole('button', { name: /GOAL-001/ }).click();
   await expect(page.locator('.doc-heading')).toContainText('GOAL-001');
 });
 
@@ -585,7 +608,8 @@ test('a pending local comparison leaves filtering and overview navigation availa
     const url = new URL(route.request().url());
     let body;
     if (url.pathname === '/api/status') body = { repo: '/tmp/sample', spec_dir: 'spec' };
-    else if (url.pathname === '/api/local/commits') body = { branches: [], commits: [{ sha: 'base', subject: 'Base' }] };
+    else if (url.pathname === '/api/local/overview') body = localMetadata;
+    else if (url.pathname === '/api/local/commits') body = { ...localMetadata, branches: [], commits: [{ sha: 'base', subject: 'Base' }] };
     else if (url.pathname === '/api/local/snapshot') body = snapshot('working tree');
     else if (url.pathname === '/api/local/compare') { await pending; body = comparison(); }
     else throw new Error(`Unexpected API request: ${url}`);

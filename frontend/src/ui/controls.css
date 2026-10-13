@@ -1,0 +1,17 @@
+/* Opt-in control appearance; layout belongs to the field or owning component. */
+.ui-control {
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 8px 11px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+select.ui-control { padding-right: 32px; }
+.ui-control::placeholder { color: var(--ink-muted); }
+.ui-control:disabled { opacity: .55; cursor: not-allowed; }

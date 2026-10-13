@@ -658,29 +658,42 @@ def test_commit_history_and_discovery(history):
         Repository(repo.root, "../design")
 
 
-def test_cli_defaults_to_current_directory_and_allows_explicit_spec_dir(
-    repo, monkeypatch
-):
+def test_cli_tui_defaults_and_add_only_browser(repo, monkeypatch):
     import sys
 
     from spec_review import cli, web
+    from spec_review.tui import app
 
     selected = []
-    monkeypatch.setattr(
-        web, "serve", lambda repository, *args: selected.append(repository)
-    )
+
+    class App:
+        def __init__(self, repository):
+            selected.append(repository)
+
+        def run(self):
+            pass
+
+    monkeypatch.setattr(app, "SpecReviewApp", App)
     monkeypatch.chdir(repo.root)
-    monkeypatch.setattr(sys, "argv", ["spec-review", "--web"])
+    monkeypatch.setattr(sys, "argv", ["spec-review"])
     cli.main()
     assert selected[-1].root == repo.root
     assert selected[-1].spec_dir == "spec"
-
     monkeypatch.setattr(
-        sys, "argv", ["spec-review", "--web", "--repo", ".", "--spec-dir", "other-spec"]
+        sys, "argv", ["spec-review", "--repo", ".", "--spec-dir", "other-spec"]
     )
     cli.main()
-    assert selected[-1].root == repo.root
     assert selected[-1].spec_dir == "other-spec"
+    browser = []
+    monkeypatch.setattr(web, "serve", lambda **kwargs: browser.append(kwargs))
+    monkeypatch.setattr(sys, "argv", ["spec-review", "--web"])
+    cli.main()
+    assert browser == [{"host": "127.0.0.1", "port": 8765}]
+    for args in (["--repo", "."], ["--spec-dir", "spec"]):
+        monkeypatch.setattr(sys, "argv", ["spec-review", "--web", *args])
+        with pytest.raises(SystemExit) as error:
+            cli.main()
+        assert error.value.code == 2
 
 
 def test_settings_roundtrip(tmp_path):

@@ -3,13 +3,27 @@ type: requirement
 title: Navigate saved repositories from the browser overview
 category: integrations
 status: specified
-statement: Provide an overview with the local folder and saved GitHub repositories in a left sidebar. Let reviewers add a repository accessible through the server's gh CLI login using the top-right Add action, retain saved repositories across reloads, and open a selected repository in its detailed review view. Keep the local selection available while GitHub data loads.
+statement: Provide an overview with saved local folders and GitHub repositories in a shared left sidebar. Through
+  Add, choose a local folder using a server-side folder browser starting at the server user’s home, with parent
+  navigation, readable child directories, and direct path entry, or choose a repository accessible through gh. Allow
+  an optional relative specification directory, defaulting to spec. Save multiple folders and repositories across
+  reloads, prevent duplicate local path/spec-directory pairs, and retain saved unavailable folders with useful errors.
+  Browser startup uses saved sources or an empty overview; it does not automatically add a folder from the command
+  line. Preserve existing saved GitHub entries. Local folder addition and selection work independently of GitHub
+  authentication and loading. Canceling the Add dialog discards any pending addition response.
 derived_from:
 - UC-009
+- UC-008
 related:
 - REQ-034
 - REQ-039
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "GitHub CLI scope correction, October 7, 2026"
+- type: conversation
+  file: spec/sources/chat.md
+  section: GitHub CLI scope correction, October 7, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Local folder addition and worktree review, October 12, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Frontend dialog styling and component refactor, October 12, 2026

@@ -6,24 +6,33 @@ actors:
 goal_refs:
 - GOAL-001
 - GOAL-002
-description: Review a selected local repository in the browser. Browse artifacts as in UC-001, follow links as in UC-002, and inspect diagrams as in UC-003. Select revisions and inspect changed content in the browser workspace.
+description: In the browser, add and review multiple local specification folders. Browse artifacts as in UC-001,
+  follow links as in UC-002, and inspect diagrams as in UC-003. Review Git worktrees from the overview without switching
+  branches.
 preconditions:
-- The selected local repository folder contains a specification or locally available historical revisions.
-main_flow: |-
-  1. Open the browser application overview and select the local folder.
-  2. Open its detailed review view and select the working tree, a branch, or a commit.
-  3. Review the selected revision or choose two revisions to compare.
-  4. Browse its artifacts, follow links, and inspect diagrams or comparison results.
-  5. Continue navigating while a comparison loads.
-postconditions: The browser displays the local specification and requested comparison. Browser-specific interaction, accessibility, and loading behavior is defined by the related requirements and UI design.
+- The server can read the selected local folder.
+main_flow: '1. Use Add to browse a local folder on the server and select its relative specification directory.
+
+  2. Select the saved folder in the overview and open its current-file review.
+
+  3. For a Git repository, choose a base branch and open a worktree card, or select revisions in the detail workspace.
+
+  4. Review documents or compare snapshots, following links and inspecting images in the appropriate source context.
+
+  5. Return to the overview to review another worktree or saved folder; continue navigating while requests load.'
+postconditions: The browser displays the local specification and requested comparison. Browser-specific interaction,
+  accessibility, and loading behavior is defined by the related requirements and UI design.
 related:
 - UC-001
 - UC-002
 - UC-003
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Local-only browser scope and accessibility, October 7, 2026"
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Scope, journey overlap, and computed backlinks, October 12, 2026"
+- type: conversation
+  file: spec/sources/chat.md
+  section: Local-only browser scope and accessibility, October 7, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Scope, journey overlap, and computed backlinks, October 12, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Local folder addition and worktree review, October 12, 2026

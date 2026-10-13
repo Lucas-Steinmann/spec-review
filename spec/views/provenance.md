@@ -17,3 +17,7 @@ The [conversation record](../sources/chat.md) is the source for user requirement
 | Browser filters and persistence | [Browser artifact filters](../sources/chat.md#browser-artifact-filters-october-11-2026) |
 
 Start with the [overview](overview.md) when reading the current plan. Use this source map when you need to check a choice against the original request.
+
+[Local folder addition and worktree review](../sources/chat.md#local-folder-addition-and-worktree-review-october-12-2026) records the request and confirmed workflow choices.
+
+[Frontend dialog styling and component refactor](../sources/chat.md#frontend-dialog-styling-and-component-refactor-october-12-2026) records the screenshot reproduction, diagnosis, and refactor authorization.

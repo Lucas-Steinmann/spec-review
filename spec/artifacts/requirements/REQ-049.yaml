@@ -1,0 +1,22 @@
+id: REQ-049
+type: requirement
+title: Review local Git worktrees from the overview
+category: comparison
+status: specified
+statement: List local Git worktrees, including the main checkout, as overview cards similar to GitHub pull requests.
+  Show branch or detached HEAD, path, HEAD summary, and availability. Selecting an available worktree compares its
+  current specification files directly against the selected base branch, including committed work and staged, unstaged,
+  and untracked files. Refresh discovery on overview entry and on request; reread current files when applying a
+  comparison. Allow worktrees on either comparison side. Preserve source, worktree, and revision context for documents,
+  links, images, and navigation history; stale requests cannot replace a newer source or worktree selection. Review
+  must not modify worktrees or switch branches.
+derived_from:
+- UC-008
+related:
+- REQ-022
+- REQ-023
+- REQ-043
+source:
+- type: conversation
+  file: spec/sources/chat.md
+  section: Local folder addition and worktree review, October 12, 2026

@@ -29,3 +29,7 @@ What can the reviewer read? [Canonical artifacts and overviews](../artifacts/req
 ## Maintaining this plan
 
 [REQ-026](../artifacts/requirements/REQ-026.yaml) requires this repository's own linked specification and reader-oriented overview guides. Follow [design](architecture.md#self-specification-and-maintained-views) and [acceptance](acceptance.md#self-specification) for the maintenance route.
+
+[REQ-035](../artifacts/requirements/REQ-035.yaml) unifies local folder and GitHub addition. [REQ-049](../artifacts/requirements/REQ-049.yaml) enables current-file worktree comparisons; [REQ-050](../artifacts/requirements/REQ-050.yaml) defines selectable default bases.
+
+[REQ-047](../artifacts/requirements/REQ-047.yaml) requires consistent, non-overlapping dialogs down to 320px width.

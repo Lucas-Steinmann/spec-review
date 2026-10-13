@@ -17,4 +17,9 @@ Use this page to move from a user journey to its key requirement, design, and ac
 | [Use appearance modes and the browser workbench](../artifacts/use-cases/UC-008.yaml) | [REQ-047](../artifacts/requirements/REQ-047.yaml) | [UI-002](../artifacts/ui-design/UI-002.yaml) | [TEST-026](../artifacts/tests/TEST-026.yaml) |
 | [Review GitHub work](../artifacts/use-cases/UC-009.yaml) | [REQ-039](../artifacts/requirements/REQ-039.yaml) | [DES-008](../artifacts/design/DES-008.yaml) | [TEST-018](../artifacts/tests/TEST-018.yaml) |
 
+| [Review local worktrees](../artifacts/use-cases/UC-008.yaml) | [REQ-049](../artifacts/requirements/REQ-049.yaml), [REQ-050](../artifacts/requirements/REQ-050.yaml) | [DES-007](../artifacts/design/DES-007.yaml), [UI-002](../artifacts/ui-design/UI-002.yaml) | [TEST-028](../artifacts/tests/TEST-028.yaml) |
+| [Add local folders](../artifacts/use-cases/UC-008.yaml) | [REQ-035](../artifacts/requirements/REQ-035.yaml) | [DES-007](../artifacts/design/DES-007.yaml), [UI-002](../artifacts/ui-design/UI-002.yaml) | [TEST-027](../artifacts/tests/TEST-027.yaml) |
+
+| [Use browser dialogs](../artifacts/use-cases/UC-008.yaml) | [REQ-047](../artifacts/requirements/REQ-047.yaml) | [DES-007](../artifacts/design/DES-007.yaml), [UI-002](../artifacts/ui-design/UI-002.yaml) | [TEST-029](../artifacts/tests/TEST-029.yaml) |
+
 For a wider set of requirements, use the [requirement guide](requirements.md). Each linked YAML artifact carries relationships to the next layer.

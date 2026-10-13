@@ -1,0 +1,21 @@
+id: TEST-028
+type: test
+title: Compare current worktree files with selectable default bases
+verifies:
+- REQ-049
+- REQ-050
+- REQ-022
+- REQ-023
+- REQ-043
+description: Create a Git repository with multiple worktrees including detached HEAD. Confirm discovery, HEAD summaries,
+  unavailable/prunable cards, and refresh behavior. Confirm origin/HEAD, main, master, and HEAD default-base fallbacks,
+  with a saved alternate base. Compare committed, staged, unstaged, untracked, and deleted spec content in both
+  worktree/base directions through the HTTP API and browser serialization boundary. Check custom spec directories,
+  source-specific documents, links, current and historical images, and navigation history. Invalid bases and nonmember
+  or removed worktrees produce diagnostics. Switching source/worktree during pending requests discards stale responses.
+  Confirm branches, HEADs, and working files remain unchanged. Ordinary GitHub comparisons default to the default
+  branch while PR comparisons retain their explicit base/head.
+source:
+- type: conversation
+  file: spec/sources/chat.md
+  section: Local folder addition and worktree review, October 12, 2026

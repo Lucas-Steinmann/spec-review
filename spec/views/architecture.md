@@ -17,3 +17,7 @@ Start with [DES-001](../artifacts/design/DES-001.yaml): shared review services o
 ## Self-specification and maintained views
 
 [DES-006](../artifacts/design/DES-006.yaml) covers package, specification storage, and validation tooling. Canonical artifacts hold exact facts; [conversation provenance](../sources/chat.md) records their source. Maintained guides in `spec/views/` summarize the plan by reader question and appear directly in the Overviews category. The validator checks artifact relationships and guide links. Commit guide changes with the artifacts they explain.
+
+[DES-007](../artifacts/design/DES-007.yaml) defines local discovery endpoints, saved source identities, worktree membership validation, and source-aware document/link/image requests. [DES-003](../artifacts/design/DES-003.yaml) retains each comparison side’s worktree context.
+
+Shared component styling and actual-application dialog previews are specified in [DES-007](../artifacts/design/DES-007.yaml) and [DES-009](../artifacts/design/DES-009.yaml).

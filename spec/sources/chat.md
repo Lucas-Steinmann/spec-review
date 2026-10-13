@@ -295,3 +295,21 @@ Use separate `type`, `file`, and optional `section` fields for each source refer
 > instructions also apply them to all spec artifacts. If your instructions could be formulated generalically to capture all artifacts instead of just use cases, do so.
 
 The user approved generalizing the scope, overlap, and relationship rules to the specification health review skill. UC-001 and UC-003 are both useful: UC-001 should point from its diagram-reading step to UC-003, and UC-003 should identify UC-001 as its preceding journey. Keep relationships in their canonical direction and derive reverse navigation links from those relationships rather than maintaining duplicated links. Apply the guidance across the relevant artifacts and maintained views.
+
+## Local folder addition and worktree review, October 12, 2026
+
+The user requested that local folders use Add like GitHub repositories, supporting multiple saved folders rather than one folder selected through the command line. They also requested reviewing multiple agents’ Git worktrees against a base without switching branches.
+
+Confirmed choices: use a server-side folder browser starting at the server user’s home, allow navigation to any readable folder with direct path entry, and support a relative spec directory defaulting to `spec`. Browser startup uses saved sources or an empty overview; command-line folder defaults remain TUI-only. Worktrees appear as cards like GitHub PRs. Comparisons include current files, including staged, unstaged, and untracked specification changes. Compare directly against a selectable base branch and default to the repository’s default Git branch; use that default for ordinary repository comparisons too. Explicit PR base/head selection remains intact.
+
+Implementation defaults approved through the plan: detect local default bases using resolvable `origin/HEAD`, then `main`, `master`, and `HEAD`; preserve source and worktree context across document/link/image navigation; retain unavailable saved folders and worktrees with diagnostics. Worktree creation, switching, and merging are outside scope.
+
+## Frontend dialog styling and component refactor, October 12, 2026
+
+The user supplied a screenshot of the Add dialog with an overlapping Go button, squeezed path label/input, inconsistent field styling, and oversized secondary controls. They asked why frontend dialogs repeatedly looked jumbled, then authorized refactoring the frontend freely to use best practices.
+
+The implementation diagnosis was shared global descendant styling: Add and Settings inherited a link-choice dialog’s full-width button rules, while new text inputs lacked the dropdown’s control appearance. Functional and page-overflow tests did not detect the dialog overlap; standalone HTML mockups did not exercise the actual Svelte dialog.
+
+Required outcomes: coherent control styling and non-overlapping responsive dialog layouts, with keyboard behavior preserved. The refactor uses scoped Button, Dialog, and FormField primitives, explicit control classes, separate Add/Settings/link-choice components, and shared native-dialog focus behavior. Regression coverage checks actual rendered controls in both themes at desktop, 360px, and 320px widths. New dialog previews render the compiled application with deterministic data instead of separate dialog markup.
+
+The shared dialog also contains forward and reverse keyboard focus and restores focus after close-related state updates. Canceling Add invalidates pending discovery or validation responses so a closed dialog cannot add a source later.

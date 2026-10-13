@@ -19,3 +19,5 @@ See the [navigation requirements](requirements.md#browsing-and-content) and [ter
 ## Review this repository
 
 [UC-007](../artifacts/use-cases/UC-007.yaml) applies the tool to its own `spec/`. Begin with the [main overview](overview.md), then use [traceability](traceability.md) to follow the plan into requirements, designs, and acceptance scenarios.
+
+[UC-008](../artifacts/use-cases/UC-008.yaml) starts with Add and includes the local worktree overview queue. [UC-009](../artifacts/use-cases/UC-009.yaml) selects GitHub in the same Add dialog.

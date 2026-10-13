@@ -14,9 +14,14 @@ class RepositoryError(Exception):
 
 
 def git(root: Path, *args: str, binary: bool = False):
-    result = subprocess.run(
-        ["git", "-C", str(root), *args], capture_output=True, timeout=30
-    )
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(root), *args], capture_output=True, timeout=30
+        )
+    except subprocess.TimeoutExpired as exc:
+        raise RepositoryError("Timed out reading Git repository") from exc
+    except OSError as exc:
+        raise RepositoryError(f"Unable to read Git repository: {exc}") from exc
     if result.returncode:
         raise RepositoryError(result.stderr.decode(errors="replace").strip())
     return result.stdout if binary else result.stdout.decode("utf-8", errors="replace")
@@ -221,7 +226,9 @@ def snapshot_from_files(
             if text.startswith("\0READ ERROR:"):
                 raise ValueError(text[1:])
             if path.startswith((f"{spec_dir}/views/", f"{spec_dir}/generated/")):
-                folder = "views" if path.startswith(f"{spec_dir}/views/") else "generated"
+                folder = (
+                    "views" if path.startswith(f"{spec_dir}/views/") else "generated"
+                )
                 name = str(PurePosixPath(path).relative_to(f"{spec_dir}/{folder}"))
                 title = next(
                     (

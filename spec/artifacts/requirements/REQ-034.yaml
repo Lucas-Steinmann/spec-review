@@ -3,7 +3,17 @@ type: requirement
 title: Browse and compare specifications in a WebUI
 category: browsing
 status: specified
-statement: Provide a browser overview with the selected local repository in a left sidebar and an action to open its detailed review. Use the same snapshot and comparison services as the terminal interface. In the detailed view, let the reviewer choose Review or Compare before selecting a target revision, and retain that choice across page reloads. In Review mode, hide the base revision selector; in Compare mode, show it. Apply the chosen mode and revisions only when the reviewer confirms, then display the selected revision's documents or the comparison. Allow comparisons between any selected local revisions, including the working tree, and mark each category that contains changed, added, or deleted documents.
+statement: 'Provide a browser overview with the selected local repository in a left sidebar and an action to open
+  its detailed review. Use the same snapshot and comparison services as the terminal interface. In the detailed
+  view, let the reviewer choose Review or Compare before selecting a target revision, and retain that choice across
+  page reloads. In Review mode, hide the base revision selector; in Compare mode, show it. Apply the chosen mode
+  and revisions only when the reviewer confirms, then display the selected revision''s documents or the comparison.
+  Allow comparisons between any selected local revisions, including the working tree, and mark each category that
+  contains changed, added, or deleted documents.
+
+
+  Support current-file review for folders without Git, with comparison controls unavailable. Default bases for Git
+  comparison are specified by REQ-050; worktree review is specified by REQ-049.'
 derived_from:
 - UC-008
 related:
@@ -14,9 +24,12 @@ related:
 - REQ-042
 - REQ-043
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "WebUI and GitHub support"
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Browser revision mode selector, October 11, 2026"
+- type: conversation
+  file: spec/sources/chat.md
+  section: WebUI and GitHub support
+- type: conversation
+  file: spec/sources/chat.md
+  section: Browser revision mode selector, October 11, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Local folder addition and worktree review, October 12, 2026

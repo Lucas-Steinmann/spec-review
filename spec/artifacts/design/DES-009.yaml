@@ -1,22 +1,25 @@
 id: DES-009
 type: design
 title: Browser development and distribution
-description: |
-  Vite serves the Svelte frontend with hot reload and proxies API requests to the Python server. Lucide Svelte provides tree-shaken interface icons. Playwright exercises rendered browser behavior. Production assets are generated in an ignored build directory and included in Python distributions after a frontend build.
-
-  ```mermaid
-  flowchart LR
-    Svelte[Svelte source] --> Vite[Vite development server]
-    Vite --> Browser[Browser and Playwright]
-    Vite --> Build[Production frontend build]
-    Build --> Package[Python distribution]
-    Browser --> API[Local Python HTTP server]
-  ```
+description: "Vite serves the Svelte frontend with hot reload and proxies API requests to the Python server. Lucide\
+  \ Svelte provides tree-shaken interface icons. Playwright exercises rendered browser behavior. Production assets\
+  \ are generated in an ignored build directory and included in Python distributions after a frontend build.\n\n\
+  ```mermaid\nflowchart LR\n  Svelte[Svelte source] --> Vite[Vite development server]\n  Vite --> Browser[Browser\
+  \ and Playwright]\n  Vite --> Build[Production frontend build]\n  Build --> Package[Python distribution]\n  Browser\
+  \ --> API[Local Python HTTP server]\n```\n\n\nDialog layout regressions inspect the actual browser application\
+  \ at desktop, 360px, and 320px widths in Paper and Dark themes, checking label spacing, control dimensions, sibling\
+  \ separation, viewport containment, primary appearance, and focus. Deterministic data in spec/mockups/src/browser-dialogs.mjs\
+  \ also drives previews of the compiled Svelte dialogs through scripts/render_spec_mockups.mjs. Frontend component\
+  \ and verification conventions are documented in frontend/README.md; inspect live dialog screenshots in addition\
+  \ to functional checks."
 addresses:
 - REQ-034
 decisions:
 - ADR-009
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Frontend development and browser testing, October 7, 2026"
+- type: conversation
+  file: spec/sources/chat.md
+  section: Frontend development and browser testing, October 7, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Frontend dialog styling and component refactor, October 12, 2026

@@ -1,37 +1,91 @@
 id: UI-002
 type: ui_design
 title: Browser repository overview and review workspace
-description: |
-  Present the browser app as a focused developer review workbench. The overview has repository navigation
+description: 'Present the browser app as a focused developer review workbench. The overview has repository navigation
+
   beside a clear repository heading and a pull request queue. The detail workspace has repository context,
+
   revision and mode controls, artifact filters and categories, a selectable artifact list, and a readable
+
   document or diff pane. Use a deliberate type scale, compact spacing, layered surfaces, and restrained
+
   accent colors. Primary actions are filled; secondary navigation is quiet or outlined; inputs and selects
+
   share consistent proportions, border treatment, and focus states. Avoid generic framework-default controls.
 
+
   Use Lucide Svelte for interface icons. Offer System, Paper, and Dark appearance modes in a Settings dialog
+
   opened by a gear icon in the application header. System follows the operating
+
   system color preference; Paper uses warm light surfaces and Dark uses layered graphite surfaces. Users can
+
   override System and their selection persists across reloads. Apply theme tokens consistently to overview,
+
   workspace, dialogs, Markdown, code, status, and diff highlights. Keep repository navigation and workspace
+
   panels usable at narrow widths by stacking the review list and content pane and making repository choices
+
   horizontally navigable. The top bar shows the local folder name without its absolute path; revision controls
+
   do not repeat the repository name.
 
+
   Preserve the existing workflows: local and saved GitHub repositories, open pull requests and Actions state,
+
   revision review and comparison, filters, links, diagrams, loading feedback, and error handling. Give controls
+
   accessible names, preserve keyboard operation and visible focus, and retain readable status and diff cues.
+
   Keep specification images within the document pane. Open them in a modal viewer with fit-to-window, zoom,
+
   reset, and close controls; opening and closing images must remain keyboard accessible.
 
+
   ![Paper overview](../../mockups/rendered/browser-workspace-paper.png)
+
   ![Dark overview](../../mockups/rendered/browser-workspace-dark.png)
+
   ![Paper overview at narrow width](../../mockups/rendered/browser-workspace-paper-mobile.png)
+
   ![Dark overview at narrow width](../../mockups/rendered/browser-workspace-dark-mobile.png)
+
   ![Paper review workspace](../../mockups/rendered/browser-review-paper.png)
+
   ![Dark review workspace](../../mockups/rendered/browser-review-dark.png)
+
   ![Paper review workspace at narrow width](../../mockups/rendered/browser-review-paper-mobile.png)
+
   ![Dark review workspace at narrow width](../../mockups/rendered/browser-review-dark-mobile.png)
+
+
+
+  The shared Add dialog has Local folder and GitHub repository choices. Local folder selection shows a path field,
+  Go action, parent navigation, scrollable child folders, and a relative specification-directory field. GitHub selection
+  loads account and accessible repositories on demand. Show loading and errors within the dialog, with keyboard-accessible
+  controls. Empty startup invites adding a workspace. Local overview shows saved folder context, Open review, Refresh,
+  a base-branch selector, and worktree cards styled like PR cards. Cards show branch or detached HEAD, folder, HEAD
+  summary, and availability; unavailable cards are disabled. Opening a worktree enters Compare with that worktree’s
+  current files and the overview base. Worktrees also appear in both detailed revision selectors. Plain folders
+  expose Review only.
+
+
+  ![Local worktree overview](../../mockups/rendered/browser-worktrees-paper.png)
+
+
+  Dialogs use a bounded, scrollable shell with a named heading and compact close action. Source, folder path, and
+  specification-directory fields share control height and appearance; labels have explicit spacing. The folder path
+  and Go sit in separate grid columns, parent navigation remains above the scrollable folder list, and Cancel/Add
+  appear as intrinsic-width footer actions. Only folder and link-choice rows take full width. Settings uses the
+  same shell and control treatment. Dialogs remain usable at widths down to 320px in Paper and Dark modes, with
+  Escape and focus return.
+
+
+  ![Actual Add dialog, Paper](../../mockups/rendered/browser-add-paper.png)
+
+  ![Actual Add dialog, Dark at narrow width](../../mockups/rendered/browser-add-dark-mobile.png)
+
+  ![Actual Settings dialog at narrow width](../../mockups/rendered/browser-settings-paper-mobile.png)'
 addresses:
 - REQ-034
 - REQ-035
@@ -46,6 +100,8 @@ addresses:
 - REQ-046
 - REQ-047
 - REQ-048
+- REQ-049
+- REQ-050
 tests:
 - TEST-012
 - TEST-023
@@ -53,27 +109,33 @@ tests:
 related:
 - DES-007
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "WebUI and GitHub support"
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Artifact authoring and UI design separation, October 10, 2026"
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Multi-repository overview and pull request navigation, October 7, 2026"
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "WebUI sidebar usability, October 7, 2026"
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Local-only browser scope and accessibility, October 7, 2026"
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Browser workbench redesign, October 12, 2026"
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Settings dialog and compact local repository context, October 12, 2026"
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Responsive specification images and image viewer, October 12, 2026"
+- type: conversation
+  file: spec/sources/chat.md
+  section: WebUI and GitHub support
+- type: conversation
+  file: spec/sources/chat.md
+  section: Artifact authoring and UI design separation, October 10, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Multi-repository overview and pull request navigation, October 7, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: WebUI sidebar usability, October 7, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Local-only browser scope and accessibility, October 7, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Browser workbench redesign, October 12, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Settings dialog and compact local repository context, October 12, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Responsive specification images and image viewer, October 12, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Local folder addition and worktree review, October 12, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Frontend dialog styling and component refactor, October 12, 2026

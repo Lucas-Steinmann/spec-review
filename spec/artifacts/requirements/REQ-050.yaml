@@ -1,0 +1,17 @@
+id: REQ-050
+type: requirement
+title: Default comparisons to the repository default branch
+category: comparison
+status: specified
+statement: For ordinary local and GitHub comparisons, default the base to the repository default branch and allow
+  the reviewer to select another revision. The local worktree overview exposes a base-branch choice saved per source.
+  Prefer a resolvable origin/HEAD for local default detection, then main, then master, then HEAD. Compare base and
+  target directly, rather than computing a merge base. Explicit GitHub pull-request comparisons retain their PR
+  base and head.
+derived_from:
+- UC-008
+- UC-009
+source:
+- type: conversation
+  file: spec/sources/chat.md
+  section: Local folder addition and worktree review, October 12, 2026

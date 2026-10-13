@@ -3,8 +3,14 @@ type: test
 title: Load selected local revisions in the WebUI
 verifies:
 - REQ-034
-description: Start the WebUI against a repository with a working-tree specification and multiple commits. Confirm its local overview appears with the repository list on the left and opens the detailed review without first contacting gh. Confirm the initial document list loads, selecting a commit refreshes the list to that revision, and local comparisons display changed, added, and deleted documents with base and target field content. Confirm the local compare API accepts the WebUI's empty revision value for the working tree as either base or target, and categories containing changes are marked. Confirm the removed /api/github routes are absent.
+description: Start the browser without a folder argument, add a local folder through Add, and open its review without
+  contacting gh. Confirm local revisions and comparisons show changed, added, and deleted documents with base and
+  target content. Confirm the API accepts the empty working-tree revision on either side and categories containing
+  changes are marked. Confirm the removed /api/github routes are absent.
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "WebUI and GitHub support"
+- type: conversation
+  file: spec/sources/chat.md
+  section: WebUI and GitHub support
+- type: conversation
+  file: spec/sources/chat.md
+  section: Local folder addition and worktree review, October 12, 2026

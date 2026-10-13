@@ -1,6 +1,11 @@
 <script>
   import { onMount, tick } from 'svelte';
   import { ArrowLeft, ArrowRight, ChevronRight, ExternalLink, Folder, GitBranch, Plus, Settings, X } from '@lucide/svelte';
+  import Button from './ui/Button.svelte';
+  import LinkChoiceDialog from './components/LinkChoiceDialog.svelte';
+  import FormField from './ui/FormField.svelte';
+  import AddRepositoryDialog from './components/AddRepositoryDialog.svelte';
+  import SettingsDialog from './components/SettingsDialog.svelte';
   import DocumentBody from './DocumentBody.svelte';
 
   function readBooleanPreference(key, fallback) {
@@ -14,8 +19,24 @@
   let defaultBranch = '';
   let ghAccount = '';
   let ghMessage = '';
-  let savedRepos = JSON.parse(localStorage.getItem('spec-review-repositories') || '[]');
-  let overviewRepo = '__local__';
+  function readSources() {
+    try { return JSON.parse(localStorage.getItem('spec-review-repositories') || '[]').map((item) => item.source ? item : { ...item, source: 'gh', id: item.full_name }); }
+    catch { return []; }
+  }
+  let savedRepos = readSources();
+  let overviewRepo = '';
+  let localOverview = null;
+  let overviewBase = '';
+  let specDir = 'spec';
+  let isGit = true;
+  let addSource = 'local';
+  let folderListing = null;
+  let folderPath = '';
+  let addSpecDir = 'spec';
+  let addError = '';
+  let folderRequest = 0;
+  let addRequest = 0;
+  $: overviewItem = savedRepos.find((item) => item.id === overviewRepo);
   let overviewPulls = [];
   let overviewBusy = false;
   let overviewRequest = 0;
@@ -45,6 +66,7 @@
   let error = '';
   let busy = false;
   let viewRequest = 0;
+  let documentRequest = 0;
   let linkDialog;
   let settingsDialog;
   let settingsButton;
@@ -76,6 +98,11 @@
       params.set('owner', owner);
       params.set('repo', name);
     }
+    if (ctx.source === 'local') {
+      params.set('root', ctx.repo || '');
+      params.set('spec_dir', ctx.specDir || 'spec');
+      if (ctx.worktree) params.set('worktree', ctx.worktree);
+    }
     return params.toString();
   }
 
@@ -83,7 +110,11 @@
     return `/api/${ctx.source}/${action}?${queryFor(ctx)}`;
   }
 
-  function currentContext() { return { source, repo, ref: revision }; }
+  function revisionContext(value) {
+    return { source, repo, specDir, ref: value.startsWith('worktree:') ? '' : value,
+      worktree: value.startsWith('worktree:') ? value.slice(9) : '' };
+  }
+  function currentContext() { return revisionContext(revision); }
 
   function clearView() {
     currentDocument = null;
@@ -96,18 +127,37 @@
     try {
       status = await api('/api/status');
       if (savedRepos.length) {
-        overviewRepo = savedRepos[0].full_name;
+        const selected = localStorage.getItem('spec-review-selected-source');
+        overviewRepo = savedRepos.some((item) => item.id === selected) ? selected : savedRepos[0].id;
         refreshOverview();
       }
     }
     catch (problem) { showError(problem); }
   }
 
-  async function openLocalRepository() {
-    page = 'detail';
-    source = 'local'; repo = '';
-    try { await loadLocalRevisions(); await loadSnapshot(); }
-    catch (problem) { showError(problem); }
+  async function openLocalRepository(item = overviewItem, worktree = null) {
+    if (!item) return;
+    overviewRequest += 1;
+    const request = ++viewRequest;
+    page = 'detail'; source = 'local'; repo = item.root; specDir = item.spec_dir;
+    history = []; clearView(); busy = true;
+    try {
+      const data = await api(routeFor({ source, repo, specDir, ref: '' }, 'commits'));
+      if (request !== viewRequest || page !== 'detail') return;
+      isGit = Boolean(data.is_git && data.default_base);
+      revisions = [
+        { label: 'Working tree', value: '' },
+        ...data.branches.map((name) => ({ label: `Branch · ${name}`, value: name })),
+        ...(data.default_base === 'HEAD' ? [{ label: 'HEAD', value: 'HEAD' }] : []),
+        ...data.commits.map((entry) => ({ label: `Commit · ${entry.sha.slice(0, 10)} · ${entry.subject}`, value: entry.sha })),
+        ...(data.worktrees || []).filter((entry) => entry.available && !entry.bare).map((entry) => ({ label: `Worktree · ${entry.branch || 'Detached HEAD'} · ${localFolderName(entry.path)}`, value: `worktree:${entry.path}` })),
+      ];
+      base = overviewBase || data.default_base || '';
+      revision = worktree ? `worktree:${worktree.path}` : '';
+      if (worktree) { reviewMode = 'compare'; await compareRevisions(); }
+      else { if (!isGit) reviewMode = 'review'; await loadSnapshot(); }
+    } catch (problem) { if (request === viewRequest) showError(problem); }
+    finally { if (request === viewRequest) busy = false; }
   }
 
   function repoQuery(item) {
@@ -115,50 +165,108 @@
     return new URLSearchParams({ owner, repo: name }).toString();
   }
 
+  function persistSources() {
+    localStorage.setItem('spec-review-repositories', JSON.stringify(savedRepos));
+  }
+
+  function changeOverviewBase() {
+    savedRepos = savedRepos.map((item) => item.id === overviewRepo ? { ...item, base: overviewBase } : item);
+    persistSources();
+  }
+
   async function refreshOverview() {
+    localStorage.setItem('spec-review-selected-source', overviewRepo);
     const request = ++overviewRequest;
-    overviewPulls = [];
-    const item = savedRepos.find((row) => row.full_name === overviewRepo);
+    overviewPulls = []; localOverview = null; overviewBase = '';
+    const item = savedRepos.find((row) => row.id === overviewRepo);
     if (!item) { overviewBusy = false; return; }
-    overviewBusy = true;
+    overviewBusy = true; error = '';
     try {
-      const pulls = await api(`/api/gh/overview?${repoQuery(item)}`);
-      if (request === overviewRequest) overviewPulls = pulls;
+      if (item.source === 'local') {
+        const data = await api(routeFor({ source: 'local', repo: item.root, specDir: item.spec_dir, ref: '' }, 'overview'));
+        if (request !== overviewRequest) return;
+        localOverview = data;
+        overviewBase = [...data.branches, 'HEAD'].includes(item.base) ? item.base : data.default_base;
+      } else {
+        const pulls = await api(`/api/gh/overview?${repoQuery(item)}`);
+        if (request === overviewRequest) overviewPulls = pulls;
+      }
     } catch (problem) { if (request === overviewRequest) showError(problem); }
     finally { if (request === overviewRequest) overviewBusy = false; }
   }
 
-  async function openAddRepo() {
+  async function browseFolders(path = '') {
+    const request = ++folderRequest;
+    addBusy = true; addError = '';
+    try {
+      const data = await api(`/api/local/folders?${new URLSearchParams(path ? { path } : {})}`);
+      if (request !== folderRequest || addSource !== 'local') return;
+      folderListing = data; folderPath = data.path;
+    } catch (problem) { if (request === folderRequest && addSource === 'local') addError = problem.message; }
+    finally { if (request === folderRequest && addSource === 'local') addBusy = false; }
+  }
+
+  async function loadAddSource() {
+    const request = ++addRequest;
+    addError = ''; folderRequest += 1;
+    if (addSource === 'local') { await browseFolders(folderPath); return; }
     addBusy = true;
     try {
-      ghAccount = (await api('/api/gh/account')).login;
-      availableRepos = await api('/api/gh/repos');
+      const account = await api('/api/gh/account');
+      if (request !== addRequest) return;
+      ghAccount = account.login;
+      const repos = await api('/api/gh/repos');
+      if (request !== addRequest) return;
+      availableRepos = repos;
       addRepo = availableRepos.find((item) => !savedRepos.some((saved) => saved.full_name === item.full_name))?.full_name || '';
-      repoDialog?.showModal();
-      await tick();
-      repoDialog?.querySelector('select')?.focus();
-    } catch (problem) { ghMessage = problem.message; showError(problem); }
-    finally { addBusy = false; }
+    } catch (problem) { if (request === addRequest) { ghMessage = problem.message; addError = problem.message; } }
+    finally { if (request === addRequest) addBusy = false; }
+  }
+
+  async function openAddRepo() {
+    addSource = 'local'; addError = ''; addSpecDir = 'spec';
+    repoDialog?.showModal();
+    await tick();
+    await loadAddSource();
+  }
+
+  function cancelAddRequests() {
+    addRequest += 1;
+    folderRequest += 1;
+    addBusy = false;
   }
 
   async function addRepository() {
-    const item = availableRepos.find((row) => row.full_name === addRepo);
-    if (!item) return;
-    savedRepos = [...savedRepos.filter((row) => row.full_name !== item.full_name), item];
-    localStorage.setItem('spec-review-repositories', JSON.stringify(savedRepos));
-    overviewRepo = item.full_name;
-    repoDialog?.close();
-    await refreshOverview();
+    const request = ++addRequest;
+    addBusy = true; addError = '';
+    try {
+      let item;
+      if (addSource === 'local') {
+        const data = await api(`/api/local/validate?${new URLSearchParams({ root: folderPath, spec_dir: addSpecDir })}`);
+        item = { source: 'local', root: data.root, spec_dir: data.spec_dir, id: `local:${JSON.stringify([data.root, data.spec_dir])}` };
+      } else {
+        const found = availableRepos.find((row) => row.full_name === addRepo);
+        if (!found) return;
+        item = { ...found, source: 'gh', id: found.full_name };
+      }
+      if (request !== addRequest || page !== 'overview') return;
+      item = { ...savedRepos.find((row) => row.id === item.id), ...item };
+      savedRepos = [...savedRepos.filter((row) => row.id !== item.id), item];
+      persistSources(); overviewRepo = item.id;
+      repoDialog?.close(); await refreshOverview();
+    } catch (problem) { if (request === addRequest) addError = problem.message; }
+    finally { if (request === addRequest) addBusy = false; }
   }
 
   async function openRepository(item, pull = null) {
     if (!item) return;
+    overviewRequest += 1;
     const request = ++viewRequest;
-    page = 'detail'; source = 'gh'; repo = item.full_name;
+    page = 'detail'; source = 'gh'; repo = item.full_name; specDir = 'spec'; isGit = true; history = []; clearView();
     defaultBranch = item.default_branch;
     busy = true;
     try {
-      await loadGithubRevisions();
+      await loadGithubRevisions(request);
       if (request !== viewRequest || page !== 'detail') return;
       if (pull) {
         reviewMode = 'compare';
@@ -176,18 +284,7 @@
     refreshOverview();
   }
 
-  async function loadLocalRevisions() {
-    const data = await api('/api/local/commits');
-    revisions = [
-      { label: 'Working tree', value: '' },
-      ...data.branches.map((name) => ({ label: `Branch · ${name}`, value: name })),
-      ...data.commits.map((item) => ({ label: `Commit · ${item.sha.slice(0, 10)} · ${item.subject}`, value: item.sha })),
-    ];
-    base = data.commits[1]?.sha || data.commits[0]?.sha || '';
-    revision = '';
-  }
-
-  async function loadGithubRevisions() {
+  async function loadGithubRevisions(request) {
     const ctx = { source: 'gh', repo, ref: defaultBranch };
     const query = queryFor(ctx);
     const [branches, pulls, commits] = await Promise.all([
@@ -195,6 +292,7 @@
       api(`/api/gh/pulls?${query}`),
       api(`/api/gh/commits?${query}`),
     ]);
+    if (request !== viewRequest || page !== 'detail') return;
     revisions = [
       ...branches.map((item) => ({ label: `Branch · ${item.name}`, value: item.sha, branch: item.name })),
       ...pulls.map((item) => ({ label: `PR #${item.number} · ${item.title}`, value: item.head, base: item.base })),
@@ -202,7 +300,7 @@
     ];
     revisions.sort((left, right) => Number(right.branch === defaultBranch) - Number(left.branch === defaultBranch));
     revision = revisions.find((item) => item.branch === defaultBranch)?.value || revisions[0]?.value || '';
-    base = commits[1]?.sha || commits[0]?.sha || '';
+    base = revisions.find((item) => item.branch === defaultBranch)?.value || revisions[0]?.value || '';
   }
 
   async function loadSnapshot() {
@@ -211,9 +309,10 @@
     error = '';
     clearView();
     try {
-      context = currentContext();
-      const loaded = await api(routeFor(context, 'snapshot'));
+      const selectedContext = currentContext();
+      const loaded = await api(routeFor(selectedContext, 'snapshot'));
       if (request !== viewRequest || page !== 'detail') return;
+      context = { ...selectedContext, ref: loaded.revision };
       snapshot = loaded;
       comparison = null;
       categories = snapshot.categories || {};
@@ -227,19 +326,26 @@
     busy = true;
     error = '';
     try {
-      const params = new URLSearchParams({ base, target: revision });
+      const baseContext = revisionContext(base);
+      const targetContext = currentContext();
+      const params = new URLSearchParams({ base: baseContext.ref, target: targetContext.ref });
+      if (source === 'local') {
+        params.set('root', repo); params.set('spec_dir', specDir);
+        if (baseContext.worktree) params.set('base_worktree', baseContext.worktree);
+        if (targetContext.worktree) params.set('target_worktree', targetContext.worktree);
+      }
       if (source === 'gh') {
         const [owner, name] = repo.split('/');
         params.set('owner', owner); params.set('repo', name);
       }
       const loaded = await api(`/api/${source}/compare?${params}`);
       if (request !== viewRequest || page !== 'detail') return;
-      comparison = loaded;
+      comparison = { ...loaded, baseContext: { ...baseContext, ref: loaded.base.revision }, targetContext: { ...targetContext, ref: loaded.target.revision } };
       clearView();
       snapshot = comparison.target;
       categories = { ...comparison.base.categories, ...comparison.target.categories };
       if (!categories[category]) category = Object.keys(categories)[0] || '';
-      context = currentContext();
+      context = comparison.targetContext;
     } catch (problem) { if (request === viewRequest) showError(problem); }
     finally { if (request === viewRequest) busy = false; }
   }
@@ -271,24 +377,31 @@
   }
 
   async function selectDocument(id) {
+    const request = ++documentRequest;
+    const selectedView = viewRequest;
     selectedId = id;
     linkedDocument = null;
     currentDocument = null;
     compareDocuments = null;
     error = '';
     try {
-      if (!comparison) currentDocument = await fetchDocument(id, context);
+      if (!comparison) {
+        const loaded = await fetchDocument(id, context);
+        if (request !== documentRequest || selectedView !== viewRequest || page !== 'detail') return;
+        currentDocument = loaded;
+      }
       else {
         const change = comparison.changes[id];
-        const baseContext = { ...context, ref: comparison.base.revision };
-        const targetContext = { ...context, ref: comparison.target.revision };
+        const baseContext = comparison.baseContext;
+        const targetContext = comparison.targetContext;
         const [oldDocument, newDocument] = await Promise.all([
           change.old ? fetchDocument(id, baseContext) : null,
           change.new ? fetchDocument(id, targetContext) : null,
         ]);
+        if (request !== documentRequest || selectedView !== viewRequest || page !== 'detail') return;
         compareDocuments = { base: oldDocument, target: newDocument, baseContext, targetContext, status: change.status };
       }
-    } catch (problem) { showError(problem); }
+    } catch (problem) { if (request === documentRequest && selectedView === viewRequest) showError(problem); }
   }
 
   function saveHistory() {
@@ -299,11 +412,14 @@
   }
 
   async function followLink(ctx, documentId, href) {
+    const request = viewRequest;
+    const selectedDocument = documentRequest;
     try {
       const params = new URLSearchParams(queryFor(ctx));
       params.set('id', documentId);
       params.set('href', href);
       const result = await api(`/api/${ctx.source}/link?${params}`);
+      if (request !== viewRequest || selectedDocument !== documentRequest || page !== 'detail') return;
       if (result.kind === 'external') {
         window.open(result.url, '_blank', 'noopener,noreferrer');
       } else if (result.kind === 'unresolved') {
@@ -314,34 +430,38 @@
         linkAnchor = result.anchor || '';
         linkDialog?.showModal();
         await tick();
-        linkDialog?.querySelector('button')?.focus();
+
       } else {
         await navigateLink(result.targets[0], ctx, result.anchor);
       }
-    } catch (problem) { showError(problem); }
+    } catch (problem) { if (request === viewRequest) showError(problem); }
   }
 
   function snapshotFor(ctx) {
     if (!comparison) return snapshot;
-    if (ctx.ref === comparison.base.revision) return comparison.base;
+    if (ctx.ref === comparison.base.revision && ctx.worktree === comparison.baseContext.worktree) return comparison.base;
     if (ctx.ref === comparison.target.revision) return comparison.target;
     return snapshot;
   }
 
   async function navigateLink(id, ctx, anchor = '') {
+    const request = ++viewRequest;
+    busy = false;
     saveHistory();
     comparison = null;
     currentDocument = null; compareDocuments = null;
     selectedId = id;
     context = ctx;
     try {
-      linkedDocument = await fetchDocument(id, ctx);
+      const loaded = await fetchDocument(id, ctx);
+      if (request !== viewRequest || page !== 'detail') return;
+      linkedDocument = loaded;
       await tick();
       document.querySelector('.content-pane .doc-heading h1')?.focus();
       if (anchor) {
         document.getElementById(anchor)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-    } catch (problem) { showError(problem); }
+    } catch (problem) { if (request === viewRequest) showError(problem); }
   }
 
   async function chooseLink(id) {
@@ -350,6 +470,8 @@
   }
 
   function goBack() {
+    viewRequest += 1;
+    busy = false;
     const previous = history.at(-1);
     if (!previous) return;
     history = history.slice(0, -1);
@@ -387,13 +509,12 @@
   }
 
   function repositoryDisplayName() {
-    return source === 'local' ? localFolderName(status?.repo) : repo || status?.repo || '';
+    return source === 'local' ? localFolderName(context.worktree || repo) : repo || '';
   }
 
   async function openSettings() {
     settingsDialog?.showModal();
     await tick();
-    settingsDialog?.querySelector('select')?.focus();
   }
 </script>
 
@@ -402,75 +523,80 @@
 <header class="topbar">
   <a class="brand" href="/" aria-label="spec-review home"><span class="brand-mark" aria-hidden="true">s</span><span>spec<span class="brand-light">review</span></span></a>
   {#if page === 'detail'}
-    <button class="quiet-button back-button" on:click={openOverview}><ArrowLeft size={15} aria-hidden="true" /> Repositories</button>
-    <div class="local-path"><strong>{repositoryDisplayName()}</strong><span>{status?.spec_dir || ''}</span></div>
+    <Button variant="quiet" class="quiet-button back-button" on:click={openOverview}><ArrowLeft size={15} aria-hidden="true" /> Repositories</Button>
+    <div class="local-path"><strong>{repositoryDisplayName()}</strong><span>{specDir}</span></div>
   {:else}
     <span class="topbar-context">Repository overview</span>
   {/if}
   <div class="topbar-actions">
-    <button class="settings-button" bind:this={settingsButton} aria-label="Settings" title="Settings" on:click={openSettings}><Settings size={18} strokeWidth={1.8} aria-hidden="true" /></button>
-    {#if page === 'overview'}<button class="primary" on:click={openAddRepo} disabled={addBusy}><Plus size={15} aria-hidden="true" /> Add repository</button>{/if}
+    <Button variant="icon" class="settings-button" bind:element={settingsButton} aria-label="Settings" title="Settings" on:click={openSettings}><Settings size={18} strokeWidth={1.8} aria-hidden="true" /></Button>
+    {#if page === 'overview'}<Button variant="primary" compact on:click={openAddRepo} disabled={addBusy}><Plus size={15} aria-hidden="true" /> Add repository</Button>{/if}
   </div>
 </header>
-  {#if error}<div class="error-banner" role="alert">{error}<button aria-label="Dismiss" on:click={() => error = ''}><X size={16} aria-hidden="true" /></button></div>{/if}
+  {#if error}<div class="error-banner" role="alert">{error}<Button variant="icon" compact aria-label="Dismiss" on:click={() => error = ''}><X size={16} aria-hidden="true" /></Button></div>{/if}
 
 {#if page === 'overview'}
 <main class="overview-layout">
   <aside class="repo-sidebar"><div class="sidebar-heading"><span class="eyebrow">WORKSPACES</span><h2>Repositories</h2></div>
-    <div class="repo-list"><button class="repo-entry" class:active={overviewRepo === '__local__'} on:click={() => { overviewRepo = '__local__'; refreshOverview(); }}><span class="repo-glyph local-glyph"><Folder size={15} aria-hidden="true" /></span><span class="repo-copy"><strong>Local folder</strong><small>{localFolderName(status?.repo) || 'This workspace'}</small></span><ChevronRight class="repo-chevron" size={16} aria-hidden="true" /></button>
-    {#each savedRepos as item (item.full_name)}
-      <button class="repo-entry" class:active={overviewRepo === item.full_name} on:click={() => { overviewRepo = item.full_name; refreshOverview(); }}><span class="repo-glyph"><GitBranch size={15} aria-hidden="true" /></span><span class="repo-copy"><strong>{item.full_name}</strong><small>GitHub repository</small></span><ChevronRight class="repo-chevron" size={16} aria-hidden="true" /></button>
+    <div class="repo-list">
+    {#each savedRepos as item (item.id)}
+      <button class="repo-entry" class:active={overviewRepo === item.id} on:click={() => { overviewRepo = item.id; refreshOverview(); }}><span class="repo-glyph" class:local-glyph={item.source === 'local'}>{#if item.source === 'local'}<Folder size={15} aria-hidden="true" />{:else}<GitBranch size={15} aria-hidden="true" />{/if}</span><span class="repo-copy"><strong>{item.source === 'local' ? localFolderName(item.root) : item.full_name}</strong><small>{item.source === 'local' ? `Local folder · ${item.spec_dir}` : 'GitHub repository'}</small></span><ChevronRight class="repo-chevron" size={16} aria-hidden="true" /></button>
     {/each}</div>
   </aside>
   <section class="overview-content">
-    {#if addBusy}<p role="status">Loading GitHub repositories…</p>{/if}
-    {#if overviewRepo === '__local__'}
-      <div class="overview-heading"><div><p class="eyebrow">LOCAL WORKSPACE</p><h1>{localFolderName(status?.repo) || 'Local folder'}</h1><p class="overview-subtitle">Review the current specification or compare it with another revision.</p></div><button class="primary" on:click={openLocalRepository}>Open review <ExternalLink size={14} aria-hidden="true" /></button></div>
-      <section class="overview-panel local-panel"><div class="panel-heading"><div><span class="eyebrow">LOCAL SOURCE</span><h2>Specification workspace</h2></div></div><p>Browse artifacts, follow references, and inspect changes across revisions from one focused workspace.</p></section>
+    {#if !overviewItem}
+      <div class="overview-heading"><div><h1>Add a workspace</h1><p>Use Add repository to choose a local folder or GitHub repository.</p></div></div>
+    {:else if overviewItem.source === 'local'}
+      <div class="overview-heading"><div><p class="eyebrow">LOCAL WORKSPACE</p><h1>{localFolderName(overviewItem.root)}</h1><p class="overview-subtitle">Review the current specification or compare worktrees against a base branch.</p></div><Button variant="primary" disabled={!localOverview} on:click={() => openLocalRepository()}>Open review <ExternalLink size={14} aria-hidden="true" /></Button></div>
+      <section class="overview-panel local-panel"><div class="panel-heading"><div><span class="eyebrow">LOCAL SOURCE</span><h2>Specification workspace</h2></div><Button variant="secondary" disabled={overviewBusy} on:click={refreshOverview}>Refresh</Button></div><p>{overviewItem.root} · {overviewItem.spec_dir}</p></section>
+      {#if overviewBusy}<p role="status">Loading worktrees…</p>{/if}
+      {#if localOverview?.is_git}
+        <div class="section-heading"><div><span class="eyebrow">REVIEW QUEUE</span><h2>Worktrees</h2></div><FormField label="Base branch" class="overview-base"><select class="ui-control" aria-label="Worktree base branch" bind:value={overviewBase} on:change={changeOverviewBase}>{#each localOverview.branches as branch}<option value={branch}>{branch}</option>{/each}{#if localOverview.default_base === 'HEAD'}<option value="HEAD">HEAD</option>{/if}</select></FormField></div>
+        <div class="pull-list">{#each localOverview.worktrees.filter((entry) => !entry.bare) as worktree (worktree.path)}
+          <button class="pull-card" disabled={!worktree.available || !overviewBase} on:click={() => openLocalRepository(overviewItem, worktree)}><GitBranch size={18} aria-hidden="true" /><span class="pull-title"><strong>{worktree.branch || 'Detached HEAD'}</strong><small>{worktree.path}</small><small>{worktree.head.slice(0, 10)} · {worktree.subject}</small></span><span>{worktree.available ? `Compare with ${overviewBase}` : 'Unavailable'}</span><ExternalLink size={14} aria-hidden="true" /></button>
+        {/each}</div>
+      {:else if localOverview}<p class="empty">This folder has no Git history. Open review to browse its current files.</p>{/if}
     {:else}
-      <div class="overview-heading"><div><p class="eyebrow">GITHUB WORKSPACE · {ghAccount || 'GH CLI'}</p><h1>{overviewRepo}</h1><p class="overview-subtitle">Choose a pull request to compare or open the repository’s current revision.</p></div><button class="primary" on:click={() => openRepository(savedRepos.find((item) => item.full_name === overviewRepo))}>Open review <ExternalLink size={14} aria-hidden="true" /></button></div>
+      <div class="overview-heading"><div><p class="eyebrow">GITHUB WORKSPACE · {ghAccount || 'GH CLI'}</p><h1>{overviewItem.full_name}</h1><p class="overview-subtitle">Choose a pull request to compare or open the repository’s current revision.</p></div><Button variant="primary" on:click={() => openRepository(overviewItem)}>Open review <ExternalLink size={14} aria-hidden="true" /></Button></div>
       <div class="section-heading"><div><span class="eyebrow">REVIEW QUEUE</span><h2>Open pull requests</h2></div><span class="count-pill">{overviewPulls.length}</span></div>
       {#if overviewBusy}<p role="status">Loading pull requests…</p>
       {:else if overviewPulls.length}
         <div class="pull-list">{#each overviewPulls as pull (pull.number)}
-          <button class="pull-card" on:click={() => openRepository(savedRepos.find((item) => item.full_name === overviewRepo), pull)}><span class="pull-number">#{pull.number}</span><span class="pull-title"><strong>{pull.title}</strong><small><code>{pull.head_ref}</code><ArrowRight size={12} aria-hidden="true" /><code>{pull.base_ref}</code></small></span><span class="checks {pull.checks}"><i></i>{pull.checks === 'unavailable' ? 'Actions unavailable' : pull.checks.replace('_', ' ')}</span><ExternalLink class="pull-open" size={14} aria-hidden="true" /></button>
+          <button class="pull-card" on:click={() => openRepository(overviewItem, pull)}><span class="pull-number">#{pull.number}</span><span class="pull-title"><strong>{pull.title}</strong><small><code>{pull.head_ref}</code><ArrowRight size={12} aria-hidden="true" /><code>{pull.base_ref}</code></small></span><span class="checks {pull.checks}"><i></i>{pull.checks === 'unavailable' ? 'Actions unavailable' : pull.checks.replace('_', ' ')}</span><ExternalLink class="pull-open" size={14} aria-hidden="true" /></button>
         {/each}</div>
       {:else}<p class="empty">No open pull requests.</p>{/if}
     {/if}
     {#if ghMessage && !ghAccount}<p class="empty">Sign in with <code>gh auth login</code> to add GitHub repositories.</p>{/if}
   </section>
 </main>
-<dialog bind:this={repoDialog} class="link-dialog add-dialog" aria-labelledby="repo-dialog-title"><h2 id="repo-dialog-title">Add GitHub repository</h2>
-  <label>Repository<select bind:value={addRepo}>{#each availableRepos as item}<option value={item.full_name}>{item.full_name}</option>{/each}</select></label>
-  <div class="dialog-actions"><button on:click={() => repoDialog?.close()}>Cancel</button><button class="primary" disabled={!addRepo} on:click={addRepository}>Add repository</button></div>
-</dialog>
+<AddRepositoryDialog bind:this={repoDialog} bind:source={addSource} bind:path={folderPath} bind:specDir={addSpecDir} bind:repository={addRepo} listing={folderListing} repositories={availableRepos} busy={addBusy} error={addError} on:sourcechange={loadAddSource} on:browse={(event) => browseFolders(event.detail)} on:add={addRepository} on:close={cancelAddRequests} />
 {:else}
 <nav class="revision-bar">
-  <label><span>Mode</span>
-    <select aria-label="Review or compare" bind:value={reviewMode} on:change={() => localStorage.setItem('spec-review-mode', reviewMode)}>
+  <FormField label="Mode" compact class="revision-field">
+    <select class="ui-control" aria-label="Review or compare" bind:value={reviewMode} on:change={() => localStorage.setItem('spec-review-mode', reviewMode)}>
       <option value="review">Review</option>
-      <option value="compare">Compare</option>
+      {#if isGit}<option value="compare">Compare</option>{/if}
     </select>
-  </label>
-  <label><span>Target</span>
-    <select aria-label="Target revision" bind:value={revision} on:change={revisionChanged}>
+  </FormField>
+  <FormField label="Target" compact class="revision-field">
+    <select class="ui-control" aria-label="Target revision" bind:value={revision} on:change={revisionChanged}>
       {#each revisions as item}<option value={item.value}>{item.label}</option>{/each}
     </select>
-  </label>
-  {#if reviewMode === 'compare'}<label><span>Base</span>
-    <select aria-label="Base revision" bind:value={base}>
+  </FormField>
+  {#if reviewMode === 'compare'}<FormField label="Base" compact class="revision-field">
+    <select class="ui-control" aria-label="Base revision" bind:value={base}>
       {#each revisions as item}<option value={item.value}>{item.label}</option>{/each}
     </select>
-  </label>{/if}
-  <button class="primary confirm-button" on:click={confirmSelection} disabled={busy}>{busy ? 'Loading…' : 'Apply revision'}</button>
+  </FormField>{/if}
+  <Button variant="primary" class="confirm-button" on:click={confirmSelection} disabled={busy}>{busy ? 'Loading…' : 'Apply revision'}</Button>
   <span class="spacer"></span>
-  {#if history.length}<button on:click={goBack}><ArrowLeft size={14} aria-hidden="true" /> Back</button>{/if}
+  {#if history.length}<Button variant="secondary" on:click={goBack}><ArrowLeft size={14} aria-hidden="true" /> Back</Button>{/if}
   {#if comparison}<span class="revision-summary">{comparison.base.revision.slice(0, 10)} → {comparison.target.revision.slice(0, 10)}</span>{/if}
 </nav>
 
 <main class="workspace">
   <aside class="sidebar">
-    <div class="filters"><input bind:value={search} placeholder="Filter ID or title" aria-label="Filter documents" />
+    <div class="filters"><input class="ui-control" bind:value={search} placeholder="Filter ID or title" aria-label="Filter documents" />
       <label class="checkbox"><input type="checkbox" bind:checked={hideSuperseded} on:change={() => localStorage.setItem('spec-review-hide-superseded', String(hideSuperseded))} /> Hide superseded</label>
       {#if comparison}<label class="checkbox"><input type="checkbox" bind:checked={changesOnly} on:change={() => localStorage.setItem('spec-review-changes-only', String(changesOnly))} /> Changes only</label>{/if}
     </div>
@@ -516,16 +642,6 @@
   </section>
 </main>
 
-<dialog bind:this={linkDialog} class="link-dialog" aria-labelledby="link-dialog-title">
-  <h2 id="link-dialog-title">Choose a linked artifact</h2>
-  {#each linkChoices as option}<button on:click={() => chooseLink(option.id)}><strong>{option.id}</strong><span>{option.title}</span></button>{/each}
-  <button class="cancel" on:click={() => linkDialog?.close()}>Cancel</button>
-</dialog>
+<LinkChoiceDialog bind:this={linkDialog} choices={linkChoices} on:choose={(event) => chooseLink(event.detail)} />
 {/if}
-<dialog bind:this={settingsDialog} class="link-dialog settings-dialog" aria-labelledby="settings-title" on:close={() => settingsButton?.focus()}>
-  <div class="settings-heading"><div><span class="eyebrow">PREFERENCES</span><h2 id="settings-title">Settings</h2></div><button class="icon-close" aria-label="Close settings" on:click={() => settingsDialog?.close()}><X size={18} aria-hidden="true" /></button></div>
-  <label class="setting-row"><span><strong>Appearance</strong><small>Choose how the workspace looks.</small></span><select aria-label="Appearance" value={themeMode} on:change={(event) => setThemeMode(event.currentTarget.value)}>
-    <option value="system">System</option><option value="paper">Paper</option><option value="dark">Dark</option>
-  </select></label>
-  <div class="dialog-actions"><button class="primary" on:click={() => settingsDialog?.close()}>Done</button></div>
-</dialog>
+<SettingsDialog bind:this={settingsDialog} appearance={themeMode} on:appearancechange={(event) => setThemeMode(event.detail)} />

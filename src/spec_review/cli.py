@@ -15,7 +15,7 @@ def main():
     )
     parser.add_argument(
         "--spec-dir",
-        default="./spec/",
+        default=None,
         help="Relative specification directory (default: ./spec/)",
     )
     parser.add_argument("--web", action="store_true", help="Run the browser interface")
@@ -23,12 +23,16 @@ def main():
     parser.add_argument("--port", type=int, default=8765, help="Web server port")
     args = parser.parse_args()
     try:
-        repo = Repository(args.repo or Path.cwd(), args.spec_dir)
         if args.web:
+            if args.repo is not None or args.spec_dir is not None:
+                parser.error(
+                    "Use Add in the browser to select local folders and their spec directory"
+                )
             from .web import serve
 
-            serve(repo, args.host, args.port)
+            serve(host=args.host, port=args.port)
             return
+        repo = Repository(args.repo or Path.cwd(), args.spec_dir or "spec")
         from .tui.app import SpecReviewApp
 
         SpecReviewApp(repo).run()

@@ -23,7 +23,10 @@ class GitHubCLI:
             try:
                 result = subprocess.run(
                     ["gh", "auth", "token"],
-                    capture_output=True, text=True, check=True, timeout=10,
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                    timeout=10,
                 )
                 self._cli_token = result.stdout.strip()
             except (OSError, subprocess.SubprocessError):
@@ -33,7 +36,9 @@ class GitHubCLI:
     def token(self):
         token = self._gh_token()
         if not token:
-            raise RepositoryError("GitHub CLI is not authenticated; run `gh auth login`")
+            raise RepositoryError(
+                "GitHub CLI is not authenticated; run `gh auth login`"
+            )
         return token
 
     def _request(self, path):
@@ -41,7 +46,10 @@ class GitHubCLI:
         try:
             result = subprocess.run(
                 ["gh", "api", path],
-                capture_output=True, text=True, check=True, timeout=30,
+                capture_output=True,
+                text=True,
+                check=True,
+                timeout=30,
             )
             return json.loads(result.stdout)
         except subprocess.CalledProcessError as exc:
@@ -75,10 +83,14 @@ class GitHubCLI:
         return self._request(f"{self._repo_path(owner, repo)}/branches?per_page=100")
 
     def pull_requests(self, owner, repo):
-        return self._request(f"{self._repo_path(owner, repo)}/pulls?state=all&per_page=100")
+        return self._request(
+            f"{self._repo_path(owner, repo)}/pulls?state=all&per_page=100"
+        )
 
     def open_pull_requests(self, owner, repo):
-        return self._request(f"{self._repo_path(owner, repo)}/pulls?state=open&per_page=100")
+        return self._request(
+            f"{self._repo_path(owner, repo)}/pulls?state=open&per_page=100"
+        )
 
     def check_runs(self, owner, repo, ref):
         return self._request(
@@ -86,27 +98,41 @@ class GitHubCLI:
         )
 
     def commits(self, owner, repo, ref=""):
-        query = urllib.parse.urlencode({"per_page": 100, **({"sha": ref} if ref else {})})
+        query = urllib.parse.urlencode(
+            {"per_page": 100, **({"sha": ref} if ref else {})}
+        )
         rows = self._request(f"{self._repo_path(owner, repo)}/commits?{query}")
         return [
             Commit(
                 row["sha"],
-                (row["commit"].get("author") or row["commit"].get("committer") or {}).get("date", "")[:10],
+                (
+                    row["commit"].get("author") or row["commit"].get("committer") or {}
+                ).get("date", "")[:10],
                 row["commit"]["message"].splitlines()[0],
             )
             for row in rows
         ]
+
+    def mirror_path(self, owner, repo):
+        self._repo_path(owner, repo)
+        cache_root = Path(os.getenv("XDG_CACHE_HOME", Path.home() / ".cache"))
+        identity = hashlib.sha256(f"{owner}/{repo}".encode()).hexdigest()[:24]
+        return cache_root / "spec-review" / "github" / f"{identity}.git"
 
     def snapshot(self, owner, repo, revision, spec_dir="spec"):
         # Git's pack protocol transfers all needed objects in a small number of
         # requests. The former tree + one-blob-request-per-file approach made
         # opening large specifications take many seconds.
         self._repo_path(owner, repo)
-        if not re.fullmatch(r"[0-9a-fA-F]{40}|[0-9a-fA-F]{64}|[A-Za-z0-9_./-]+", revision) or revision.startswith("-") or ".." in revision:
+        if (
+            not re.fullmatch(
+                r"[0-9a-fA-F]{40}|[0-9a-fA-F]{64}|[A-Za-z0-9_./-]+", revision
+            )
+            or revision.startswith("-")
+            or ".." in revision
+        ):
             raise RepositoryError("Invalid GitHub revision")
-        cache_root = Path(os.getenv("XDG_CACHE_HOME", Path.home() / ".cache"))
-        identity = hashlib.sha256(f"{owner}/{repo}".encode()).hexdigest()[:24]
-        mirror = cache_root / "spec-review" / "github" / f"{identity}.git"
+        mirror = self.mirror_path(owner, repo)
         mirror.parent.mkdir(parents=True, exist_ok=True)
         remote = f"https://github.com/{owner}/{repo}.git"
         complete_marker = mirror / "spec-review-complete-objects-v1"
