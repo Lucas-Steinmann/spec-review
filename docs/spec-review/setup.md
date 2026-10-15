@@ -56,6 +56,9 @@ conflict's old (`base`), current (`local`), and new (`incoming`) text; null deno
 absence. Use `skills/spec-kit-update/SKILL.md` to integrate changes while preserving
 project customizations. A local deletion can intentionally remain a deletion.
 
+For a requested cleanup of superseded artifacts and stale references, use
+`skills/spec-supersession-cleanup/SKILL.md`.
+
 After reviewing and resolving every conflict, explicitly acknowledge each path:
 
 ```sh

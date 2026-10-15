@@ -13,7 +13,7 @@ Reserve `decision` for engineering choices with a meaningful rationale. Keep req
 - Store relationships in their canonical direction and use the field that expresses their meaning. Do not maintain inverse links for navigation; backlinks should be derived from canonical relationships.
 - Don't add conversational answers or incidental discussion to the plan unless they affect a goal, requirement, constraint, decision, design, risk, assumption, question, or acceptance scenario.
 - Prefer a concise table or plantuml or mermaid diagram when it communicates relationships, comparisons, sequences, or responsibilities more clearly than prose. Keep necessary explanations in prose where a visual would be less clear.
-- When revising a plan, preserve information that is still current and useful. Remove or replace only information that is obsolete, duplicated, or explicitly superseded; retain the provenance and a clear link to replacement artifacts where relevant.
+- When revising a plan, preserve information that is still current and useful. Remove or replace only information that is obsolete, duplicated, or explicitly superseded; retain provenance and a clear link to replacement artifacts where relevant. When cleanup of superseded artifacts is requested, follow `skills/spec-supersession-cleanup/SKILL.md` and remove stale references after confirming their replacements.
 - Keep abstraction levels distinct. For example, a user-facing interaction flow and a design-level network protocol flow can both be necessary even when they cover the same scenario.
 - Review non-functional requirements (for example, latency, throughput, availability, privacy, and security). Record measurable targets where the plan needs them; identify an item as trivial only when that is justified by the product context.
 
@@ -22,6 +22,7 @@ Reserve `decision` for engineering choices with a meaningful rationale. Keep req
 - Treat new additions, clarifications, and implementation detail as compatible unless they actually conflict with an existing artifact.
 - If a new user request appears to contradict an earlier requirement or decision and does not identify its artifact ID, cite the relevant ID and ask whether it should be changed or superseded before removing or rewriting it. Continue independent work while that clarification is pending.
 - When the user explicitly confirms a change or supersession, update the old artifact's status and record a `superseded_by` reference to the replacement artifact. Keep the new artifact's provenance tied to the clarifying request.
+- Retain superseded artifacts and their `superseded_by` history by default. Remove them only as part of an explicit supersession cleanup; preserve their historical provenance in `spec/sources/chat.md` and update or remove every reference according to the cleanup skill.
 - Don't silently resolve a conflict by editing an unrelated view or artifact.
 
 ## Validate changes

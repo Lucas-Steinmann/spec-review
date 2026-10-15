@@ -13,7 +13,12 @@ from .repository import Repository
 START = "<!-- spec-review:start -->"
 END = "<!-- spec-review:end -->"
 STATE = "docs/spec-review/.kit/state.json"
-SKILLS = ("spec-authoring", "spec-health-review", "spec-kit-update")
+SKILLS = (
+    "spec-authoring",
+    "spec-supersession-cleanup",
+    "spec-health-review",
+    "spec-kit-update",
+)
 DOCS = ("artifact-authoring.md", "artifact-format.md", "maintenance.md", "setup.md")
 
 

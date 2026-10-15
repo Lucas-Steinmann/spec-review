@@ -18,3 +18,4 @@
 ## Periodic specification health reviews
 
 - For a requested cross-cutting specification or product consistency review, use the project skill at `skills/spec-health-review/SKILL.md`. Apply its additional product, operational, and evidence checks alongside the artifact-editing rules in `spec/AGENTS.md`.
+- When asked to remove superseded artifacts and references to them, use `skills/spec-supersession-cleanup/SKILL.md` to verify replacements, reconcile references, preserve provenance, and validate the result.

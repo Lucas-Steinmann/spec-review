@@ -21,6 +21,7 @@ packages = ["src/spec_review"]
 "docs/spec-review/maintenance.md" = "spec_review/kit/docs/spec-review/maintenance.md"
 "docs/spec-review/setup.md" = "spec_review/kit/docs/spec-review/setup.md"
 "skills/spec-authoring" = "spec_review/kit/skills/spec-authoring"
+"skills/spec-supersession-cleanup" = "spec_review/kit/skills/spec-supersession-cleanup"
 "skills/spec-health-review" = "spec_review/kit/skills/spec-health-review"
 "skills/spec-kit-update" = "spec_review/kit/skills/spec-kit-update"
 "spec/AGENTS.md" = "spec_review/kit/spec/AGENTS.md"
