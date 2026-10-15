@@ -26,6 +26,17 @@ Use `--spec-dir planning/spec` for a different relative specification directory.
 Pass the same directory to subsequent review, validation, and update commands.
 Instructions are referenced by file path; no global or agent-specific skill
 installation is required. Start authoring through `skills/spec-authoring/SKILL.md`.
+The first authoring instructions link to the authoritative
+[canonical storage layout and type-folder mapping](artifact-authoring.md#canonical-storage-layout).
+Create new artifacts at `spec/artifacts/<type-folder>/<id>.yaml`, one YAML mapping
+per file with the exact artifact `id` as its filename stem, for example
+`spec/artifacts/requirements/REQ-001.yaml` or
+`spec/artifacts/ui-design/UI-001.yaml`. Select folders by current `type`, not ID
+prefix. Keep `spec/sources/`, `spec/views/`, and `spec/mockups/` separate from
+canonical artifacts. The scaffold starts empty; create type folders as needed.
+Existing flat or differently nested artifacts and custom types remain readable;
+initialization and updates do not migrate or delete them to impose the convention.
+
 Existing documents can be adopted with provenance; code observations alone do not
 establish new user requirements.
 

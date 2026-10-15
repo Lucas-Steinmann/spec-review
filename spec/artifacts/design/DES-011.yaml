@@ -14,7 +14,16 @@ description: Package canonical docs/spec-review references, repository skills, s
   Verify the same bundled target throughout a pending update. Explicit deletion can be preserved as a customization.
   Shared validator code replaces the repository-specific implementation; its original script remains a compatibility
   wrapper. Browser assets are bundled when available but are not required to build a kit-only wheel.
+  Keep the authoritative type-folder mapping in docs/spec-review/artifact-authoring.md and reference it from
+  initial agent instructions, authoring skills, setup guidance, and empty starter guides. Apply specification-path,
+  relative-link, and CLI command rewriting to both managed instructions and starter contents. Keep starters out
+  of managed upgrade baselines; preserve normal content-derived version handling and project customizations.
+  Force-include canonical docs, skills, and spec editing instructions once in wheels; avoid duplicate bundled
+  source copies. Leave the recursive artifact reader independent of folder and filename conventions.
 source:
 - type: conversation
   file: spec/sources/chat.md
   section: Portable specification kit, October 13, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Canonical artifact storage layout, October 15, 2026

@@ -1,8 +1,16 @@
 # Artifact format and field display
 
-`spec-review` reads one YAML mapping per file from `spec/artifacts/`. Each artifact must have non-empty string values for `id`, `type`, and `title`. IDs are stable references across file moves. The tool does not enforce a closed list of field names: extra fields are retained in the document model, displayed, and included in comparisons.
+`spec-review` recursively reads one YAML mapping per `.yaml` or `.yml` file under
+`spec/artifacts/` (or `<spec-dir>/artifacts/` with `--spec-dir`). Flat files,
+differently nested files, and custom types remain supported; folder names and
+filename stems are not validated against `type` or `id`. Each artifact must have
+non-empty string values for `id`, `type`, and `title`. IDs are stable references
+across file moves. The tool does not enforce a closed list of field names: extra
+fields are retained in the document model, displayed, and included in comparisons.
 
-For which information belongs in each artifact type, see [Choosing a specification artifact](artifact-authoring.md).
+For new artifacts, follow the [canonical storage layout and type-folder mapping](artifact-authoring.md#canonical-storage-layout):
+`<spec-dir>/artifacts/<type-folder>/<id>.yaml`, with the exact `id` as the filename
+stem. See the same guide for which information belongs in each artifact type.
 
 ## Artifact keys
 

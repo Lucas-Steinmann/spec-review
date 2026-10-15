@@ -3,6 +3,7 @@
 import hashlib
 import json
 import os
+import re
 import shlex
 import tempfile
 from importlib.resources import files
@@ -137,22 +138,33 @@ def resources(spec_dir: str) -> tuple[str, dict[str, str], dict[str, str]]:
         )
         for name in ("README.md", "sources/chat.md", "views/overview.md")
     }
-    # Rewrite root-relative instruction paths and relative documentation links.
-    for name, text in list(managed.items()):
-        text = text.replace("spec/", f"{spec_dir}/") if spec_dir != "spec" else text
-        if name == f"{spec_dir}/AGENTS.md":
-            text = text.replace(
-                "../docs/spec-review/",
-                os.path.relpath("docs/spec-review", spec_dir) + "/",
-            )
-        if name == "docs/spec-review/artifact-authoring.md":
-            text = text.replace("../../spec/AGENTS.md", f"../../{spec_dir}/AGENTS.md")
-        if spec_dir != "spec":
-            text = text.replace(
-                "spec-review validate --repo .",
-                f"spec-review validate --repo . --spec-dir {shlex.quote(spec_dir)}",
-            )
-        managed[name] = text
+    # Starters need the same path and command rewriting as managed instructions,
+    # but remain outside upgrade baselines so project-authored content survives.
+    for collection in (managed, starters):
+        for name, text in list(collection.items()):
+            if spec_dir != "spec":
+                text = text.replace("spec/", f"{spec_dir}/")
+                text = re.sub(
+                    r"\bspec-review( (?:init|update|validate))? --repo",
+                    lambda match: (
+                        f"spec-review{match[1] or ''}"
+                        f" --spec-dir {shlex.quote(spec_dir)} --repo"
+                    ),
+                    text,
+                )
+            if name in (f"{spec_dir}/AGENTS.md", f"{spec_dir}/README.md"):
+                for target in ("docs/spec-review", "skills"):
+                    text = text.replace(
+                        f"../{target}/", os.path.relpath(target, spec_dir) + "/"
+                    )
+            if " " in spec_dir:
+                # Keep Markdown destinations valid for paths with spaces.
+                text = re.sub(
+                    r"(?<=\]\()[^)\n]+(?=\))",
+                    lambda match: match[0].replace(" ", "%20"),
+                    text,
+                )
+            collection[name] = text
     version = assets.joinpath("version.txt").read_text().strip()
     digest = hashlib.sha256(json.dumps(managed, sort_keys=True).encode()).hexdigest()
     return f"{version}:{digest}", managed, starters

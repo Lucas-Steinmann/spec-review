@@ -2,7 +2,22 @@
 
 Apply these checks whenever you add, revise, or remove canonical artifacts under `spec/`.
 
-Read [`docs/spec-review/artifact-authoring.md`](../docs/spec-review/artifact-authoring.md) before adding or reclassifying an artifact. It defines the canonical role of each type, including the boundary between technical `design` and `ui_design`.
+Read [`docs/spec-review/artifact-authoring.md`](../docs/spec-review/artifact-authoring.md)
+before adding or reclassifying an artifact. Its
+[canonical storage layout](../docs/spec-review/artifact-authoring.md#canonical-storage-layout)
+defines the authoritative type-folder mapping.
+
+Create new artifacts at `spec/artifacts/<type-folder>/<id>.yaml`, one YAML mapping
+per file, with the filename exactly matching `id`. For example, use
+`spec/artifacts/requirements/REQ-001.yaml` and
+`spec/artifacts/ui-design/UI-001.yaml`. Select the folder by current `type`, not
+ID prefix; preserve IDs, provenance, supersession history, and ID-based
+relationships when moving or reclassifying artifacts, and update relative links.
+Keep `sources/`, `views/`, and `mockups/` separate from canonical artifacts.
+Existing layouts and custom types remain readable; initialization and updates
+must not migrate or delete project artifacts.
+
+The guide also defines the canonical role of each type, including the boundary between technical `design` and `ui_design`.
 Reserve `decision` for engineering choices with a meaningful rationale. Keep required behavior in `requirement`, mandatory solution boundaries in `constraint`, implementation in technical `design`, and screen behavior in `ui_design`.
 
 ## Keep the plan coherent

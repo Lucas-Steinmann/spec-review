@@ -6,6 +6,53 @@ Use one artifact for one coherent fact or decision. Before adding one, search th
 
 The reader preserves unknown fields for forward compatibility; this does not make ad hoc fields a preferred authoring pattern. Use established fields and put explanatory context in the artifact's description. Add a new field only when it represents a reusable concept with clear meaning across artifacts, and document its schema and display behavior first.
 
+## Canonical storage layout
+
+Create each new artifact at `<spec-dir>/artifacts/<type-folder>/<id>.yaml`, with
+one YAML mapping per file and a filename exactly matching the artifact's `id`
+(including case), followed by `.yaml`. The default specification directory is
+`spec` (the CLI default); paths below use `spec/`. This table is the authoritative
+folder mapping for standard types:
+
+| `type` | Type folder |
+|---|---|
+| `goal` | `goals` |
+| `actor` | `actors` |
+| `use_case` | `use-cases` |
+| `requirement` | `requirements` |
+| `constraint` | `constraints` |
+| `decision` | `decisions` |
+| `design` | `design` |
+| `ui_design` | `ui-design` |
+| `test` | `tests` |
+| `risk` | `risks` |
+| `assumption` | `assumptions` |
+| `question` | `questions` |
+
+For example, a requirement with `id: REQ-001` belongs in
+`spec/artifacts/requirements/REQ-001.yaml`; a UI design with `id: UI-001` belongs
+in `spec/artifacts/ui-design/UI-001.yaml`. These paths illustrate the convention;
+they do not create project artifacts or reserve live IDs.
+
+Select the folder from the current `type`, not the ID prefix. An existing
+`REQ-016` reclassified as a `constraint` keeps its ID and belongs in
+`spec/artifacts/constraints/REQ-016.yaml`. Across moves and reclassifications,
+preserve stable IDs, provenance, supersession history, and ID-based relationships.
+Update relative links in artifacts, views, and other documents when paths change.
+
+Keep provenance and supporting documents in `spec/sources/`, maintained reading
+guides in `spec/views/`, and mockups in `spec/mockups/`, separate from canonical
+YAML under `spec/artifacts/`. Create type folders as needed. Empty scaffolds must
+not invent project requirements or example artifacts with live IDs; preserve any
+empty directories with non-artifact placeholders such as `.gitkeep`.
+
+This is the recommended authoring layout, not a parser restriction. The reader
+continues to load `.yaml` and `.yml` artifacts recursively under `artifacts/`,
+including existing flat or differently nested files and custom types. For a new
+custom type, choose a consistent type folder and the same ID-based filename.
+Initialization and kit updates must not migrate or delete project artifacts to
+impose this convention; existing files can remain where they are.
+
 ## Where information belongs
 
 | Type | Put here | Keep elsewhere |

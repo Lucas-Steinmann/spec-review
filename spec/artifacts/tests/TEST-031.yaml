@@ -8,8 +8,14 @@ description: 'Through the CLI, preview and apply upstream changes; retain local 
   reconciled. Reject incomplete acknowledgments, merge markers and changed target versions. Accept reviewed merged
   files or intentional deletion, then verify subsequent updates preserve the customization. Interrupt writes after
   journaling and resume; reject concurrent edits to pending operations. Preserve project artifacts, provenance,
-  views and root instructions outside the kit block. Executable coverage: tests/test_kit.py.'
+  views and root instructions outside the kit block. Upgrade old authoring instructions through normal baselines,
+  preserving original artifact bytes, legacy flat and nested paths, custom types, stable IDs, provenance,
+  supersession and ID-based relations, and user-authored starters. Confirm repeated initialization and updates
+  remain idempotent and dry runs write nothing. Executable coverage: tests/test_kit.py.'
 source:
 - type: conversation
   file: spec/sources/chat.md
   section: Portable specification kit, October 13, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Canonical artifact storage layout, October 15, 2026

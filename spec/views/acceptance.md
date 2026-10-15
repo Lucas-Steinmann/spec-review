@@ -34,4 +34,4 @@ Browser mode persistence and revision confirmation are covered by [TEST-023](../
 
 ## Portable specification kit
 
-[TEST-030](../artifacts/tests/TEST-030.yaml) covers CLI setup, validation and wheel portability. [TEST-031](../artifacts/tests/TEST-031.yaml) covers customization preservation, conflict acknowledgment, and interrupted updates. Executable coverage lives in tests/test_kit.py.
+[TEST-030](../artifacts/tests/TEST-030.yaml) covers CLI setup, generated storage guidance and links, validation, and wheel portability with default and nested custom directories. [TEST-031](../artifacts/tests/TEST-031.yaml) covers customization preservation, conflict acknowledgment, and interrupted updates. Executable coverage lives in tests/test_kit.py.

@@ -9,8 +9,15 @@ description: 'Initialize a new folder and an existing repository, including cust
   and repeated setup adds no duplicate root block. Validate empty and populated specifications, nested guides, anchors
   and .yml links; reject malformed or duplicate artifacts, unresolved relationships, invalid relationship shapes
   and supersession references. Build a wheel without frontend artifacts and invoke its CLI outside the checkout.
+  Check the full standard type-folder mapping, exact ID-based filenames, type-based reclassification, separate
+  supporting folders, and examples in generated first-authoring instructions. Check starter and managed links,
+  anchors, paths and commands for default and nested custom directories, including spaces, from editable and
+  built installations. Verify empty scaffolds contain no live example artifacts.
   Executable coverage: tests/test_kit.py.'
 source:
 - type: conversation
   file: spec/sources/chat.md
   section: Portable specification kit, October 13, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Canonical artifact storage layout, October 15, 2026

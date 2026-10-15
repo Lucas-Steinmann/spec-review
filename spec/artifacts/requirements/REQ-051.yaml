@@ -7,10 +7,19 @@ statement: Provide a CLI initializer for new project folders and existing reposi
   relative spec directory. Install a versioned local copy of instructions, docs, skills, and an empty specification
   scaffold. Preserve existing project content and root instructions, avoid duplicate instruction blocks on repeated
   initialization, and report conflicting kit files before writes. Do not import requirements, initialize Git, install
-  dependencies, or require a submodule.
+  dependencies, or require a submodule. Initial instructions and authoring guidance must expose the canonical
+  type-folder mapping and recommend one YAML mapping per file at <spec-dir>/artifacts/<type-folder>/<id>.yaml,
+  with the filename exactly matching the stable ID. Choose folders by current type rather than ID prefix;
+  preserve IDs, provenance, supersession history, and ID-based relationships on moves or reclassification,
+  updating relative links. Keep sources, views, and mockups separate from canonical artifacts. Empty scaffolds
+  must not invent requirements or live example IDs. Keep guidance, links, and commands correct for nested
+  custom specification directories in both editable and built installations.
 derived_from:
 - UC-010
 source:
 - type: conversation
   file: spec/sources/chat.md
   section: Portable specification kit, October 13, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Canonical artifact storage layout, October 15, 2026

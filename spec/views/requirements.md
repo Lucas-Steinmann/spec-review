@@ -38,4 +38,4 @@ What can the reviewer read? [Canonical artifacts and overviews](../artifacts/req
 
 ## Portable specification kit
 
-[REQ-051](../artifacts/requirements/REQ-051.yaml) defines safe initialization; [REQ-052](../artifacts/requirements/REQ-052.yaml) defines updates and skill-assisted reconciliation; [REQ-053](../artifacts/requirements/REQ-053.yaml) defines portable validation and packaged resources. The copied kit supplements [submodule distribution](../artifacts/requirements/REQ-017.yaml).
+[REQ-051](../artifacts/requirements/REQ-051.yaml) defines safe initialization; [REQ-052](../artifacts/requirements/REQ-052.yaml) defines updates and skill-assisted reconciliation; [REQ-053](../artifacts/requirements/REQ-053.yaml) defines portable validation and packaged resources. Initial authoring guidance includes the canonical type-folder and exact ID-filename convention, with supporting sources, views, and mockups kept separately. The layout is recommended; existing flat or nested artifacts and custom types remain readable and are preserved by setup and updates. The copied kit supplements [submodule distribution](../artifacts/requirements/REQ-017.yaml).

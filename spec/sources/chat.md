@@ -340,3 +340,26 @@ existing submodule distribution remains supported alongside the portable kit.
 > Please order the artifact categories in the web ui as it is done in the terminal.
 
 Keep the browser artifact category buttons in the same order as the terminal interface.
+
+
+## Canonical artifact storage layout, October 15, 2026
+
+The user reported that a downstream project placed every YAML artifact directly
+under `spec/artifacts/` because the installed kit named only that root. They asked
+for initial and authoring instructions to expose the repository's type-folder and
+stable-ID filename convention, with one authoritative standard mapping and concrete
+requirement and UI-design path examples. New files use
+`<spec-dir>/artifacts/<type-folder>/<id>.yaml`, one YAML mapping per file with the
+filename exactly matching the artifact ID. The current type selects the folder;
+for example, the existing constraint `REQ-016` keeps its ID under `constraints/`.
+
+Preserve stable IDs, provenance, supersession history, and ID-based relationships
+across moves and reclassifications, and update relative links. Keep sources,
+views, and mockups separate from canonical artifacts. This is recommended
+authoring guidance: retain recursive loading of flat or differently nested files
+and custom types, and do not migrate or delete another project's artifacts during
+initialization or updates. Empty scaffolds must contain no invented requirements
+or live example IDs. Make managed and starter contents correct for nested custom
+specification directories in editable and built installations, preserve local
+customizations and ordinary version/baseline handling, test the generated guidance
+and compatibility, run quality and specification validation, and commit the change.

@@ -22,4 +22,6 @@ Start with the [overview](overview.md) when reading the current plan. Use this s
 
 [Frontend dialog styling and component refactor](../sources/chat.md#frontend-dialog-styling-and-component-refactor-october-12-2026) records the screenshot reproduction, diagnosis, and refactor authorization.
 
+[Canonical storage guidance](../sources/chat.md#canonical-artifact-storage-layout-october-15-2026) records the downstream flat-layout issue and the recommended authoring convention with reader and update compatibility.
+
 [Portable kit decisions](../sources/chat.md#portable-specification-kit-october-13-2026) establish the CLI initializer, copied kit, docs placement, explicit skills, and customization-aware update workflow.
