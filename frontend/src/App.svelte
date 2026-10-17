@@ -131,8 +131,13 @@
   async function initialize() {
     try {
       status = await api('/api/status');
+      let stored = await api('/api/sources');
+      if (!stored.repositories.length && savedRepos.length) {
+        stored = await persistSources(savedRepos, localStorage.getItem('spec-review-selected-source') || '');
+      }
+      savedRepos = stored.repositories;
       if (savedRepos.length) {
-        const selected = localStorage.getItem('spec-review-selected-source');
+        const selected = stored.selected || localStorage.getItem('spec-review-selected-source');
         overviewRepo = savedRepos.some((item) => item.id === selected) ? selected : savedRepos[0].id;
         refreshOverview();
       }
@@ -170,17 +175,20 @@
     return new URLSearchParams({ owner, repo: name }).toString();
   }
 
-  function persistSources() {
-    localStorage.setItem('spec-review-repositories', JSON.stringify(savedRepos));
+  function persistSources(repositories = savedRepos, selected = overviewRepo) {
+    localStorage.setItem('spec-review-repositories', JSON.stringify(repositories));
+    if (selected) localStorage.setItem('spec-review-selected-source', selected);
+    return api('/api/sources', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ repositories, selected }) });
   }
 
   function changeOverviewBase() {
     savedRepos = savedRepos.map((item) => item.id === overviewRepo ? { ...item, base: overviewBase } : item);
-    persistSources();
+    persistSources().catch(showError);
   }
 
   async function refreshOverview() {
     localStorage.setItem('spec-review-selected-source', overviewRepo);
+    try { await persistSources(); } catch (problem) { showError(problem); }
     const request = ++overviewRequest;
     overviewPulls = []; localOverview = null; overviewBase = '';
     const item = savedRepos.find((row) => row.id === overviewRepo);
@@ -257,7 +265,8 @@
       if (request !== addRequest || page !== 'overview') return;
       item = { ...savedRepos.find((row) => row.id === item.id), ...item };
       savedRepos = [...savedRepos.filter((row) => row.id !== item.id), item];
-      persistSources(); overviewRepo = item.id;
+      overviewRepo = item.id;
+      await persistSources();
       repoDialog?.close(); await refreshOverview();
     } catch (problem) { if (request === addRequest) addError = problem.message; }
     finally { if (request === addRequest) addBusy = false; }

@@ -363,3 +363,11 @@ or live example IDs. Make managed and starter contents correct for nested custom
 specification directories in editable and built installations, preserve local
 customizations and ordinary version/baseline handling, test the generated guidance
 and compatibility, run quality and specification validation, and commit the change.
+
+## Persistent browser repository list, October 17, 2026
+
+The user reported that repositories added to the browser overview disappear after
+restarting the application. Keep saved local folders and GitHub repositories,
+along with the selected source, in user configuration storage so they remain
+available across browser and server restarts. Migrate an existing browser-local
+list when no server-side list exists.

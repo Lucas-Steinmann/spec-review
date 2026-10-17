@@ -13,9 +13,14 @@ const metadata = {
 };
 
 async function mock(page, custom = () => undefined) {
+  let savedSources = { repositories: [], selected: '' };
   await page.route('**/api/**', async (route) => {
     const url = new URL(route.request().url());
     let result = await custom(url);
+    if (url.pathname === '/api/sources') {
+      if (route.request().method() === 'POST') savedSources = JSON.parse(route.request().postData() || '{}');
+      result = savedSources;
+    }
     if (result === undefined) {
       if (url.pathname === '/api/status') result = { repo: null, spec_dir: 'spec' };
       else if (url.pathname === '/api/local/folders') {

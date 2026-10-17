@@ -47,14 +47,52 @@ def request_api(monkeypatch):
     monkeypatch.setattr(web, "ThreadingHTTPServer", Server)
     web.serve(port=0)
 
-    def request(endpoint, **params):
-        conn = Connection(endpoint + "?" + urlencode(params))
+    def request(endpoint, method="GET", body=None, **params):
+        payload = json.dumps(body).encode() if body is not None else b""
+        request_line = (
+            f"{method} {endpoint + ('?' + urlencode(params) if params else '')} HTTP/1.1\r\n"
+        )
+        conn = Connection(endpoint)
+        conn.reader = io.BytesIO(
+            (
+                request_line
+                + f"Host: localhost\r\nContent-Length: {len(payload)}\r\nConnection: close\r\n\r\n"
+            ).encode()
+            + payload
+        )
         captured["handler"](conn, ("127.0.0.1", 12345), None)
         headers, body = conn.writer.getvalue().split(b"\r\n\r\n", 1)
         status = int(headers.split()[1])
         return status, json.loads(body) if b"application/json" in headers else body
 
     return request
+
+
+def test_saved_sources_survive_server_restart(request_api, tmp_path, monkeypatch):
+    monkeypatch.setenv("XDG_CONFIG_HOME", str(tmp_path / "config"))
+    entries = [
+        {
+            "source": "local",
+            "id": "local:/project",
+            "root": "/project",
+            "spec_dir": "spec",
+        },
+        {
+            "source": "gh",
+            "id": "owner/repo",
+            "full_name": "owner/repo",
+            "default_branch": "main",
+        },
+    ]
+    status, saved = request_api(
+        "/api/sources",
+        method="POST",
+        body={"repositories": entries, "selected": "owner/repo"},
+    )
+    assert status == 200
+    assert saved == {"repositories": entries, "selected": "owner/repo"}
+    assert request_api("/api/sources")[1] == saved
+    assert (tmp_path / "config/spec-review/repositories.json").is_file()
 
 
 def test_folders_validation_and_plain_folder_review(request_api, tmp_path, monkeypatch):

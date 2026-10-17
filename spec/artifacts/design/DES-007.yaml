@@ -23,10 +23,13 @@ description: 'The Svelte WebUI consumes snapshot, comparison, content-block, lin
 
 
 
-  Browser startup is independent of a selected Repository. Local discovery endpoints list readable folders, validate
+  Browser startup is independent of a selected Repository. Persist the saved source list and selected source in
+  repositories.json beside user settings under the user configuration directory; expose GET and POST source
+  endpoints, and migrate an existing browser-local list only when the server has no saved sources. Local discovery endpoints list readable folders, validate
   canonical absolute roots and relative specification directories, and report Git capability, branches, default
   base, and worktrees. Saved sources use browser local storage, with local identity based on canonical root plus
-  spec directory; migrate GitHub entries that lack a source discriminator. Keep unavailable sources saved. Local
+  spec directory; migrate browser-local source lists when server storage is empty, including GitHub entries that lack
+  a source discriminator. Keep unavailable sources saved. Local
   requests carry root and spec_dir; snapshot/document/link/asset requests may carry worktree, and compare requests
   carry base_worktree and target_worktree separately. Validate worktree membership against freshly discovered git
   worktree list --porcelain -z data. Snapshot refs are immutable commit SHAs or working tree. Image URLs carry their
@@ -73,3 +76,6 @@ source:
 - type: conversation
   file: spec/sources/chat.md
   section: Frontend dialog styling and component refactor, October 12, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Persistent browser repository list, October 17, 2026

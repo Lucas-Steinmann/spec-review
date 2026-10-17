@@ -20,6 +20,10 @@ def cache_path() -> Path:
     )
 
 
+def repositories_path() -> Path:
+    return config_path().parent / "repositories.json"
+
+
 @dataclass
 class Settings:
     rendering: bool = True

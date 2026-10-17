@@ -12,7 +12,7 @@ Start with [DES-001](../artifacts/design/DES-001.yaml): shared review services o
 
 ## Browser workspace
 
-[DES-007](../artifacts/design/DES-007.yaml) specifies the browser's service integration and request state. [UI-002](../artifacts/ui-design/UI-002.yaml) defines the redesigned developer workbench, Lucide Svelte icons, responsive layouts, theme modes in a Settings dialog, compact local repository context, responsive image viewing, loading feedback, and accessible controls. [DES-008](../artifacts/design/DES-008.yaml) specifies `gh` access and persistent complete Git mirrors. [DES-009](../artifacts/design/DES-009.yaml) covers the Vite development server, Lucide Svelte icons, browser tests, and production build. See the Paper and Dark [overview](../mockups/rendered/browser-workspace-paper.png) and [review workspace](../mockups/rendered/browser-review-paper.png) previews.
+[DES-007](../artifacts/design/DES-007.yaml) specifies the browser's service integration, request state, and server-side saved source storage. [UI-002](../artifacts/ui-design/UI-002.yaml) defines the redesigned developer workbench, Lucide Svelte icons, responsive layouts, theme modes in a Settings dialog, compact local repository context, responsive image viewing, loading feedback, and accessible controls. [DES-008](../artifacts/design/DES-008.yaml) specifies `gh` access and persistent complete Git mirrors. [DES-009](../artifacts/design/DES-009.yaml) covers the Vite development server, Lucide Svelte icons, browser tests, and production build. See the Paper and Dark [overview](../mockups/rendered/browser-workspace-paper.png) and [review workspace](../mockups/rendered/browser-review-paper.png) previews.
 
 ## Self-specification and maintained views
 

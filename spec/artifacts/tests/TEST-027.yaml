@@ -5,7 +5,9 @@ verifies:
 - REQ-035
 - REQ-034
 - REQ-031
-description: Start with an empty browser overview. Use keyboard-accessible Add controls to navigate child and parent
+description: Start with an empty browser overview. Save repositories, restart the server and browser, and confirm the
+  overview restores the list and selected repository from user configuration storage. Migrate an existing browser-local
+  list when server storage is empty. Use keyboard-accessible Add controls to navigate child and parent
   folders, jump by path, and save multiple folders with default and custom relative spec directories. Reload and
   confirm sources persist. Reject invalid folders and escaping spec directories; preserve unavailable saved folders
   with a diagnostic. Prevent duplicate canonical root/spec pairs. Review plain folders and absent spec directories
@@ -15,3 +17,6 @@ source:
 - type: conversation
   file: spec/sources/chat.md
   section: Local folder addition and worktree review, October 12, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Persistent browser repository list, October 17, 2026

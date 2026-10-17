@@ -20,7 +20,7 @@ from .links import LinkResolver
 from .local import folders, local_repository, overview, select_worktree
 from .models import CATEGORIES, Block
 from .repository import Repository, RepositoryError, git
-from .settings import Settings
+from .settings import Settings, repositories_path
 
 PACKAGE_WEB_ROOT = Path(__file__).with_name("webui")
 PROJECT_WEB_ROOT = Path(__file__).resolve().parents[2] / "frontend" / "dist"
@@ -35,6 +35,48 @@ def serve(repository: Repository | None = None, host="127.0.0.1", port=8765):
     github = GitHubCLI()
     snapshot_cache = OrderedDict()
     cache_lock = Lock()
+    sources_lock = Lock()
+
+    def load_sources():
+        try:
+            data = json.loads(repositories_path().read_text())
+            if isinstance(data, dict) and isinstance(data.get("repositories"), list):
+                return data
+        except (OSError, ValueError, TypeError):
+            pass
+        return {"repositories": [], "selected": ""}
+
+    def save_sources(data):
+        rows = data.get("repositories")
+        if not isinstance(rows, list) or len(rows) > 500:
+            raise ValueError("Repositories must be a list of at most 500 entries")
+        for item in rows:
+            if not isinstance(item, dict) or not isinstance(item.get("id"), str):
+                raise ValueError("Each repository must have an id")
+            if item.get("source") == "local":
+                if not all(
+                    isinstance(item.get(key), str) and item[key]
+                    for key in ("root", "spec_dir")
+                ):
+                    raise ValueError("Local repositories require a root and spec directory")
+            elif item.get("source") == "gh":
+                if not isinstance(item.get("full_name"), str) or "/" not in item["full_name"]:
+                    raise ValueError("GitHub repositories require an owner/name")
+            else:
+                raise ValueError("Unknown repository source")
+        selected = data.get("selected", "")
+        if not isinstance(selected, str):
+            raise ValueError("Selected repository must be an id")
+        if selected and selected not in {item["id"] for item in rows}:
+            selected = ""
+        path = repositories_path()
+        path.parent.mkdir(parents=True, exist_ok=True)
+        temporary = path.with_suffix(".tmp")
+        temporary.write_text(
+            json.dumps({"repositories": rows, "selected": selected}, indent=2) + "\n"
+        )
+        temporary.replace(path)
+        return {"repositories": rows, "selected": selected}
 
     def selected_repository(q, side=""):
         root = q.get("root", [str(repository.root) if repository else ""])[0]
@@ -159,6 +201,9 @@ def serve(repository: Repository | None = None, host="127.0.0.1", port=8765):
                             "spec_dir": repository.spec_dir if repository else "spec",
                         }
                     )
+                if parsed.path == "/api/sources":
+                    with sources_lock:
+                        return self.send_json(load_sources())
                 if parsed.path == "/api/local/folders":
                     return self.send_json(folders(q.get("path", [None])[0]))
                 if parsed.path in {"/api/local/validate", "/api/local/overview"}:
@@ -396,7 +441,22 @@ def serve(repository: Repository | None = None, host="127.0.0.1", port=8765):
             print("spec-review web: " + fmt % args)
 
         def do_POST(self):
-            if urlparse(self.path).path != "/api/render":
+            path = urlparse(self.path).path
+            if path == "/api/sources":
+                try:
+                    length = int(self.headers.get("Content-Length", "0"))
+                    if length > 2_000_000:
+                        return self.send_json(
+                            {"error": "Repository list is too large"}, 413
+                        )
+                    data = json.loads(self.rfile.read(length))
+                    if not isinstance(data, dict):
+                        raise ValueError("Repository list must be an object")
+                    with sources_lock:
+                        return self.send_json(save_sources(data))
+                except (ValueError, OSError, TypeError) as exc:
+                    return self.send_json({"error": str(exc)}, 400)
+            if path != "/api/render":
                 self.send_error(404)
                 return
             try:
