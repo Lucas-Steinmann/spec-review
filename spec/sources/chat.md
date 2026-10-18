@@ -371,3 +371,10 @@ restarting the application. Keep saved local folders and GitHub repositories,
 along with the selected source, in user configuration storage so they remain
 available across browser and server restarts. Migrate an existing browser-local
 list when no server-side list exists.
+
+## Image diff markers, October 17, 2026
+
+The user reported that an added image shows a green marker on an empty text row
+above the image. Place the addition marker next to the image instead. Apply the
+corresponding removal marker to removed images in browser comparisons and avoid
+highlighting whitespace-only Markdown rows around images.

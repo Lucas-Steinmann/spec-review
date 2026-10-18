@@ -28,10 +28,15 @@ test.beforeEach(async ({ page }) => {
 });
 
 async function mockApi(page, answer) {
+  let savedSources = { repositories: [], selected: '' };
   await page.route('**/api/**', async (route) => {
     const url = new URL(route.request().url());
     let result;
-    if (url.pathname === '/api/local/overview') result = localMetadata;
+    if (url.pathname === '/api/sources') {
+      if (route.request().method() === 'POST') savedSources = route.request().postDataJSON();
+      result = savedSources;
+    }
+    else if (url.pathname === '/api/local/overview') result = localMetadata;
     else if (url.pathname === '/api/local/folders') result = { path: '/tmp', parent: '/', folders: [] };
     else result = answer(url, route.request());
     if (url.pathname === '/api/local/commits' && result) result = { ...localMetadata, ...result };
@@ -652,4 +657,67 @@ test('a pending local comparison leaves filtering and overview navigation availa
   await fulfilled;
   await expect(page.locator('.revision-summary')).toHaveCount(0);
   await expect(page.getByRole('alert')).toHaveCount(0);
+});
+
+test('image diff markers span the image without highlighting empty Markdown rows', async ({ page }) => {
+  await mockApi(page, (url) => {
+    if (url.pathname === '/api/status') return { repo: '/tmp/sample', spec_dir: 'spec' };
+    if (url.pathname === '/api/local/commits') return { commits: [{ sha: 'base', subject: 'Base' }] };
+    if (url.pathname === '/api/local/snapshot') return snapshot('working tree');
+    if (url.pathname === '/api/local/compare') return comparison();
+    if (url.pathname === '/api/local/document') {
+      const old = url.searchParams.get('ref') === 'base';
+      const image = (text, language) => ({ kind: 'image', text, language });
+      return {
+        document: old ? oldGoal : newGoal, revision: old ? 'base' : 'working tree',
+        sections: [{ heading: 'Description', blocks: [
+          { kind: 'markdown', text: old ? '' : '\n\n', language: '' },
+          image(old ? wideImage.replace('315e50', '822e2b') : wideImage, old ? 'Removed' : 'Added'),
+          image(`/api/local/asset?path=spec/shared.svg&ref=${old ? 'base' : 'working+tree'}`, 'Unchanged'),
+        ] }],
+      };
+    }
+  });
+  await page.route('**/api/local/asset?**', (route) => route.fulfill({
+    contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="240" height="120"><rect width="240" height="120" fill="green"/></svg>',
+  }));
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Open review' }).click();
+  await page.getByRole('combobox', { name: 'Review or compare' }).selectOption('compare');
+  await page.getByRole('combobox', { name: 'Base revision' }).selectOption('base');
+  await page.getByRole('button', { name: 'Apply revision' }).click();
+  await page.locator('.document-item', { hasText: 'GOAL-001' }).click();
+  await expect(page.locator('.diff-side')).toHaveCount(2);
+  await expect(page.locator('.changed-line')).toHaveCount(0);
+  for (const [index, colorToken] of [[0, '--negative'], [1, '--positive']]) {
+    const side = page.locator('.diff-side').nth(index);
+    await expect(side.locator('.changed-image')).toHaveCount(1);
+    await expect(side.locator('.spec-image').last()).not.toHaveClass(/changed-image/);
+    const marker = await side.locator('.changed-image').evaluate(async (figure, token) => {
+      const image = figure.querySelector('img');
+      await image.decode();
+      const style = getComputedStyle(figure);
+      const probe = document.createElement('span');
+      probe.style.color = `var(${token})`;
+      figure.append(probe);
+      const expectedColor = getComputedStyle(probe).color;
+      probe.remove();
+      const bounds = figure.getBoundingClientRect();
+      const imageBounds = image.getBoundingClientRect();
+      return {
+        color: style.borderLeftColor, expectedColor, width: style.borderLeftWidth,
+        left: bounds.left, top: bounds.top, bottom: bounds.bottom,
+        imageLeft: imageBounds.left, imageTop: imageBounds.top, imageBottom: imageBounds.bottom,
+      };
+    }, colorToken);
+    expect(marker.color).toBe(marker.expectedColor);
+    expect(marker.width).toBe('2px');
+    expect(marker.left).toBeLessThan(marker.imageLeft);
+    expect(marker.top).toBeLessThanOrEqual(marker.imageTop);
+    expect(marker.bottom).toBeGreaterThanOrEqual(marker.imageBottom);
+    await side.locator('.changed-image img').press('Enter');
+    const viewer = page.getByRole('dialog', { name: 'Image viewer' });
+    await expect(viewer).toBeVisible();
+    await page.keyboard.press('Escape');
+  }
 });

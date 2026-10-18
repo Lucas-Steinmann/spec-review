@@ -37,6 +37,10 @@ description: 'Present the browser app as a focused developer review workbench. T
 
   accessible names, preserve keyboard operation and visible focus, and retain readable status and diff cues.
 
+  In comparisons, place green addition and red removal markers beside the image figure, spanning
+
+  its height. Leave surrounding whitespace-only Markdown rows unhighlighted.
+
   Keep specification images within the document pane. Open them in a modal viewer with fit-to-window, zoom,
 
   reset, and close controls; opening and closing images must remain keyboard accessible.
@@ -139,3 +143,6 @@ source:
 - type: conversation
   file: spec/sources/chat.md
   section: Frontend dialog styling and component refactor, October 12, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Image diff markers, October 17, 2026

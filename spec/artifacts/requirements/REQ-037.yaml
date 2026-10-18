@@ -3,7 +3,10 @@ type: requirement
 title: Highlight changed Markdown lines in WebUI comparisons
 category: presentation
 status: specified
-statement: In the WebUI comparison view, visually distinguish Markdown lines that differ between the base and target documents, using side-specific colors and a visible marker beside each changed line. Within those lines, highlight added text in darker green and removed text in darker red while retaining the light line background.
+statement: >-
+  In the WebUI comparison view, visually distinguish Markdown lines that differ between the base and target documents, using side-specific colors and a visible marker beside each changed line. Within those lines, highlight added text in darker green and removed text in darker red while retaining the light line background.
+  Added images have a green marker alongside the image; removed images have a red marker.
+  Whitespace-only Markdown lines around images must not appear as highlighted empty changes.
 derived_from:
 - UC-008
 related:
@@ -13,3 +16,6 @@ source:
   - type: conversation
     file: "spec/sources/chat.md"
     section: "Working tree comparisons and WebUI diff presentation, October 4, 2026"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Image diff markers, October 17, 2026"

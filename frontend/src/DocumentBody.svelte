@@ -30,6 +30,7 @@
     const counts = new Map();
     for (const line of otherText.split('\n')) counts.set(line, (counts.get(line) || 0) + 1);
     return text.split('\n').map((line) => {
+      if (!line.trim()) return 'context';
       const remaining = counts.get(line) || 0;
       if (remaining) {
         counts.set(line, remaining - 1);
@@ -37,6 +38,21 @@
       }
       return 'changed';
     });
+  }
+
+  function imageIdentity(block) {
+    const url = new URL(block.text, window.location.href);
+    if (['/api/local/asset', '/api/gh/asset'].includes(url.pathname)) {
+      url.searchParams.delete('ref');
+      url.searchParams.sort();
+    }
+    return `${url.href}\n${block.language || ''}`;
+  }
+
+  function imageChanged(block, sectionIndex) {
+    if (!diffAgainst) return false;
+    return !diffAgainst[sectionIndex]?.blocks?.some((other) =>
+      other.kind === 'image' && imageIdentity(other) === imageIdentity(block));
   }
 
   function handleClick(event) {
@@ -129,7 +145,7 @@
       {:else if block.kind === 'diagram'}
         <DiagramBlock {block} />
       {:else if block.kind === 'image'}
-        <figure class="spec-image">
+        <figure class="spec-image" class:diff-image={diffAgainst !== null} class:changed-image={imageChanged(block, sectionIndex)} class:removed-image={diffKind === 'removed'}>
           <img src={block.text} alt={block.language || 'Specification visual'} />
           {#if block.language}<figcaption>{block.language}</figcaption>{/if}
         </figure>

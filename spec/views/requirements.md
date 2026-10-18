@@ -14,6 +14,8 @@ What can the reviewer read? [Canonical artifacts and overviews](../artifacts/req
 
 [Revision selection](../artifacts/requirements/REQ-011.yaml) and [checkout safety](../artifacts/requirements/REQ-023.yaml) precede [stable-ID comparison](../artifacts/requirements/REQ-018.yaml). [Statuses](../artifacts/requirements/REQ-012.yaml), [changed categories](../artifacts/requirements/REQ-013.yaml), [diff layouts](../artifacts/requirements/REQ-014.yaml), and [stored overview comparison](../artifacts/requirements/REQ-020.yaml) make changes visible. [Snapshot provenance](../artifacts/requirements/REQ-022.yaml) keeps followed links in the right revision.
 
+[REQ-037](../artifacts/requirements/REQ-037.yaml) defines browser text and image diff markers, including markers alongside images and no highlighted empty Markdown rows.
+
 ## Diagrams and options
 
 [Local image rendering](../artifacts/requirements/REQ-008.yaml) supports [multiple diagrams](../artifacts/requirements/REQ-009.yaml); [responsive rendering](../artifacts/requirements/REQ-028.yaml) and [renderer failure tolerance](../artifacts/requirements/REQ-024.yaml) keep navigation and source readable. [Options](../artifacts/requirements/REQ-010.yaml) and [persistent settings](../artifacts/requirements/REQ-021.yaml) govern presentation.

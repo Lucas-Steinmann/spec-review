@@ -3,8 +3,16 @@ type: test
 title: Highlight differing Markdown lines in WebUI comparisons
 verifies:
 - REQ-037
-description: In a rendered browser comparison, inspect a document containing Markdown with unchanged lines and changed words. Confirm unchanged lines keep normal styling, changed lines receive the side-specific red or green marker and light background, and removed or added words receive darker red or green inline backgrounds on their respective sides.
+description: >-
+  In a rendered browser comparison, inspect a document containing Markdown with unchanged lines and changed words. Confirm unchanged lines keep normal styling, changed lines receive the side-specific red or green marker and light background, and removed or added words receive darker red or green inline backgrounds on their respective sides.
+  Compare documents with added, removed, and unchanged images, including whitespace-only
+  Markdown around the images. Confirm markers span the image height on the appropriate side,
+  empty rows are not highlighted, and an unchanged image URL differing only by snapshot ref
+  is not marked. Confirm keyboard activation still opens the image viewer.
 source:
   - type: conversation
     file: "spec/sources/chat.md"
     section: "Working tree comparisons and WebUI diff presentation, October 4, 2026"
+  - type: conversation
+    file: "spec/sources/chat.md"
+    section: "Image diff markers, October 17, 2026"

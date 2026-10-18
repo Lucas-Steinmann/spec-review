@@ -212,6 +212,9 @@ pre { overflow: auto; padding: 15px 17px; border: 1px solid var(--line); border-
 .markdown-diff-line { position: relative; min-height: 1.3em; margin-left: 8px; padding: 0 5px; border-left: 2px solid transparent; }
 .markdown-diff-line.changed-line { border-left-color: var(--positive); background: var(--positive-bg); }
 .diff-side:first-child .markdown-diff-line.changed-line { border-left-color: var(--negative); background: var(--negative-bg); }
+.spec-image.diff-image { margin-left: 8px; padding: 0 5px; border-left: 2px solid transparent; }
+.spec-image.changed-image { border-left-color: var(--positive); }
+.spec-image.changed-image.removed-image { border-left-color: var(--negative); }
 .markdown-diff-line :first-child { margin-top: 0; }
 .markdown-diff-line :last-child { margin-bottom: 0; }
 .diff-text { padding: 0 2px; border-radius: 2px; }

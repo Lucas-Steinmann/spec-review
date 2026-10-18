@@ -14,6 +14,8 @@ These artifacts describe expected behavior. They do not claim a test has passed.
 
 [TEST-005](../artifacts/tests/TEST-005.yaml) checks revision selection without checkout changes. [TEST-006](../artifacts/tests/TEST-006.yaml) checks statuses and diff layouts. Browser comparison behavior appears in [TEST-011](../artifacts/tests/TEST-011.yaml), [TEST-013](../artifacts/tests/TEST-013.yaml), and [TEST-016](../artifacts/tests/TEST-016.yaml).
 
+[TEST-013](../artifacts/tests/TEST-013.yaml) also checks image marker geometry, unchanged images across snapshot URLs, and unhighlighted surrounding whitespace in `frontend/e2e/review.spec.js`.
+
 ## Browser and GitHub
 
 [TEST-012](../artifacts/tests/TEST-012.yaml) checks document semantics in the WebUI. [TEST-014](../artifacts/tests/TEST-014.yaml) and [TEST-018](../artifacts/tests/TEST-018.yaml) cover repository, pull request, and GitHub revision review. Opt-in live checks against GitHub.com are described by [TEST-024](../artifacts/tests/TEST-024.yaml). [TEST-015](../artifacts/tests/TEST-015.yaml), [TEST-019](../artifacts/tests/TEST-019.yaml), and [TEST-020](../artifacts/tests/TEST-020.yaml) cover sidebar, keyboard, and loading usability. [TEST-022](../artifacts/tests/TEST-022.yaml) verifies superseded filtering and persistence of both browser filters.
