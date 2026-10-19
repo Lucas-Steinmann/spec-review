@@ -10,8 +10,8 @@ description: Open the real Svelte Add dialog in Paper and Dark at 1280px, 360px,
   footer actions do not overlap, primary appearance is distinct, and dialog bounds and horizontal scroll remain
   inside the viewport. Exercise Local and GitHub modes, long folder names, loading and error states, scrolling,
   keyboard containment, Escape, and focus restoration. Check Settings compact close/action geometry and image/link
-  dialogs through existing browser journeys. Inspect screenshots of the actual dialogs; standalone mockups and functional
-  success alone do not establish layout correctness. Cancel Add while folder validation is pending and confirm the
+  dialogs through existing browser journeys. Inspect screenshots generated from the actual application components;
+  functional success alone does not establish layout correctness. Cancel Add while folder validation is pending and confirm the
   later response does not save a source.
 source:
 - type: conversation

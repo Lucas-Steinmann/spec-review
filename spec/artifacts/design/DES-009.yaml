@@ -1,17 +1,32 @@
 id: DES-009
 type: design
 title: Browser development and distribution
-description: "Vite serves the Svelte frontend with hot reload and proxies API requests to the Python server. Lucide\
-  \ Svelte provides tree-shaken interface icons. Playwright exercises rendered browser behavior. Production assets\
-  \ are generated in an ignored build directory and included in Python distributions after a frontend build.\n\n\
-  ```mermaid\nflowchart LR\n  Svelte[Svelte source] --> Vite[Vite development server]\n  Vite --> Browser[Browser\
-  \ and Playwright]\n  Vite --> Build[Production frontend build]\n  Build --> Package[Python distribution]\n  Browser\
-  \ --> API[Local Python HTTP server]\n```\n\n\nDialog layout regressions inspect the actual browser application\
-  \ at desktop, 360px, and 320px widths in Paper and Dark themes, checking label spacing, control dimensions, sibling\
-  \ separation, viewport containment, primary appearance, and focus. Deterministic data in spec/mockups/src/browser-dialogs.mjs\
-  \ also drives previews of the compiled Svelte dialogs through scripts/render_spec_mockups.mjs. Frontend component\
-  \ and verification conventions are documented in frontend/README.md; inspect live dialog screenshots in addition\
-  \ to functional checks."
+description: |
+  Vite serves the Svelte frontend with hot reload and proxies API requests to the Python server. Storybook provides
+  an interactive catalog of stories composed from the same Svelte UI and dialog components used by the application.
+  Lucide Svelte provides tree-shaken interface icons. Playwright exercises rendered browser behavior. Production
+  assets are generated in an ignored build directory and included in Python distributions after a frontend build.
+
+  ```mermaid
+  flowchart LR
+    Svelte[Svelte source] --> Vite[Vite development server]
+    Svelte --> Stories[Storybook stories]
+    Stories --> Catalog[Interactive component catalog]
+    Vite --> Browser[Browser and Playwright]
+    Vite --> Build[Production frontend build]
+    Build --> Package[Python distribution]
+    Browser --> API[Local Python HTTP server]
+  ```
+
+  Compose browser mockups and component examples from the application's Svelte components; do not recreate them in
+  standalone HTML/CSS. Application-level stories mount App.svelte with deterministic API fixtures, and the screenshot
+  renderer captures Storybook output. Storybook uses the same theme tokens and component source. Dialog layout regressions inspect
+  the actual browser application at desktop, 360px, and 320px widths in Paper and Dark themes, checking label
+  spacing, control dimensions, sibling separation, viewport containment, primary appearance, and focus.
+  Deterministic data in spec/mockups/src/browser-dialogs.mjs also drives previews of the compiled Svelte dialogs
+  through scripts/render_spec_mockups.mjs. The terminal preview is exported from the actual Textual application.
+  Frontend component, Storybook, and verification conventions are
+  documented in frontend/README.md; inspect live dialog screenshots in addition to functional checks.
 addresses:
 - REQ-034
 decisions:

@@ -266,10 +266,12 @@ pre { overflow: auto; padding: 15px 17px; border: 1px solid var(--line); border-
   .pull-number { min-width: 30px; padding-top: 2px; }
   .checks { max-width: 118px; margin-left: 38px; font-size: 9px; }
   .pull-open { margin-left: auto; }
-  .revision-bar { align-items: end; gap: 9px; padding: 10px 12px; }
-  .revision-field { min-width: 0; flex: 1; }
+  .revision-bar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; gap: 9px; padding: 10px 12px; }
+  .revision-field { width: 100%; min-width: 0; }
   .revision-field .ui-control { width: 100%; min-width: 0; max-width: none; }
-  .revision-bar .confirm-button { min-height: 34px; padding: 0 9px; font-size: 10px; }
+  .revision-bar .confirm-button { justify-self: start; min-height: 34px; padding: 0 9px; font-size: 10px; }
+  .revision-bar .spacer { display: none; }
+  .revision-summary { grid-column: 1 / -1; }
   .workspace { height: auto; min-height: 0; display: flex; flex-direction: column; }
   .sidebar { min-height: 300px; max-height: 46vh; border-right: 0; border-bottom: 1px solid var(--line); }
   .category-list { max-height: 104px; padding: 8px; }

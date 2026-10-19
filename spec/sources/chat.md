@@ -156,7 +156,7 @@ The user reported that selecting a GitHub snapshot timed out after 30 seconds in
 >
 > Use small JavaScript, CSS, and HTML files, render them in a headless browser, and insert them into the Markdown files. Add scripting so we can regenerate those diagrams as well.
 
-Store planning visuals under `spec/mockups/`: editable static HTML/CSS source under `src/` and generated PNG previews under `rendered/`. Render the previews with the repository's local Playwright and Chromium setup. Use HTML/CSS previews for user-interface design and Mermaid/PlantUML only when an architecture or interaction relationship is clearer as a diagram. Canonical design artifacts embed UI-preview images and carry the architecture/flow diagrams; generated Markdown views remain derived from those artifacts.
+Store planning visuals under `spec/mockups/` and generated PNG previews under `rendered/`. At the time, browser screens used static HTML/CSS. The October 18, 2026 decision below replaces that approach with application-backed Storybook stories. Canonical design artifacts embed UI-preview images and carry the architecture/flow diagrams; generated Markdown views remain derived from those artifacts.
 
 ## Settings dialog and compact local repository context, October 12, 2026
 
@@ -378,3 +378,11 @@ The user reported that an added image shows a green marker on an empty text row
 above the image. Place the addition marker next to the image instead. Apply the
 corresponding removal marker to removed images in browser comparisons and avoid
 highlighting whitespace-only Markdown rows around images.
+
+## Shared frontend mockups and Storybook, October 18, 2026
+
+> Please make sure that the UI mockups use the same code-base as the real code-base and also start using storybooks.
+
+Use Storybook to catalog and preview UI composed from the Svelte components used by the browser application. Keep mockup examples and theme styling in the frontend source so component changes are reflected in both the application and preview. Avoid creating new standalone HTML/CSS copies of application UI. Provide Paper and Dark theme selection and document commands for running and building the catalog. Existing full-application dialog previews continue to render the actual compiled app with deterministic data.
+
+The user then asked to complete the migration of existing mockups. Browser overview, local worktree overview, revision comparison, and review workspace previews now mount `App.svelte` as Storybook stories with deterministic API fixtures. The screenshot renderer captures those stories for the existing committed preview paths; standalone browser mockup HTML and CSS sources were removed. The terminal preview is exported from the actual Textual app. Only the committed PNG previews remain as rendered artifacts.

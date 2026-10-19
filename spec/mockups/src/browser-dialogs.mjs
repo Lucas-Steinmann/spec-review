@@ -8,6 +8,7 @@ export async function installDialogFixture(page, theme = 'paper') {
     const url = new URL(route.request().url());
     let body;
     if (url.pathname === '/api/status') body = { repo: null, spec_dir: 'spec' };
+    else if (url.pathname === '/api/sources') body = { repositories: [], selected: '' };
     else if (url.pathname === '/api/local/folders') body = {
       path: url.searchParams.get('path') || '/home/reviewer', parent: '/home',
       folders: ['.config', '.copilot', '.devin', '.dotfiles', 'projects', 'worktrees', 'a-folder-with-a-long-name-that-must-fit-on-a-narrow-screen'].map((name) => ({ name, path: `/home/reviewer/${name}` })),

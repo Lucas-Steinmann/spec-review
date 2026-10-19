@@ -34,6 +34,7 @@ The browser frontend is implemented in Svelte. Its compiled static assets are se
 ### Frontend development
 
 See [frontend component and verification conventions](frontend/README.md) for reusable controls, scoped styling, and live dialog layout checks.
+Start the component catalog with `npm run storybook --prefix frontend`; it previews the same Svelte UI components used by the browser application.
 
 Install frontend dependencies once with `npm ci --prefix frontend`. Run the Python API and Vite in separate terminals from the project root:
 
@@ -100,6 +101,8 @@ Regenerate its visual previews and overviews after changing canonical artifacts 
 node scripts/render_spec_mockups.mjs
 uv run python scripts/validate_spec_views.py
 ```
+
+The renderer uses the built Storybook catalog for browser UI previews. Build it with `npm run build --prefix frontend` and `npm run build-storybook --prefix frontend` first.
 
 ## Specification format
 
