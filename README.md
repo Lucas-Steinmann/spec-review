@@ -2,7 +2,27 @@
 
 A read-only terminal and browser application for reviewing and comparing specifications stored as YAML artifacts and maintained Markdown views, from local folders or repositories accessible through `gh`.
 
-## Install and run
+## Installation
+
+Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/). Install from a
+checkout to make `spec-review` available on your PATH:
+
+```sh
+uv tool install /path/to/spec-review
+```
+
+For development, use an editable installation so Python source changes take
+effect without reinstalling:
+
+```sh
+uv tool install --editable /path/to/spec-review
+```
+
+Run `uv tool update-shell` if uv's tool executable directory is not yet on your
+PATH. Build the frontend as described below before installing if you need the
+browser interface.
+
+## Run from a checkout
 
 Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/). From a project containing this submodule:
 
@@ -65,7 +85,7 @@ uv run pytest -m live_github
 
 These tests reject token environment overrides, use only GitHub reads and Git fetches, bind the test server to loopback, and place the Git mirror cache under pytest's temporary directory. Ordinary test runs skip them.
 
-For a standalone installation, `uv tool install /path/to/spec-review` exposes `spec-review` on your PATH. Use `--repo` when invoking that installation outside the specification repository.
+Use `--repo` when invoking an installed command outside the specification repository.
 
 ## Add a specification to another project
 
