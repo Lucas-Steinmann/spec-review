@@ -8,12 +8,14 @@ import shlex
 import tempfile
 from importlib.resources import files
 from pathlib import Path, PurePosixPath
+from urllib.parse import unquote
 
 from .repository import Repository
 
 START = "<!-- spec-review:start -->"
 END = "<!-- spec-review:end -->"
-STATE = "docs/spec-review/.kit/state.json"
+LEGACY_STATE = "docs/spec-review/.kit/state.json"
+STATE = "spec/docs/spec-review/.kit/state.json"
 SKILLS = (
     "spec-authoring",
     "spec-supersession-cleanup",
@@ -121,11 +123,12 @@ def resources(spec_dir: str) -> tuple[str, dict[str, str], dict[str, str]]:
         return (source_root / name).read_text(encoding="utf-8")
 
     managed = {
-        f"docs/spec-review/{name}": shared(f"docs/spec-review/{name}") for name in DOCS
+        f"{spec_dir}/docs/spec-review/{name}": shared(f"docs/spec-review/{name}")
+        for name in DOCS
     }
     managed.update(
         {
-            f"skills/{name}/SKILL.md": shared(f"skills/{name}/SKILL.md")
+            f".agents/skills/{name}/SKILL.md": shared(f"skills/{name}/SKILL.md")
             for name in SKILLS
         }
     )
@@ -142,6 +145,8 @@ def resources(spec_dir: str) -> tuple[str, dict[str, str], dict[str, str]]:
     # but remain outside upgrade baselines so project-authored content survives.
     for collection in (managed, starters):
         for name, text in list(collection.items()):
+            text = text.replace("docs/spec-review/", "spec/docs/spec-review/")
+            text = text.replace("skills/", ".agents/skills/")
             if spec_dir != "spec":
                 text = text.replace("spec/", f"{spec_dir}/")
                 text = re.sub(
@@ -153,10 +158,12 @@ def resources(spec_dir: str) -> tuple[str, dict[str, str], dict[str, str]]:
                     text,
                 )
             if name in (f"{spec_dir}/AGENTS.md", f"{spec_dir}/README.md"):
-                for target in ("docs/spec-review", "skills"):
+                for target in (f"{spec_dir}/docs/spec-review", ".agents/skills"):
                     text = text.replace(
                         f"../{target}/", os.path.relpath(target, spec_dir) + "/"
                     )
+            if name.startswith(f"{spec_dir}/docs/spec-review/"):
+                text = text.replace(f"../../{spec_dir}/", "../../")
             if " " in spec_dir:
                 # Keep Markdown destinations valid for paths with spaces.
                 text = re.sub(
@@ -170,12 +177,31 @@ def resources(spec_dir: str) -> tuple[str, dict[str, str], dict[str, str]]:
     return f"{version}:{digest}", managed, starters
 
 
+def state_path(spec_dir: str) -> str:
+    return f"{spec_dir}/docs/spec-review/.kit/state.json"
+
+
+def legacy_exists(root: Path) -> bool:
+    # A consumer's unrelated docs path may be a file or a symlink. Do not
+    # follow it or block initialization just to look for legacy metadata.
+    parent = root
+    for part in PurePosixPath(LEGACY_STATE).parts[:-1]:
+        parent = parent / part
+        if parent.is_symlink() or not parent.is_dir():
+            return False
+    return read(root, LEGACY_STATE) is not None
+
+
 def save(root: Path, state: dict) -> None:
-    write(root, STATE, json.dumps(state, indent=2, sort_keys=True) + "\n")
+    write(
+        root,
+        state_path(state["spec_dir"]),
+        json.dumps(state, indent=2, sort_keys=True) + "\n",
+    )
 
 
-def load(root: Path, spec_dir: str) -> dict:
-    value = read(root, STATE)
+def load(root: Path, spec_dir: str, path: str | None = None) -> dict:
+    value = read(root, path or state_path(spec_dir))
     if value is None:
         raise KitError("No installed kit; run spec-review init first")
     try:
@@ -230,7 +256,7 @@ def target_root(root: Path, spec_dir: str) -> Path:
             raise KitError(f"Symlink repository path: {path}")
     if root.exists() and not root.is_dir():
         raise KitError("Repository target must be a directory")
-    safe_path(root, STATE)
+    safe_path(root, state_path(spec_dir))
     safe_path(root, f"{spec_dir}/AGENTS.md")
     return root
 
@@ -238,8 +264,11 @@ def target_root(root: Path, spec_dir: str) -> Path:
 def initialize(root: Path, spec_dir: str = "spec", dry_run: bool = False) -> list[str]:
     root = target_root(root, spec_dir)
     version, managed, starters = resources(spec_dir)
-    if read(root, STATE) is not None:
-        load(root, spec_dir)
+    existing = state_path(spec_dir)
+    if read(root, existing) is None and legacy_exists(root):
+        existing = LEGACY_STATE
+    if read(root, existing) is not None:
+        load(root, spec_dir, existing)
         return ["Kit already initialized; use spec-review update to upgrade"]
     conflicts = [
         name
@@ -283,7 +312,16 @@ def update(
     resolved: tuple[str, ...] = (),
 ) -> list[str]:
     root = target_root(root, spec_dir)
-    state = load(root, spec_dir)
+    legacy = legacy_exists(root)
+    new_state = read(root, state_path(spec_dir)) is not None
+    state = load(root, spec_dir, LEGACY_STATE if legacy and not new_state else None)
+    migrating = legacy and not new_state
+    if migrating and state.get("pending"):
+        raise KitError(
+            "Finish the pending legacy update with its original tool version before migrating"
+        )
+    if migrating:
+        state["legacy_state"] = True
     version, incoming, _ = resources(spec_dir)
     pending = state.get("pending")
     if pending is not None and (
@@ -296,12 +334,55 @@ def update(
         if accept_merge or resolved:
             raise KitError("No pending merge to acknowledge")
         ops, conflicts = {}, {}
-        for name in sorted(state["files"].keys() | incoming.keys()):
+        old_files = state["files"]
+        moves = {}
+        if migrating:
+            for old in old_files:
+                if old.startswith("docs/spec-review/"):
+                    moves[old] = f"{spec_dir}/" + old
+                elif old.startswith("skills/"):
+                    moves[old] = ".agents/" + old
+        mapped = {moves.get(name, name): value for name, value in old_files.items()}
+        reverse_moves = {new: old for old, new in moves.items()}
+        # Starters are project-owned. Keep legacy targets of their Markdown links
+        # instead of breaking those links or rewriting the starters.
+        retained = set()
+        if migrating:
+            for starter in (f"{spec_dir}/README.md", f"{spec_dir}/views/overview.md"):
+                contents = read(root, starter) or ""
+                for link in re.findall(r"\]\(([^)#]+)", contents):
+                    target = (root / starter).parent / unquote(link)
+                    for old in moves:
+                        if target.resolve() == (root / old).resolve():
+                            retained.add(old)
+        for name in sorted(mapped.keys() | incoming.keys()):
+            old = reverse_moves.get(name)
             base, local, new = (
-                state["files"].get(name),
-                current(root, name),
+                mapped.get(name),
+                current(root, old or name),
                 incoming.get(name),
             )
+            if old:
+                destination = current(root, name)
+                if destination is not None and destination != local:
+                    conflicts[name] = {
+                        "base": base,
+                        "local": destination,
+                        "incoming": new,
+                    }
+                elif local == base:
+                    if destination != new:
+                        ops[name] = {"before": destination, "after": new}
+                elif local == new or base == new:
+                    if destination != local:
+                        ops[name] = {"before": destination, "after": local}
+                else:
+                    if destination != local:
+                        ops[name] = {"before": destination, "after": local}
+                    conflicts[name] = {"base": base, "local": local, "incoming": new}
+                if local is not None and old not in retained:
+                    ops[old] = {"before": local, "after": None}
+                continue
             if local == new or base == new:
                 continue
             if local == base:
@@ -313,6 +394,8 @@ def update(
             "files": incoming,
             "operations": ops,
             "conflicts": conflicts,
+            "legacy_paths": list(moves),
+            "retained_paths": sorted(retained),
         }
     if resolved and not accept_merge:
         raise KitError("--resolved requires --accept-merge")
@@ -333,9 +416,15 @@ def update(
         ):
             raise KitError(f"Unresolved merge markers: {name}")
     for name, operation in pending["operations"].items():
+        if accept_merge and name in conflicts:
+            continue
         if current(root, name) not in (operation["before"], operation["after"]):
             raise KitError(f"File changed during interrupted update: {name}")
     report = [f"Update {name}" for name in pending["operations"]]
+    report += [
+        f"Retain {name} (linked by project starter)"
+        for name in pending.get("retained_paths", [])
+    ]
     report += [
         f"{'Resolved' if accept_merge else 'Conflict'} {name}" for name in conflicts
     ]
@@ -345,13 +434,22 @@ def update(
     state["pending"] = pending
     save(root, state)
     for name, operation in pending["operations"].items():
+        if conflicts and not accept_merge and name in pending.get("legacy_paths", []):
+            continue
+        if accept_merge and name in conflicts:
+            continue
         if current(root, name) != operation["after"]:
             write(root, name, operation["after"])
     if conflicts and not accept_merge:
         return report + [
-            "Merge required; see skills/spec-kit-update/SKILL.md and " + STATE
+            "Merge required; see .agents/skills/spec-kit-update/SKILL.md and "
+            + state_path(spec_dir)
         ]
     state.update(version=version, files=incoming)
     state.pop("pending", None)
     save(root, state)
+    if state.get("legacy_state") and legacy:
+        write(root, LEGACY_STATE, None)
+    if state.pop("legacy_state", None):
+        save(root, state)
     return report + [f"Updated kit {version}"]

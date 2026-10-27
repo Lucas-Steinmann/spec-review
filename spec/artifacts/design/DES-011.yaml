@@ -5,16 +5,18 @@ addresses:
 - REQ-051
 - REQ-052
 - REQ-053
-description: Package canonical docs/spec-review references, repository skills, spec editing instructions, and empty
+description: Package canonical reference documents, repository skills, spec editing instructions, and empty
   starter templates as Python resources. Add init, update, and validate CLI commands while retaining existing review
   flags. A marked root AGENTS.md block loads maintenance instructions for implementation changes. Store upstream
-  content and version in docs/spec-review/.kit/state.json. Keep scaffold starters outside managed update files.
+  content and version in <spec-dir>/docs/spec-review/.kit/state.json; install references alongside it and skills in
+  .agents/skills/. Keep scaffold starters outside managed update files. Migrate old layouts through a resumable
+  journal, preserving customized content, destination conflicts, and legacy files linked from project starters.
   Compare base/local/incoming text; journal operations and conflicts before atomic replacements, reject concurrent
   edits during replay, and acknowledge all resolved paths with update --accept-merge and repeated --resolved flags.
   Verify the same bundled target throughout a pending update. Explicit deletion can be preserved as a customization.
   Shared validator code replaces the repository-specific implementation; its original script remains a compatibility
   wrapper. Browser assets are bundled when available but are not required to build a kit-only wheel.
-  Keep the authoritative type-folder mapping in docs/spec-review/artifact-authoring.md and reference it from
+  Keep the authoritative type-folder mapping in the installed artifact-authoring guide and reference it from
   initial agent instructions, authoring skills, setup guidance, and empty starter guides. Apply specification-path,
   relative-link, and CLI command rewriting to both managed instructions and starter contents. Keep starters out
   of managed upgrade baselines; preserve normal content-derived version handling and project customizations.
@@ -27,3 +29,6 @@ source:
 - type: conversation
   file: spec/sources/chat.md
   section: Canonical artifact storage layout, October 15, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Kit installation and layout, October 27, 2026

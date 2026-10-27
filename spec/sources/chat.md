@@ -386,3 +386,9 @@ highlighting whitespace-only Markdown rows around images.
 Use Storybook to catalog and preview UI composed from the Svelte components used by the browser application. Keep mockup examples and theme styling in the frontend source so component changes are reflected in both the application and preview. Avoid creating new standalone HTML/CSS copies of application UI. Provide Paper and Dark theme selection and document commands for running and building the catalog. Existing full-application dialog previews continue to render the actual compiled app with deterministic data.
 
 The user then asked to complete the migration of existing mockups. Browser overview, local worktree overview, revision comparison, and review workspace previews now mount `App.svelte` as Storybook stories with deterministic API fixtures. The screenshot renderer captures those stories for the existing committed preview paths; standalone browser mockup HTML and CSS sources were removed. The terminal preview is exported from the actual Textual app. Only the committed PNG previews remain as rendered artifacts.
+# Kit installation and layout, October 27, 2026
+
+The user requested standard and editable installation documentation, and asked that
+initialized kit skills live in `.agents/skills/` and kit documents inside the
+selected specification directory. Existing kits should migrate safely on update,
+preserving customizations and reporting conflicts. Other scaffold files remain.

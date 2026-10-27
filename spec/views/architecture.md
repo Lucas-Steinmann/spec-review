@@ -25,3 +25,5 @@ Shared component styling and actual-application dialog previews are specified in
 ## Portable specification kit
 
 [DES-011](../artifacts/design/DES-011.yaml) defines kit resources, a marked root instruction block, three-way baselines and journaled updates, and reusable validation. Managed instructions and starter contents both rewrite paths, relative links, and CLI commands for the selected specification directory. The authoring guide owns the folder mapping; starters remain outside upgrade baselines. Kit commands write explicitly; review interfaces retain their read-only behavior.
+
+Installed references and update state live inside the selected specification directory; skills live under `.agents/skills/`. Updates migrate older layouts using the same conflict and recovery workflow.

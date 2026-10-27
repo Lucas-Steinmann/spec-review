@@ -86,3 +86,10 @@ External changes to a file awaiting journal replay stop the update for inspectio
 
 Dry runs write nothing. Review, validation, terminal navigation, and browser
 navigation remain read-only. Initialization and updates are explicit write commands.
+
+Updates recognize kits installed in the earlier root-level layout and migrate
+managed files and metadata to the current layout. Conflicts and destination
+collisions require reconciliation; old files remain available until reconciliation
+finishes. Files linked from project-owned starter guides are retained at their old
+paths to preserve those links. Finish any pending legacy update with its original
+tool version before migrating.

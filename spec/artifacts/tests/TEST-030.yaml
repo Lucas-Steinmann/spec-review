@@ -12,7 +12,8 @@ description: 'Initialize a new folder and an existing repository, including cust
   Check the full standard type-folder mapping, exact ID-based filenames, type-based reclassification, separate
   supporting folders, and examples in generated first-authoring instructions. Check starter and managed links,
   anchors, paths and commands for default and nested custom directories, including spaces, from editable and
-  built installations. Verify empty scaffolds contain no live example artifacts.
+  built installations. Confirm kit documents and state live under the selected spec directory and skills under
+  .agents/skills/, with no new root docs or skills directories. Verify empty scaffolds contain no live example artifacts.
   Executable coverage: tests/test_kit.py.'
 source:
 - type: conversation

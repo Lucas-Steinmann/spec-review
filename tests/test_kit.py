@@ -36,11 +36,13 @@ def tree(root):
 
 
 def state(root):
-    return json.loads((root / kit.STATE).read_text())
+    return json.loads(
+        next(root.glob("**/docs/spec-review/.kit/state.json")).read_text()
+    )
 
 
 def assert_authoring_layout(root, spec_dir):
-    guide = root / "docs/spec-review/artifact-authoring.md"
+    guide = root / spec_dir / "docs/spec-review/artifact-authoring.md"
     text = guide.read_text()
     expected = {
         "goal": "goals",
@@ -58,9 +60,9 @@ def assert_authoring_layout(root, spec_dir):
     }
     assert dict(re.findall(r"^\| `(\w+)` \| `([\w-]+)` \|$", text, re.M)) == expected
     for name in (
-        "docs/spec-review/artifact-authoring.md",
-        "docs/spec-review/setup.md",
-        "skills/spec-authoring/SKILL.md",
+        f"{spec_dir}/docs/spec-review/artifact-authoring.md",
+        f"{spec_dir}/docs/spec-review/setup.md",
+        ".agents/skills/spec-authoring/SKILL.md",
         f"{spec_dir}/AGENTS.md",
         f"{spec_dir}/README.md",
         f"{spec_dir}/views/overview.md",
@@ -133,7 +135,10 @@ def assert_authoring_layout(root, spec_dir):
             assert args[args.index("--spec-dir") + 1] == spec_dir
     # Setup/update instructions must also carry the selected path.
     if spec_dir != "spec":
-        for name in ("docs/spec-review/setup.md", "skills/spec-kit-update/SKILL.md"):
+        for name in (
+            f"{spec_dir}/docs/spec-review/setup.md",
+            ".agents/skills/spec-kit-update/SKILL.md",
+        ):
             for command_text in re.findall(
                 r"spec-review(?: (?:init|update|validate))? [^`\n]+",
                 (root / name).read_text(),
@@ -150,6 +155,8 @@ def test_init_generated_authoring_layout(tmp_path, monkeypatch, capsys, spec_dir
     assert not tree(tmp_path)
     assert command(monkeypatch, capsys, "init", *args)[0] == 0
     assert_authoring_layout(tmp_path, spec_dir)
+    assert not (tmp_path / "docs").exists()
+    assert not (tmp_path / "skills").exists()
     assert not list((tmp_path / spec_dir / "artifacts").rglob("*.yaml"))
     assert command(monkeypatch, capsys, "validate", *args)[0] == 0
     before = tree(tmp_path)
@@ -215,10 +222,7 @@ def test_init_preserves_existing_content_and_custom_nested_path(
     )
     assert (root / "AGENTS.md").read_text().count(kit.START) == 1
     assert "planning/product spec/AGENTS.md" in (root / "AGENTS.md").read_text()
-    assert (
-        "../../docs/spec-review/artifact-authoring.md"
-        in (spec / "AGENTS.md").read_text()
-    )
+    assert "docs/spec-review/artifact-authoring.md" in (spec / "AGENTS.md").read_text()
     assert (spec / "sources/chat.md").read_text() == "# Original provenance\n"
     assert command(monkeypatch, capsys, "validate", *args)[0] == 0
     assert "--spec-dir 'planning/product spec'" in (spec / "AGENTS.md").read_text()
@@ -258,7 +262,9 @@ def test_layout_upgrade_preserves_legacy_artifacts_and_local_content(
 
     def previous_resources(spec_dir):
         _, managed, starters = original_resources(spec_dir)
-        managed["docs/spec-review/artifact-authoring.md"] = "# Legacy authoring guide\n"
+        managed[f"{spec_dir}/docs/spec-review/artifact-authoring.md"] = (
+            "# Legacy authoring guide\n"
+        )
         return "previous-kit", managed, starters
 
     args = ("--repo", tmp_path, "--spec-dir", spec_dir)
@@ -270,7 +276,7 @@ def test_layout_upgrade_preserves_legacy_artifacts_and_local_content(
         assert command(monkeypatch, capsys, "init", *args)[0] == 0
     for name, content in preserved.items():
         assert (tmp_path / name).read_bytes() == content
-    local = tmp_path / "skills/spec-authoring/SKILL.md"
+    local = tmp_path / ".agents/skills/spec-authoring/SKILL.md"
     local.write_text(local.read_text() + "\nUse our tracker.\n")
     preserved[str(local.relative_to(tmp_path))] = local.read_bytes()
     assert state(tmp_path)["version"] == "previous-kit"
@@ -280,7 +286,7 @@ def test_layout_upgrade_preserves_legacy_artifacts_and_local_content(
     assert command(monkeypatch, capsys, "update", *args)[0] == 0
     assert (
         "## Canonical storage layout"
-        in (tmp_path / "docs/spec-review/artifact-authoring.md").read_text()
+        in (tmp_path / spec_dir / "docs/spec-review/artifact-authoring.md").read_text()
     )
     version, managed, _ = original_resources(spec_dir)
     assert state(tmp_path)["version"] == version
@@ -299,7 +305,7 @@ def test_layout_upgrade_preserves_legacy_artifacts_and_local_content(
 
 
 @pytest.mark.parametrize(
-    "destination", ["docs/spec-review/artifact-authoring.md", "spec/AGENTS.md"]
+    "destination", ["spec/docs/spec-review/artifact-authoring.md", "spec/AGENTS.md"]
 )
 def test_init_conflicts_write_nothing(tmp_path, monkeypatch, capsys, destination):
     path = tmp_path / destination
@@ -322,7 +328,7 @@ def test_rejects_invalid_paths(tmp_path, monkeypatch, capsys, spec_dir):
     assert not list(tmp_path.iterdir())
 
 
-@pytest.mark.parametrize("name", ["spec", "docs", "AGENTS.md", "skills"])
+@pytest.mark.parametrize("name", ["spec", "AGENTS.md", ".agents"])
 def test_init_rejects_symlinks_before_writes(tmp_path, monkeypatch, capsys, name):
     root = tmp_path / "root"
     root.mkdir()
@@ -334,7 +340,7 @@ def test_init_rejects_symlinks_before_writes(tmp_path, monkeypatch, capsys, name
     assert len(list(root.iterdir())) == 1
 
 
-@pytest.mark.parametrize("name", ["skills", "docs", "spec/views", "spec/artifacts"])
+@pytest.mark.parametrize("name", [".agents", "spec/views", "spec/artifacts"])
 def test_init_parent_file_conflicts_write_nothing(tmp_path, monkeypatch, capsys, name):
     path = tmp_path / name
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -380,9 +386,9 @@ def test_updates_preserve_customizations_and_project_content(
     tmp_path, monkeypatch, capsys
 ):
     command(monkeypatch, capsys, "init", "--repo", tmp_path)
-    local = tmp_path / "skills/spec-authoring/SKILL.md"
+    local = tmp_path / ".agents/skills/spec-authoring/SKILL.md"
     local.write_text(local.read_text() + "\nUse our tracker.\n")
-    deleted = tmp_path / "skills/spec-health-review/SKILL.md"
+    deleted = tmp_path / ".agents/skills/spec-health-review/SKILL.md"
     deleted.unlink()
     agents = tmp_path / "AGENTS.md"
     agents.write_text(agents.read_text() + "\n# Local compiler policy\n")
@@ -390,7 +396,7 @@ def test_updates_preserve_customizations_and_project_content(
     upgrade(
         monkeypatch,
         {
-            "docs/spec-review/setup.md": "# Updated setup\n",
+            "spec/docs/spec-review/setup.md": "# Updated setup\n",
             "AGENTS.md": kit.START + "\nNew root rule\n" + kit.END,
         },
     )
@@ -412,7 +418,7 @@ def test_conflict_reconciliation_target_checks_and_acknowledgment(
     tmp_path, monkeypatch, capsys
 ):
     command(monkeypatch, capsys, "init", "--repo", tmp_path)
-    name = "skills/spec-authoring/SKILL.md"
+    name = ".agents/skills/spec-authoring/SKILL.md"
     local = tmp_path / name
     base = local.read_text()
     local.write_text(base + "Local policy\n")
@@ -483,13 +489,14 @@ def test_root_block_conflict_preserves_other_instructions(
 
 def test_conflicting_local_deletion_and_upstream_removal(tmp_path, monkeypatch, capsys):
     command(monkeypatch, capsys, "init", "--repo", tmp_path)
-    name = "skills/spec-health-review/SKILL.md"
+    name = ".agents/skills/spec-health-review/SKILL.md"
     (tmp_path / name).unlink()
     upgrade(
-        monkeypatch, {name: "New upstream review", "docs/spec-review/setup.md": None}
+        monkeypatch,
+        {name: "New upstream review", "spec/docs/spec-review/setup.md": None},
     )
     assert command(monkeypatch, capsys, "update", "--repo", tmp_path)[0] == 1
-    assert not (tmp_path / "docs/spec-review/setup.md").exists()
+    assert not (tmp_path / "spec/docs/spec-review/setup.md").exists()
     assert (
         command(
             monkeypatch,
@@ -511,7 +518,7 @@ def test_interrupted_update_resumes_and_rejects_changed_target(
     tmp_path, monkeypatch, capsys
 ):
     command(monkeypatch, capsys, "init", "--repo", tmp_path)
-    name = "docs/spec-review/setup.md"
+    name = "spec/docs/spec-review/setup.md"
     upgrade(monkeypatch, {name: "# Upgraded\n"})
     original = kit.write
 
@@ -656,3 +663,133 @@ def test_kit_from_wheel_outside_checkout(tmp_path):
             archive.read("spec_review/webui/index.html")
             == b"<html>Built browser</html>"
         )
+
+
+def legacy_kit(root, spec_dir):
+    """Install a representative old-layout kit with its recorded baselines."""
+    _, managed, starters = kit.resources(spec_dir)
+    legacy = {}
+    for name, content in managed.items():
+        if name.startswith(f"{spec_dir}/docs/spec-review/"):
+            old = name[len(spec_dir) + 1 :]
+        elif name.startswith(".agents/skills/"):
+            old = name[len(".agents/") :]
+        else:
+            old = name
+        legacy[old] = content.replace(
+            f"{spec_dir}/docs/spec-review/", "docs/spec-review/"
+        ).replace(".agents/skills/", "skills/")
+        kit.write(root, old, legacy[old])
+    for name, content in starters.items():
+        kit.write(root, name, content)
+    kit.write(
+        root,
+        kit.LEGACY_STATE,
+        json.dumps(
+            {"schema": 1, "spec_dir": spec_dir, "version": "legacy", "files": legacy}
+        ),
+    )
+    return legacy
+
+
+@pytest.mark.parametrize("spec_dir", ["spec", "planning/product spec"])
+def test_legacy_migration_with_customization_and_collision(
+    tmp_path, monkeypatch, capsys, spec_dir
+):
+    legacy_kit(tmp_path, spec_dir)
+    old = "skills/spec-authoring/SKILL.md"
+    new = ".agents/skills/spec-authoring/SKILL.md"
+    kit.write(tmp_path, old, "Our old customization")
+    kit.write(tmp_path, new, "Existing destination")
+    args = ("--repo", tmp_path, "--spec-dir", spec_dir)
+    before = tree(tmp_path)
+    assert command(monkeypatch, capsys, "update", *args, "--dry-run")[0] == 1
+    assert tree(tmp_path) == before
+    code, output = command(monkeypatch, capsys, "update", *args)
+    assert code == 1 and f"Conflict {new}" in output
+    assert (tmp_path / old).read_text() == "Our old customization"
+    assert (tmp_path / new).read_text() == "Existing destination"
+    metadata = json.loads((tmp_path / kit.state_path(spec_dir)).read_text())
+    conflicts = metadata["pending"]["conflicts"]
+    for name in conflicts:
+        if name == new:
+            kit.write(tmp_path, name, "Combined customization")
+    options = [x for name in conflicts for x in ("--resolved", name)]
+    assert (
+        command(monkeypatch, capsys, "update", *args, "--accept-merge", *options)[0]
+        == 0
+    )
+    assert (tmp_path / new).read_text() == "Combined customization"
+    assert not (tmp_path / old).exists()
+    assert not (tmp_path / kit.LEGACY_STATE).exists()
+    assert command(monkeypatch, capsys, "update", *args)[0] == 0
+
+
+def test_legacy_migration_retains_starter_links_and_pending_update(
+    tmp_path, monkeypatch, capsys
+):
+    legacy_kit(tmp_path, "spec")
+    starter = tmp_path / "spec/README.md"
+    starter.write_text("[Guide](../docs/spec-review/artifact-authoring.md)\n")
+    state_file = tmp_path / kit.LEGACY_STATE
+    metadata = json.loads(state_file.read_text())
+    metadata["pending"] = {
+        "version": "legacy",
+        "files": metadata["files"],
+        "operations": {},
+        "conflicts": {},
+    }
+    state_file.write_text(json.dumps(metadata))
+    before = tree(tmp_path)
+    code, output = command(monkeypatch, capsys, "update", "--repo", tmp_path)
+    assert code == 1 and "pending legacy update" in output
+    assert tree(tmp_path) == before
+    metadata.pop("pending")
+    state_file.write_text(json.dumps(metadata))
+    assert command(monkeypatch, capsys, "update", "--repo", tmp_path)[0] == 0
+    assert starter.read_text() == "[Guide](../docs/spec-review/artifact-authoring.md)\n"
+    assert (tmp_path / "docs/spec-review/artifact-authoring.md").exists()
+    assert (tmp_path / "spec/docs/spec-review/artifact-authoring.md").exists()
+
+
+def test_legacy_migration_resumes_after_interrupted_write(
+    tmp_path, monkeypatch, capsys
+):
+    legacy_kit(tmp_path, "spec")
+    original_write = kit.write
+    interrupted = False
+
+    def failing_write(root, name, value):
+        nonlocal interrupted
+        if name == ".agents/skills/spec-authoring/SKILL.md" and not interrupted:
+            interrupted = True
+            raise OSError("interrupted")
+        original_write(root, name, value)
+
+    with monkeypatch.context() as context:
+        context.setattr(kit, "write", failing_write)
+        code, output = command(monkeypatch, capsys, "update", "--repo", tmp_path)
+        assert code == 1 and "interrupted" in output
+    assert (tmp_path / kit.LEGACY_STATE).exists()
+    assert json.loads((tmp_path / kit.state_path("spec")).read_text())["pending"]
+    assert command(monkeypatch, capsys, "update", "--repo", tmp_path)[0] == 0
+    assert not (tmp_path / kit.LEGACY_STATE).exists()
+    assert (tmp_path / ".agents/skills/spec-authoring/SKILL.md").exists()
+
+
+@pytest.mark.parametrize("kind", ["file", "symlink"])
+def test_init_ignores_unrelated_docs_path(tmp_path, monkeypatch, capsys, kind):
+    docs = tmp_path / "docs"
+    if kind == "file":
+        docs.write_text("Application content")
+    else:
+        outside = tmp_path / "outside"
+        outside.mkdir()
+        docs.symlink_to(outside, target_is_directory=True)
+    assert command(monkeypatch, capsys, "init", "--repo", tmp_path)[0] == 0
+    assert command(monkeypatch, capsys, "update", "--repo", tmp_path)[0] == 0
+    assert (
+        docs.is_symlink()
+        if kind == "symlink"
+        else docs.read_text() == "Application content"
+    )

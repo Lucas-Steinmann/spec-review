@@ -98,11 +98,12 @@ spec-review validate --repo /path/to/project
 spec-review update --repo /path/to/project --dry-run
 ```
 
-Initialization installs a committed kit of references under `docs/spec-review/`,
-workflows under `skills/`, a minimal root instruction block, and an empty `spec/`
+Initialization installs a committed kit of references under `spec/docs/spec-review/`,
+workflows under `.agents/skills/`, a minimal root instruction block, and an empty `spec/`
 scaffold. Existing application files and project specification content are preserved.
-A reviewer submodule is optional. Use `--spec-dir` for a custom spec directory.
-Updates preserve local customizations and provide an update skill for conflicts.
+A reviewer submodule is optional. Use `--spec-dir` for a custom spec directory; its
+references and kit state move with it. Updates migrate older kits while preserving
+local customizations and provide an update skill for conflicts.
 See [setup and update instructions](docs/spec-review/setup.md).
 
 ## Review spec-review itself
