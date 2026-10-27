@@ -4,7 +4,7 @@
 
 - Treat `spec/` as a maintained part of the source project. Keep canonical artifacts and implementation aligned in the same change whenever user requirements, behavior, architecture, or constraints change.
 - Before changing behavior, inspect the relevant artifacts and follow `spec/AGENTS.md`. Extend existing artifacts where appropriate; preserve stable IDs, relationships, and provenance.
-- Before adding or reclassifying an artifact, read `docs/spec-review/artifact-authoring.md` to choose its canonical type and separate requirements, technical design, and UI design.
+- Before adding or reclassifying an artifact, read `spec/docs/spec-review/artifact-authoring.md` to choose its canonical type and separate requirements, technical design, and UI design.
 - Record user-provided requirements and decisions in `spec/sources/chat.md`, update canonical artifacts and maintained `spec/views/` guides, and validate them with `spec-review validate --repo .`.
 - Do not leave specification updates as a follow-up task unless the user explicitly requests a code-only change.
 
@@ -17,5 +17,5 @@
 
 ## Periodic specification health reviews
 
-- For a requested cross-cutting specification or product consistency review, use the project skill at `skills/spec-health-review/SKILL.md`. Apply its additional product, operational, and evidence checks alongside the artifact-editing rules in `spec/AGENTS.md`.
-- When asked to remove superseded artifacts and references to them, use `skills/spec-supersession-cleanup/SKILL.md` to verify replacements, reconcile references, preserve provenance, and validate the result.
+- For a requested cross-cutting specification or product consistency review, use the project skill at `.agents/skills/spec-health-review/SKILL.md`. Apply its additional product, operational, and evidence checks alongside the artifact-editing rules in `spec/AGENTS.md`.
+- When asked to remove superseded artifacts and references to them, use `.agents/skills/spec-supersession-cleanup/SKILL.md` to verify replacements, reconcile references, preserve provenance, and validate the result.

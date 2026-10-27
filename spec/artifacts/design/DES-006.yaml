@@ -7,7 +7,7 @@ description: |
   --repo selects another path; resolve specification content from ./spec unless --spec-dir overrides it.
   Store canonical YAML artifacts in spec/artifacts, source provenance in spec/sources/chat.md, and
   maintained Markdown guides in spec/views. Load those guides directly in the reviewer. Keep artifact
-  authoring guidance in docs/spec-review/artifact-authoring.md and link it from agent instructions. Validate IDs,
+  authoring guidance in spec/docs/spec-review/artifact-authoring.md and link it from agent instructions. Validate IDs,
   relationships, supersession targets, and guide links with spec-review validate; scripts/validate_spec_views.py remains a compatibility wrapper.
   Portable kit installation and updates are specified in DES-011.
 

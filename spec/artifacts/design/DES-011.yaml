@@ -21,7 +21,9 @@ description: Package canonical reference documents, repository skills, spec edit
   relative-link, and CLI command rewriting to both managed instructions and starter contents. Keep starters out
   of managed upgrade baselines; preserve normal content-derived version handling and project customizations.
   Force-include canonical docs, skills, and spec editing instructions once in wheels; avoid duplicate bundled
-  source copies. Leave the recursive artifact reader independent of folder and filename conventions.
+  source copies. Keep this project's canonical kit references and skills in the same layout as installed kits;
+  load them from there in editable installations and include them in built packages. Leave the recursive artifact
+  reader independent of folder and filename conventions.
 source:
 - type: conversation
   file: spec/sources/chat.md

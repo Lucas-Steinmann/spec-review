@@ -5,7 +5,7 @@ description: Review a project’s maintained specification and its fit with impl
 
 # Specification health review
 
-Review canonical `spec/artifacts/`, maintained `spec/views/`, and `spec/sources/chat.md`; read `spec/AGENTS.md` before proposing changes. Read `docs/spec-review/maintenance.md` and `docs/spec-review/artifact-authoring.md`. Paths are relative to the repository root; for a custom spec directory, use the path in `docs/spec-review/.kit/state.json`. Validate with `spec-review validate --repo .`, passing `--spec-dir` when needed. Preserve stable IDs, supersession history, provenance, and the user's uncommitted work. A review request authorizes analysis and checks; edit artifacts or code when the user also asks for fixes.
+Review canonical `spec/artifacts/`, maintained `spec/views/`, and `spec/sources/chat.md`; read `spec/AGENTS.md` before proposing changes. Read `spec/docs/spec-review/maintenance.md` and `spec/docs/spec-review/artifact-authoring.md`. Paths are relative to the repository root; for a custom spec directory, use the path in `spec/docs/spec-review/.kit/state.json`. Validate with `spec-review validate --repo .`, passing `--spec-dir` when needed. Preserve stable IDs, supersession history, provenance, and the user's uncommitted work. A review request authorizes analysis and checks; edit artifacts or code when the user also asks for fixes.
 
 ## Core consistency checks
 

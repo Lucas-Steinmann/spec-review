@@ -56,9 +56,11 @@ def test_maintained_guides_start_with_principal_artifacts_and_validate(tmp_path)
         snapshot.documents[route.targets[0]], "../artifacts/requirements/REQ-026.yaml"
     ).targets == ["REQ-026"]
 
-    authoring = (ROOT / "docs" / "spec-review" / "artifact-authoring.md").read_text()
+    authoring = (
+        ROOT / "spec" / "docs" / "spec-review" / "artifact-authoring.md"
+    ).read_text()
     assert "`design`" in authoring and "`ui_design`" in authoring
-    assert "docs/spec-review/maintenance.md" in (ROOT / "AGENTS.md").read_text()
+    assert "spec/docs/spec-review/maintenance.md" in (ROOT / "AGENTS.md").read_text()
     assert (
         "docs/spec-review/artifact-authoring.md"
         in (ROOT / "spec" / "AGENTS.md").read_text()

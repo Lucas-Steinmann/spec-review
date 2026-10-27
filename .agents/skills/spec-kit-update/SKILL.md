@@ -5,14 +5,14 @@ description: Upgrade a repository's specification kit and reconcile upstream ins
 
 # Specification kit update
 
-Paths are relative to the repository root. Read `docs/spec-review/setup.md`.
+Paths are relative to the repository root. Read `spec/docs/spec-review/setup.md`.
 Use the installed tool's bundled kit as the target; do not fetch or install a tool
-upgrade unless requested. Read `docs/spec-review/.kit/state.json` for the installed
+upgrade unless requested. Read `spec/docs/spec-review/.kit/state.json` for the installed
 version and custom specification directory.
 
 1. Run `spec-review update --repo . --dry-run` with the recorded `--spec-dir`.
    Review the proposed changes, then run the same command without `--dry-run`.
-2. For conflicts, read `docs/spec-review/.kit/state.json`'s `pending.conflicts`.
+2. For conflicts, read `spec/docs/spec-review/.kit/state.json`'s `pending.conflicts`.
    Each contains `base`, `local`, and `incoming` text (null means absent).
    Also reread the current local file; it may have changed since the update began.
    For `AGENTS.md`, only the marked block is kit-owned.

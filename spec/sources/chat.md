@@ -392,3 +392,5 @@ The user requested standard and editable installation documentation, and asked t
 initialized kit skills live in `.agents/skills/` and kit documents inside the
 selected specification directory. Existing kits should migrate safely on update,
 preserving customizations and reporting conflicts. Other scaffold files remain.
+The user subsequently requested that this project use the same layout for its own
+kit documentation and skills.

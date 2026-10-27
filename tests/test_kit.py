@@ -603,7 +603,7 @@ def test_kit_from_wheel_outside_checkout(tmp_path):
 
     source = tmp_path / "source"
     source.mkdir()
-    for name in ("src", "docs", "skills", "spec", "scripts"):
+    for name in ("src", ".agents", "spec", "scripts"):
         shutil.copytree(
             ROOT / name,
             source / name,
@@ -628,7 +628,15 @@ def test_kit_from_wheel_outside_checkout(tmp_path):
             *(f"skills/{name}/SKILL.md" for name in kit.SKILLS),
             "spec/AGENTS.md",
         ):
-            assert archive.read(f"spec_review/kit/{name}") == (ROOT / name).read_bytes()
+            source_name = (
+                f"spec/{name}" if name.startswith("docs/") else f".agents/{name}"
+            )
+            if name == "spec/AGENTS.md":
+                source_name = name
+            assert (
+                archive.read(f"spec_review/kit/{name}")
+                == (ROOT / source_name).read_bytes()
+            )
     env["PYTHONPATH"] = str(installed)
     for index, spec_dir in enumerate(
         ("spec", "planning/spec", "planning/product spec")

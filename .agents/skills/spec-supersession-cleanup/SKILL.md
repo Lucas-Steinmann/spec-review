@@ -5,7 +5,7 @@ description: Remove explicitly approved superseded specification artifacts and r
 
 # Supersession cleanup
 
-Use this workflow when the user asks to remove superseded artifacts and references to them. Paths below are relative to the repository root. Read `spec/AGENTS.md`, `docs/spec-review/maintenance.md`, and `docs/spec-review/artifact-format.md`; for a custom specification directory, use the path recorded in `docs/spec-review/.kit/state.json` when available.
+Use this workflow when the user asks to remove superseded artifacts and references to them. Paths below are relative to the repository root. Read `spec/AGENTS.md`, `spec/docs/spec-review/maintenance.md`, and `spec/docs/spec-review/artifact-format.md`; for a custom specification directory, use the path recorded in `spec/docs/spec-review/.kit/state.json` when available.
 
 1. Identify candidate artifacts by status and `superseded_by`. Confirm that each replacement exists and that the supersession is intentional and traceable. The replacement may reflect changed or contradictory use cases, requirements, or design; it does not need to preserve the old artifact's intent. Do not infer that an artifact is superseded from age, wording, or implementation drift alone. If supersession or removal is unclear, cite the artifact IDs and ask before deleting; continue independent cleanup work.
 2. Search the entire repository for each candidate ID, title, and file path. Include canonical artifacts, maintained views, source records, documentation, tests, fixtures, and code. Classify each match as a historical record, a semantic dependency, or a stale navigation/reference link.

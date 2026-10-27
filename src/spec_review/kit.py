@@ -120,7 +120,10 @@ def resources(spec_dir: str) -> tuple[str, dict[str, str], dict[str, str]]:
         bundled = assets.joinpath(name)
         if bundled.is_file():
             return bundled.read_text(encoding="utf-8")
-        return (source_root / name).read_text(encoding="utf-8")
+        source = f"spec/{name}" if name.startswith("docs/") else f".agents/{name}"
+        if name == "spec/AGENTS.md":
+            source = name
+        return (source_root / source).read_text(encoding="utf-8")
 
     managed = {
         f"{spec_dir}/docs/spec-review/{name}": shared(f"docs/spec-review/{name}")
@@ -145,8 +148,6 @@ def resources(spec_dir: str) -> tuple[str, dict[str, str], dict[str, str]]:
     # but remain outside upgrade baselines so project-authored content survives.
     for collection in (managed, starters):
         for name, text in list(collection.items()):
-            text = text.replace("docs/spec-review/", "spec/docs/spec-review/")
-            text = text.replace("skills/", ".agents/skills/")
             if spec_dir != "spec":
                 text = text.replace("spec/", f"{spec_dir}/")
                 text = re.sub(
@@ -162,8 +163,6 @@ def resources(spec_dir: str) -> tuple[str, dict[str, str], dict[str, str]]:
                     text = text.replace(
                         f"../{target}/", os.path.relpath(target, spec_dir) + "/"
                     )
-            if name.startswith(f"{spec_dir}/docs/spec-review/"):
-                text = text.replace(f"../../{spec_dir}/", "../../")
             if " " in spec_dir:
                 # Keep Markdown destinations valid for paths with spaces.
                 text = re.sub(

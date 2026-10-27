@@ -2,9 +2,9 @@
 
 Apply these checks whenever you add, revise, or remove canonical artifacts under `spec/`.
 
-Read [`docs/spec-review/artifact-authoring.md`](../docs/spec-review/artifact-authoring.md)
+Read [`spec/docs/spec-review/artifact-authoring.md`](docs/spec-review/artifact-authoring.md)
 before adding or reclassifying an artifact. Its
-[canonical storage layout](../docs/spec-review/artifact-authoring.md#canonical-storage-layout)
+[canonical storage layout](docs/spec-review/artifact-authoring.md#canonical-storage-layout)
 defines the authoritative type-folder mapping.
 
 Create new artifacts at `spec/artifacts/<type-folder>/<id>.yaml`, one YAML mapping
@@ -28,7 +28,7 @@ Reserve `decision` for engineering choices with a meaningful rationale. Keep req
 - Store relationships in their canonical direction and use the field that expresses their meaning. Do not maintain inverse links for navigation; backlinks should be derived from canonical relationships.
 - Don't add conversational answers or incidental discussion to the plan unless they affect a goal, requirement, constraint, decision, design, risk, assumption, question, or acceptance scenario.
 - Prefer a concise table or plantuml or mermaid diagram when it communicates relationships, comparisons, sequences, or responsibilities more clearly than prose. Keep necessary explanations in prose where a visual would be less clear.
-- When revising a plan, preserve information that is still current and useful. Remove or replace only information that is obsolete, duplicated, or explicitly superseded; retain provenance and a clear link to replacement artifacts where relevant. When cleanup of superseded artifacts is requested, follow `skills/spec-supersession-cleanup/SKILL.md` and remove stale references after confirming their replacements.
+- When revising a plan, preserve information that is still current and useful. Remove or replace only information that is obsolete, duplicated, or explicitly superseded; retain provenance and a clear link to replacement artifacts where relevant. When cleanup of superseded artifacts is requested, follow `.agents/skills/spec-supersession-cleanup/SKILL.md` and remove stale references after confirming their replacements.
 - Keep abstraction levels distinct. For example, a user-facing interaction flow and a design-level network protocol flow can both be necessary even when they cover the same scenario.
 - Review non-functional requirements (for example, latency, throughput, availability, privacy, and security). Record measurable targets where the plan needs them; identify an item as trivial only when that is justified by the product context.
 

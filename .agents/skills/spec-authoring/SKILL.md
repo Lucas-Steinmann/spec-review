@@ -5,14 +5,14 @@ description: Author or adopt project specification artifacts and maintained guid
 
 # Specification authoring
 
-Paths below are relative to the repository root. Read `docs/spec-review/maintenance.md`,
-`spec/AGENTS.md`, and `docs/spec-review/artifact-authoring.md`.
-Use `docs/spec-review/artifact-format.md` for YAML syntax and relationships.
+Paths below are relative to the repository root. Read `spec/docs/spec-review/maintenance.md`,
+`spec/AGENTS.md`, and `spec/docs/spec-review/artifact-authoring.md`.
+Use `spec/docs/spec-review/artifact-format.md` for YAML syntax and relationships.
 For a custom specification directory, use the path recorded in
-`docs/spec-review/.kit/state.json` instead of `spec/`.
+`spec/docs/spec-review/.kit/state.json` instead of `spec/`.
 
 Follow the authoritative type-folder mapping in
-`docs/spec-review/artifact-authoring.md#canonical-storage-layout`. Create each new
+`spec/docs/spec-review/artifact-authoring.md#canonical-storage-layout`. Create each new
 artifact at `spec/artifacts/<type-folder>/<id>.yaml`, one YAML mapping per file,
 with the filename exactly matching `id`. Examples:
 `spec/artifacts/requirements/REQ-001.yaml` and
