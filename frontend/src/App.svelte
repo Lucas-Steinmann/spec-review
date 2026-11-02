@@ -79,6 +79,17 @@
   let linkAnchor = '';
   let pendingLinkContext = null;
   let page = 'overview';
+  let activeView = null;
+  const viewStorageKey = 'spec-review-active-view';
+
+  function saveActiveView() {
+    if (activeView) sessionStorage.setItem(viewStorageKey, JSON.stringify(activeView));
+  }
+
+  function readActiveView() {
+    try { return JSON.parse(sessionStorage.getItem(viewStorageKey)); }
+    catch { return null; }
+  }
   let themeMode = ['system', 'dark', 'paper'].includes(localStorage.getItem('spec-review-theme'))
     ? localStorage.getItem('spec-review-theme')
     : 'system';
@@ -139,13 +150,22 @@
       if (savedRepos.length) {
         const selected = stored.selected || localStorage.getItem('spec-review-selected-source');
         overviewRepo = savedRepos.some((item) => item.id === selected) ? selected : savedRepos[0].id;
-        refreshOverview();
+        const restored = readActiveView();
+        const item = savedRepos.find((row) => row.id === restored?.sourceId);
+        if (item && ['review', 'compare'].includes(restored.mode) && typeof restored.revision === 'string' && typeof restored.base === 'string') {
+          overviewRepo = item.id;
+          if (item.source === 'local') await openLocalRepository(item, null, restored);
+          else await openRepository(item, null, restored);
+        } else {
+          sessionStorage.removeItem(viewStorageKey);
+          refreshOverview();
+        }
       }
     }
     catch (problem) { showError(problem); }
   }
 
-  async function openLocalRepository(item = overviewItem, worktree = null) {
+  async function openLocalRepository(item = overviewItem, worktree = null, restored = null) {
     if (!item) return;
     overviewRequest += 1;
     const request = ++viewRequest;
@@ -164,7 +184,12 @@
       ];
       base = overviewBase || data.default_base || '';
       revision = worktree ? `worktree:${worktree.path}` : '';
-      if (worktree) { reviewMode = 'compare'; await compareRevisions(); }
+      if (restored) {
+        reviewMode = restored.mode; base = restored.base; revision = restored.revision;
+        category = restored.category || category;
+        if (reviewMode === 'compare') await compareRevisions(); else await loadSnapshot();
+        await restoreDocument(restored);
+      } else if (worktree) { reviewMode = 'compare'; await compareRevisions(); }
       else { if (!isGit) reviewMode = 'review'; await loadSnapshot(); }
     } catch (problem) { if (request === viewRequest) showError(problem); }
     finally { if (request === viewRequest) busy = false; }
@@ -272,7 +297,7 @@
     finally { if (request === addRequest) addBusy = false; }
   }
 
-  async function openRepository(item, pull = null) {
+  async function openRepository(item, pull = null, restored = null) {
     if (!item) return;
     overviewRequest += 1;
     const request = ++viewRequest;
@@ -282,7 +307,12 @@
     try {
       await loadGithubRevisions(request);
       if (request !== viewRequest || page !== 'detail') return;
-      if (pull) {
+      if (restored) {
+        reviewMode = restored.mode; base = restored.base; revision = restored.revision;
+        category = restored.category || category;
+        if (reviewMode === 'compare') await compareRevisions(); else await loadSnapshot();
+        await restoreDocument(restored);
+      } else if (pull) {
         reviewMode = 'compare';
         base = pull.base; revision = pull.head;
         await compareRevisions();
@@ -295,6 +325,7 @@
     viewRequest += 1;
     busy = false;
     page = 'overview';
+    activeView = null; sessionStorage.removeItem(viewStorageKey);
     refreshOverview();
   }
 
@@ -331,6 +362,7 @@
       comparison = null;
       categories = snapshot.categories || {};
       if (!categories[category]) category = Object.keys(categories)[0] || '';
+      rememberLoadedView('review');
     } catch (problem) { if (request === viewRequest) showError(problem); }
     finally { if (request === viewRequest) busy = false; }
   }
@@ -360,8 +392,23 @@
       categories = { ...comparison.base.categories, ...comparison.target.categories };
       if (!categories[category]) category = Object.keys(categories)[0] || '';
       context = comparison.targetContext;
+      rememberLoadedView('compare');
     } catch (problem) { if (request === viewRequest) showError(problem); }
     finally { if (request === viewRequest) busy = false; }
+  }
+
+  function rememberLoadedView(mode) {
+    const item = savedRepos.find((row) => row.source === source && (source === 'local'
+      ? row.root === repo && row.spec_dir === specDir : row.full_name === repo));
+    if (!item) return;
+    activeView = { sourceId: item.id, mode, revision, base, category, documentId: '', linkedContext: null };
+    saveActiveView();
+  }
+
+  async function restoreDocument(restored) {
+    if (!activeView || activeView.sourceId !== restored.sourceId || activeView.mode !== restored.mode || activeView.revision !== restored.revision || !restored.documentId || page !== 'detail') return;
+    if (restored.linkedContext) await navigateLink(restored.documentId, restored.linkedContext);
+    else if (comparison?.changes[restored.documentId] || snapshot?.documents?.[restored.documentId]) await selectDocument(restored.documentId);
   }
 
   function changedCategories() {
@@ -424,6 +471,7 @@
         if (request !== documentRequest || selectedView !== viewRequest || page !== 'detail') return;
         compareDocuments = { base: oldDocument, target: newDocument, baseContext, targetContext, status: change.status };
       }
+      if (activeView) { activeView.documentId = id; activeView.linkedContext = null; activeView.category = category; saveActiveView(); }
     } catch (problem) { if (request === documentRequest && selectedView === viewRequest) showError(problem); }
   }
 
@@ -479,6 +527,7 @@
       const loaded = await fetchDocument(id, ctx);
       if (request !== viewRequest || page !== 'detail') return;
       linkedDocument = loaded;
+      if (activeView) { activeView.documentId = id; activeView.linkedContext = ctx; activeView.category = category; saveActiveView(); }
       await tick();
       document.querySelector('.content-pane .doc-heading h1')?.focus();
       if (anchor) {
@@ -499,6 +548,7 @@
     if (!previous) return;
     history = history.slice(0, -1);
     ({ comparison, snapshot, categories, category, context, selectedId, currentDocument, compareDocuments, linkedDocument } = previous);
+    if (activeView) { activeView.documentId = selectedId; activeView.linkedContext = linkedDocument ? context : null; activeView.category = category; saveActiveView(); }
   }
 
   async function revisionChanged() {
@@ -544,7 +594,7 @@
 <svelte:head><title>spec-review</title></svelte:head>
 
 <header class="topbar">
-  <a class="brand" href="/" aria-label="spec-review home"><span class="brand-mark" aria-hidden="true">s</span><span>spec<span class="brand-light">review</span></span></a>
+  <a class="brand" href="/" aria-label="spec-review home" on:click={() => sessionStorage.removeItem(viewStorageKey)}><span class="brand-mark" aria-hidden="true">s</span><span>spec<span class="brand-light">review</span></span></a>
   {#if page === 'detail'}
     <Button variant="quiet" class="quiet-button back-button" on:click={openOverview}><ArrowLeft size={15} aria-hidden="true" /> Repositories</Button>
     <div class="local-path"><strong>{repositoryDisplayName()}</strong><span>{specDir}</span></div>
@@ -625,7 +675,7 @@
     </div>
     <div class="category-list">
       {#each orderedCategoryEntries(categories) as [key, label]}
-        <button class:active={category === key} on:click={() => category = key}>{label}{#if changedCategories().has(key)} ★{/if}</button>
+        <button class:active={category === key} on:click={() => { category = key; if (activeView) { activeView.category = key; saveActiveView(); } }}>{label}{#if changedCategories().has(key)} ★{/if}</button>
       {/each}
     </div>
     <div class="document-list">

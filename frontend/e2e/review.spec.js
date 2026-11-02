@@ -441,7 +441,6 @@ test('review and compare modes apply selected revisions only on confirmation', a
   expect(comparisons).toEqual([['base', '']]);
 
   await page.reload();
-  await page.getByRole('button', { name: 'Open review' }).click();
   await expect(page.getByRole('combobox', { name: 'Review or compare' })).toHaveValue('compare');
   await expect(page.getByRole('combobox', { name: 'Base revision' })).toBeVisible();
 });
@@ -486,11 +485,7 @@ test('superseded and changes-only filters persist across reloads', async ({ page
   await expect(page.locator('.document-list')).not.toContainText('GOAL-OLD');
 
   await page.reload();
-  await page.getByRole('button', { name: 'Open review' }).click();
   await expect(page.getByRole('checkbox', { name: 'Hide superseded' })).not.toBeChecked();
-  await expect(page.locator('.document-list')).toContainText('GOAL-OLD');
-  await page.getByRole('combobox', { name: 'Review or compare' }).selectOption('compare');
-  await page.getByRole('button', { name: 'Apply revision' }).click();
   await expect(page.getByRole('checkbox', { name: 'Changes only' })).toBeChecked();
   await expect(page.locator('.document-list')).toContainText('GOAL-001');
   await expect(page.locator('.document-list')).not.toContainText('GOAL-OLD');

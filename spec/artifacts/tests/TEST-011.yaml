@@ -5,8 +5,11 @@ verifies:
 - REQ-034
 description: Start the browser without a folder argument, add a local folder through Add, and open its review without
   contacting gh. Confirm local revisions and comparisons show changed, added, and deleted documents with base and
-  target content. Confirm the API accepts the empty working-tree revision on either side and categories containing
-  changes are marked. Confirm the removed /api/github routes are absent.
+  target content. Reload a selected document in an applied revision and a worktree comparison, including a followed
+  link, and confirm the repository, revision contexts and document are restored. Repeat for a GitHub comparison.
+  Return to the overview and reload to confirm it remains open. Confirm the API accepts the empty working-tree revision
+  on either side and categories containing changes are marked. Confirm the removed /api/github routes are absent.
+
 source:
 - type: conversation
   file: spec/sources/chat.md
@@ -14,3 +17,6 @@ source:
 - type: conversation
   file: spec/sources/chat.md
   section: Local folder addition and worktree review, October 12, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Browser reload restoration, November 2, 2026

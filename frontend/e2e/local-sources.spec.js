@@ -210,3 +210,62 @@ test('comparison renders tables and highlights changed code and diagram source o
     await expect(side.locator('.code-diff-line').filter({ hasText: 'same' })).not.toHaveClass(/changed-line/);
   }
 });
+
+
+test('reload restores the applied review and worktree comparison with their documents', async ({ page }) => {
+  const requests = [];
+  await seed(page);
+  await mock(page, (url) => { requests.push(url); });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Open review' }).click();
+  await page.getByRole('combobox', { name: 'Target revision' }).selectOption('base-sha');
+  await page.getByRole('button', { name: 'Apply revision' }).click();
+  await page.getByRole('button', { name: /GOAL-001/ }).click();
+  await expect(page.locator('.content-pane')).toContainText('Text from base');
+  await page.reload();
+  await expect(page.getByRole('combobox', { name: 'Target revision' })).toHaveValue('base-sha');
+  await expect(page.locator('.content-pane')).toContainText('Text from base');
+  expect(requests.findLast((url) => url.pathname === '/api/local/snapshot').searchParams.get('ref')).toBe('base-sha');
+
+  await page.getByRole('button', { name: 'Repositories', exact: true }).click();
+  await page.locator('.pull-card').filter({ hasText: 'agent-one' }).click();
+  await page.getByRole('button', { name: /GOAL-001/ }).click();
+  await expect(page.locator('.diff-side')).toHaveCount(2);
+  await page.reload();
+  await expect(page.getByRole('combobox', { name: 'Review or compare' })).toHaveValue('compare');
+  await expect(page.locator('.diff-side').last()).toContainText('Text from /projects/agent one');
+  expect(requests.findLast((url) => url.pathname === '/api/local/compare').searchParams.get('target_worktree')).toBe('/projects/agent one');
+  await page.locator('.diff-side').first().getByRole('link', { name: 'Goal', exact: true }).click();
+  await expect(page.locator('.content-pane')).toContainText('Text from base');
+  await page.reload();
+  await expect(page.locator('.content-pane')).toContainText('Text from base');
+  await expect(page.getByRole('button', { name: 'Back', exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Repositories', exact: true }).click();
+  await page.reload();
+  await expect(page.getByRole('button', { name: 'Open review' })).toBeVisible();
+});
+
+
+test('reload restores a GitHub comparison and its selected document', async ({ page }) => {
+  const requests = [];
+  await seed(page, [{ source: 'gh', id: 'owner/project', full_name: 'owner/project', default_branch: 'main' }]);
+  await mock(page, (url) => {
+    requests.push(url);
+    if (url.pathname === '/api/gh/overview') return [{ number: 1, title: 'Change', head: 'head', head_ref: 'feature', base: 'base', base_ref: 'main', checks: 'success' }];
+    if (url.pathname === '/api/gh/branches') return [{ name: 'main', sha: 'base' }];
+    if (url.pathname === '/api/gh/pulls') return [{ number: 1, title: 'Change', head: 'head', base: 'base' }];
+    if (url.pathname === '/api/gh/commits') return [{ sha: 'head', subject: 'Head' }];
+    if (url.pathname === '/api/gh/compare') return { base: snap('base'), target: snap('head'), changes: { 'GOAL-001': { status: 'changed', old: goal, new: goal } } };
+    if (url.pathname === '/api/gh/document') return { document: goal, revision: url.searchParams.get('ref'), sections: [{ heading: 'Description', blocks: [{ kind: 'markdown', text: `Revision ${url.searchParams.get('ref')}` }] }] };
+  });
+  await page.goto('/');
+  await page.locator('.pull-card').click();
+  await page.getByRole('button', { name: /GOAL-001/ }).click();
+  await expect(page.locator('.diff-side').last()).toContainText('Revision head');
+  await page.reload();
+  await expect(page.locator('.local-path strong')).toHaveText('owner/project');
+  await expect(page.locator('.diff-side').first()).toContainText('Revision base');
+  await expect(page.locator('.diff-side').last()).toContainText('Revision head');
+  const compare = requests.findLast((url) => url.pathname === '/api/gh/compare');
+  expect([compare.searchParams.get('owner'), compare.searchParams.get('repo'), compare.searchParams.get('base'), compare.searchParams.get('target')]).toEqual(['owner', 'project', 'base', 'head']);
+});

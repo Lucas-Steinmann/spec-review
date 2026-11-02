@@ -398,3 +398,7 @@ kit documentation and skills.
 ## Browser table and code comparisons, November 2, 2026
 
 The user requested rendered Markdown tables with colored diff backgrounds and visible source changes for code, including Mermaid and PlantUML diagrams, in the diff view.
+
+## Browser reload restoration, November 2, 2026
+
+The user requested that F5 or Ctrl+R keep the current repository and document, revision, or comparison instead of returning to the landing page.

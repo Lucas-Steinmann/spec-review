@@ -23,6 +23,10 @@ description: 'The Svelte WebUI consumes snapshot, comparison, content-block, lin
 
 
 
+  Persist the applied review location in tab session storage, including source identity, revision selections,
+  category, selected document and linked-document context. On reload, retrieve fresh metadata and content for that
+  location; returning to the repository overview clears it. Unapplied selector changes do not replace the applied location.
+
   Browser startup is independent of a selected Repository. Persist the saved source list and selected source in
   repositories.json beside user settings under the user configuration directory; expose GET and POST source
   endpoints, and migrate an existing browser-local list only when the server has no saved sources. Local discovery endpoints list readable folders, validate
@@ -79,3 +83,6 @@ source:
 - type: conversation
   file: spec/sources/chat.md
   section: Persistent browser repository list, October 17, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Browser reload restoration, November 2, 2026
