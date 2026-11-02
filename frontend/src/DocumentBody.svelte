@@ -3,8 +3,9 @@
   import { Maximize, RotateCcw, X, ZoomIn, ZoomOut } from '@lucide/svelte';
   import Button from './ui/Button.svelte';
   import Dialog from './ui/Dialog.svelte';
+  import CodeBlock from './CodeBlock.svelte';
   import DiagramBlock from './DiagramBlock.svelte';
-  import { renderMarkdown, renderMarkdownDiffLine } from './markdown.js';
+  import { renderMarkdown, renderMarkdownDiff } from './markdown.js';
 
   export let sections = [];
   export let diffAgainst = null;
@@ -131,26 +132,20 @@
         {@const changes = lineChanges(block.text, otherMarkdown(sectionIndex, blockIndex))}
         {#if changes}
           <div class="markdown markdown-diff">
-            {#each block.text.split('\n') as line, lineIndex}
-              <div class:changed-line={changes[lineIndex] === 'changed'} class="markdown-diff-line">
-                {@html changes[lineIndex] === 'changed'
-                  ? renderMarkdownDiffLine(line, diffAgainst?.[sectionIndex]?.blocks?.[blockIndex]?.text?.split('\n')?.[lineIndex] || '', diffKind)
-                  : renderMarkdown(line || ' ')}
-              </div>
-            {/each}
+            {@html renderMarkdownDiff(block.text, otherMarkdown(sectionIndex, blockIndex), diffKind, changes)}
           </div>
         {:else}
           <div class="markdown">{@html renderMarkdown(block.text)}</div>
         {/if}
       {:else if block.kind === 'diagram'}
-        <DiagramBlock {block} />
+        <DiagramBlock {block} otherText={diffAgainst === null ? null : (diffAgainst?.[sectionIndex]?.blocks?.[blockIndex]?.kind === block.kind ? diffAgainst[sectionIndex].blocks[blockIndex].text : '')} />
       {:else if block.kind === 'image'}
         <figure class="spec-image" class:diff-image={diffAgainst !== null} class:changed-image={imageChanged(block, sectionIndex)} class:removed-image={diffKind === 'removed'}>
           <img src={block.text} alt={block.language || 'Specification visual'} />
           {#if block.language}<figcaption>{block.language}</figcaption>{/if}
         </figure>
       {:else}
-        <pre><code class={`language-${block.language || 'text'}`}>{block.text}</code></pre>
+        <CodeBlock {block} otherText={diffAgainst === null ? null : (diffAgainst?.[sectionIndex]?.blocks?.[blockIndex]?.kind === block.kind ? diffAgainst[sectionIndex].blocks[blockIndex].text : '')} />
       {/if}
     {/each}
   {/each}

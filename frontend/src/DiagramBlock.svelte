@@ -1,6 +1,8 @@
 <script>
   import { onMount } from 'svelte';
+  import CodeBlock from './CodeBlock.svelte';
   export let block;
+  export let otherText = null;
   let image = '';
   let error = '';
   let loading = true;
@@ -24,7 +26,7 @@
 </script>
 
 <figure class="diagram">
-  <pre><code class={`language-${block.language || 'text'}`}>{block.text}</code></pre>
+  <CodeBlock {block} {otherText} />
   {#if image}
     <img src={image} alt={`${block.language} diagram`} />
   {:else if loading}

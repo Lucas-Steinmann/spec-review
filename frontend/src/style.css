@@ -289,3 +289,8 @@ pre { overflow: auto; padding: 15px 17px; border: 1px solid var(--line); border-
 .pull-title small { overflow-wrap: anywhere; }
 .overview-base { min-width: 140px; display: grid; gap: 5px; color: var(--ink-muted); font-size: 11px; }
 @media (max-width: 600px) { .pull-card { flex-wrap: wrap; } .section-heading { flex-wrap: wrap; gap: 12px; } }
+
+.markdown-diff tr.changed-line > * { background: var(--positive-bg); }
+.diff-side:first-child .markdown-diff tr.changed-line > * { background: var(--negative-bg); }
+.code-diff-line.changed-line { display: inline-block; min-width: 100%; background: var(--positive-bg); border-left: 2px solid var(--positive); }
+.diff-side:first-child .code-diff-line.changed-line { background: var(--negative-bg); border-left-color: var(--negative); }

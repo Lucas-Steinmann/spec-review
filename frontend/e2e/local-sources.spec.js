@@ -182,3 +182,31 @@ test('pending worktree comparisons cannot replace a newer source and Apply rerea
   await page.getByRole('button', { name: 'Apply revision' }).click();
   await expect.poll(() => compareCount).toBe(3);
 });
+
+test('comparison renders tables and highlights changed code and diagram source on both sides', async ({ page }) => {
+  await seed(page);
+  await mock(page, (url) => {
+    if (url.pathname === '/api/render') return { data_url: 'data:image/png;base64,iVBORw0KGgo=' };
+    if (url.pathname === '/api/local/document') {
+      const old = url.searchParams.get('ref') === 'base-sha';
+      return { document: goal, revision: old ? 'base-sha' : 'working tree', sections: [{ heading: 'Description', blocks: [
+        { kind: 'markdown', text: `| Name | Value |\n| --- | --- |\n| Item | ${old ? 'old' : 'new'} |` },
+        { kind: 'code', language: 'js', text: `same\n${old ? 'oldCode()' : 'newCode()'}` },
+        { kind: 'diagram', language: 'mermaid', text: `flowchart LR\nA --> ${old ? 'B' : 'C'}` },
+        { kind: 'diagram', language: 'plantuml', text: `@startuml\nA -> ${old ? 'B' : 'C'}\n@enduml` },
+      ] }] };
+    }
+  });
+  await page.goto('/');
+  await page.locator('.pull-card').filter({ hasText: 'agent-one' }).click();
+  await page.getByRole('button', { name: /GOAL-001/ }).click();
+  for (const [index, value] of ['old', 'new'].entries()) {
+    const side = page.locator('.diff-side').nth(index);
+    await expect(side.locator('table tbody tr.changed-line')).toContainText(value);
+    await expect(side.locator(`table .diff-text.${index ? 'added' : 'removed'}`)).toContainText(value);
+    await expect(side.locator('.code-diff-line.changed-line')).toHaveCount(3);
+    await expect(side.locator('.code-diff-line.changed-line').first()).toContainText(`${value}Code()`);
+    await expect(side.locator('.diagram img')).toHaveCount(2);
+    await expect(side.locator('.code-diff-line').filter({ hasText: 'same' })).not.toHaveClass(/changed-line/);
+  }
+});

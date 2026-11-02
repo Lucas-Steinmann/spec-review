@@ -34,7 +34,8 @@ Update maintained views and run `spec-review validate --repo .` (with `--spec-di
 when needed). Use the project's own test commands for implementation verification.
 
 When adopting existing material, inspect the selected documentation and relevant
-code first. Retain original documents and reference them as sources. Distinguish
+code first. Retain distinct user or external evidence as sources; do not require
+citations to earlier AI-authored drafts. Distinguish
 confirmed requirements from observed implementation and unverified assumptions;
 do not turn every implementation detail into a requirement. Ask about material
 contradictions. Start with principal goals and journeys and expand only as needed

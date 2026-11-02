@@ -125,3 +125,30 @@ export function renderMarkdown(source) {
   flush();
   return output.join('\n');
 }
+
+// Keep table rows together so the browser receives valid table markup.
+export function renderMarkdownDiff(source, other, kind, changes) {
+  const lines = source.split('\n');
+  const otherLines = other.split('\n');
+  const output = [];
+  const content = (line, counterpart) => renderMarkdownDiffLine(line, counterpart || '', kind).replace(/^<p>|<\/p>$/g, '');
+  for (let i = 0; i < lines.length;) {
+    if (lines[i].includes('|') && i + 1 < lines.length && /^\s*\|?\s*:?-{3,}/.test(lines[i + 1])) {
+      const header = cells(lines[i]);
+      const row = (values, index, tag) => {
+        const peers = cells(otherLines[index] || '');
+        const cls = changes[index] === 'changed' ? ' class="changed-line"' : '';
+        return `<tr${cls}>${header.map((_, col) => `<${tag}>${content(values[col] || '', peers[col])}</${tag}>`).join('')}</tr>`;
+      };
+      let table = `<table><thead>${row(header, i, 'th')}</thead><tbody>`;
+      i += 2;
+      while (i < lines.length && lines[i].includes('|')) { table += row(cells(lines[i]), i, 'td'); i++; }
+      output.push(`${table}</tbody></table>`);
+    } else {
+      const changed = changes[i] === 'changed';
+      output.push(`<div class="markdown-diff-line${changed ? ' changed-line' : ''}">${changed ? renderMarkdownDiffLine(lines[i], otherLines[i] || '', kind) : renderMarkdown(lines[i] || ' ')}</div>`);
+      i++;
+    }
+  }
+  return output.join('\n');
+}
