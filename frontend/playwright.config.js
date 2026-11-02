@@ -1,5 +1,11 @@
 import { defineConfig, devices } from '@playwright/test';
 import { fileURLToPath } from 'node:url';
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
+const testConfigDir = mkdtempSync(join(tmpdir(), 'spec-review-playwright-'));
+process.on('exit', () => rmSync(testConfigDir, { recursive: true, force: true }));
 
 const projectRoot = fileURLToPath(new URL('..', import.meta.url));
 
@@ -18,7 +24,7 @@ export default defineConfig({
     {
       command: 'uv run --no-sync --project . python -m spec_review.cli --web --port 8876',
       cwd: projectRoot,
-      env: { UV_CACHE_DIR: process.env.UV_CACHE_DIR || '/tmp/spec-review-uv-cache' },
+      env: { UV_CACHE_DIR: process.env.UV_CACHE_DIR || '/tmp/spec-review-uv-cache', XDG_CONFIG_HOME: testConfigDir },
       url: 'http://127.0.0.1:8876/api/status',
       reuseExistingServer: false,
       timeout: 30_000,

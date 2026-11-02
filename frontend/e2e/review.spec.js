@@ -38,7 +38,7 @@ async function mockApi(page, answer) {
     }
     else if (url.pathname === '/api/local/overview') result = localMetadata;
     else if (url.pathname === '/api/local/folders') result = { path: '/tmp', parent: '/', folders: [] };
-    else result = answer(url, route.request());
+    else result = await answer(url, route.request());
     if (url.pathname === '/api/local/commits' && result) result = { ...localMetadata, ...result };
     if (result === undefined) throw new Error(`Unexpected API request: ${url}`);
     await route.fulfill({ status: result.status || 200, contentType: 'application/json', body: JSON.stringify(result.body ?? result) });
@@ -267,8 +267,7 @@ test('gh CLI repositories, saved overview, Actions, and pull comparison', async 
 test('local selection remains available during a pending gh overview refresh', async ({ page }) => {
   let releaseOverview;
   const pending = new Promise((resolve) => { releaseOverview = resolve; });
-  await page.route('**/api/**', async (route) => {
-    const url = new URL(route.request().url());
+  await mockApi(page, async (url) => {
     let body;
     if (url.pathname === '/api/status') body = { repo: '/tmp/sample', spec_dir: 'spec' };
     else if (url.pathname === '/api/local/overview') body = localMetadata;
@@ -277,7 +276,7 @@ test('local selection remains available during a pending gh overview refresh', a
     else if (url.pathname === '/api/gh/repos') body = [{ full_name: 'owner/project', default_branch: 'main', private: true }];
     else if (url.pathname === '/api/gh/overview') { await pending; body = []; }
     else throw new Error(`Unexpected API request: ${url}`);
-    await route.fulfill({ contentType: 'application/json', body: JSON.stringify(body) });
+    return body;
   });
   await page.goto('/');
   await page.getByRole('button', { name: 'Add repository', exact: true }).click();
@@ -308,8 +307,7 @@ test('gh sign-in failure is explained at the browser boundary', async ({ page })
 test('repository discovery keeps the local overview usable while gh responds', async ({ page }) => {
   let releaseAccount;
   const pending = new Promise((resolve) => { releaseAccount = resolve; });
-  await page.route('**/api/**', async (route) => {
-    const url = new URL(route.request().url());
+  await mockApi(page, async (url) => {
     let body;
     if (url.pathname === '/api/status') body = { repo: '/tmp/sample', spec_dir: 'spec' };
     else if (url.pathname === '/api/local/overview') body = localMetadata;
@@ -317,7 +315,7 @@ test('repository discovery keeps the local overview usable while gh responds', a
     else if (url.pathname === '/api/gh/account') { await pending; body = { login: 'reviewer' }; }
     else if (url.pathname === '/api/gh/repos') body = [{ full_name: 'owner/project', default_branch: 'main', private: true }];
     else throw new Error(`Unexpected API request: ${url}`);
-    await route.fulfill({ contentType: 'application/json', body: JSON.stringify(body) });
+    return body;
   });
   await page.goto('/');
   await page.getByRole('button', { name: 'Add repository', exact: true }).click();
@@ -624,10 +622,14 @@ test('a pending local comparison leaves filtering and overview navigation availa
   const pending = new Promise((resolve) => { releaseComparison = resolve; });
   let comparisonFinished;
   const fulfilled = new Promise((resolve) => { comparisonFinished = resolve; });
+  let savedSources = { repositories: [], selected: '' };
   await page.route('**/api/**', async (route) => {
     const url = new URL(route.request().url());
     let body;
-    if (url.pathname === '/api/status') body = { repo: '/tmp/sample', spec_dir: 'spec' };
+    if (url.pathname === '/api/sources') {
+      if (route.request().method() === 'POST') savedSources = route.request().postDataJSON();
+      body = savedSources;
+    } else if (url.pathname === '/api/status') body = { repo: '/tmp/sample', spec_dir: 'spec' };
     else if (url.pathname === '/api/local/overview') body = localMetadata;
     else if (url.pathname === '/api/local/commits') body = { ...localMetadata, branches: [], commits: [{ sha: 'base', subject: 'Base' }] };
     else if (url.pathname === '/api/local/snapshot') body = snapshot('working tree');

@@ -1,7 +1,10 @@
 import { expect, test } from '@playwright/test';
 import { fileURLToPath } from 'node:url';
 
-test.beforeEach(async ({ page }) => {
+test.describe.configure({ mode: 'serial' });
+
+test.beforeEach(async ({ page, request }) => {
+  await request.post('http://127.0.0.1:8876/api/sources', { data: { repositories: [], selected: '' } });
   const root = fileURLToPath(new URL('../..', import.meta.url)).replace(/\/$/, '');
   await page.addInitScript((root) => { localStorage.setItem('spec-review-repositories', JSON.stringify([{ source: 'local', id: 'fixture', root, spec_dir: 'spec' }])); }, root);
 });
