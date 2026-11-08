@@ -2,7 +2,6 @@
 import { createRequire } from 'node:module';
 import { mkdir, readFile, stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
-import { spawnSync } from 'node:child_process';
 import { installDialogFixture } from '../spec/mockups/src/browser-dialogs.mjs';
 import { resolve } from 'node:path';
 
@@ -35,21 +34,6 @@ async function closeServer(server) { await new Promise((resolve) => server.close
 await mkdir(output, { recursive: true });
 const browser = await chromium.launch({ headless: true, executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || '/usr/bin/chromium' });
 try {
-  // Export the current Textual screen and rasterize it with the same Chromium renderer.
-  const terminalSvg = resolve('/tmp', 'spec-review-terminal-workspace.svg');
-  const terminalExport = spawnSync('uv', ['run', 'python', 'scripts/render_terminal_mockup.py', terminalSvg], {
-    cwd: root,
-    encoding: 'utf8',
-    env: { ...process.env, UV_CACHE_DIR: process.env.UV_CACHE_DIR || '/tmp/spec-review-uv-cache' },
-  });
-  if (terminalExport.status !== 0) throw new Error(terminalExport.stderr || terminalExport.stdout || 'Terminal mockup export failed');
-  const terminalPreview = await browser.newPage({ viewport: { width: 1452, height: 857 }, deviceScaleFactor: 1 });
-  const terminalMarkup = (await readFile(terminalSvg, 'utf8'))
-    .replace(/url\("https:\/\/[^\"]+\.woff2"\)\s*format\("woff2"\),?/g, '');
-  await terminalPreview.setContent(`<style>html,body{width:100%;height:100%;margin:0;overflow:hidden}svg.rich-terminal{width:100vw;height:100vh}</style>${terminalMarkup}`);
-  await terminalPreview.screenshot({ path: resolve(output, 'terminal-workspace.png'), timeout: 0 });
-  await terminalPreview.close();
-
   // Browser mockups are Storybook stories of App.svelte, the application itself.
   const storybook = await serve(resolve(root, 'frontend/storybook-static'));
   try {

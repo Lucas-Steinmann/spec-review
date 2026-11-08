@@ -1,14 +1,12 @@
 # Technical and interface design map
 
-Start with [DES-001](../artifacts/design/DES-001.yaml): shared review services own snapshots, parsed documents, link resolution, comparison, and diagram rendering. Terminal and browser interfaces use those services. Technical designs and UI designs are separate: the former explain mechanisms, while the latter describe screens, interaction states, and mockups.
+Start with [DES-001](../artifacts/design/DES-001.yaml): shared review services own snapshots, parsed documents, link resolution, comparison, and diagram rendering. The browser uses those services. Technical designs and UI designs are separate: the former explain mechanisms, while the latter describe screens, interaction states, and mockups.
 
-## Terminal workspace
-
-[DES-002](../artifacts/ui-design/DES-002.yaml) defines the category tabs, left artifact list, content pane, search, focus movement, and status markers. Its ID is retained from before it moved into UI Design. [DES-004](../artifacts/design/DES-004.yaml) defines description blocks and local diagram images. The [terminal mockup](../mockups/rendered/terminal-workspace.png) shows the planned arrangement.
+[DES-004](../artifacts/design/DES-004.yaml) defines description blocks and local diagram images.
 
 ## Comparison and links
 
-[DES-003](../artifacts/design/DES-003.yaml) covers revision data, semantic YAML comparison, and aligned diff content. [UI-001](../artifacts/ui-design/UI-001.yaml) defines the selection dialog, statuses, and two diff layouts. [DES-005](../artifacts/design/DES-005.yaml) keeps links tied to the selected snapshot and resolves legacy references. See [comparison requirements](requirements.md#comparison) and [revision acceptance](acceptance.md#revision-comparison).
+[DES-003](../artifacts/design/DES-003.yaml) covers revision data, semantic YAML comparison, and aligned diff content. [UI-001](../artifacts/ui-design/UI-001.yaml) defines the revision controls and comparison workspace. [DES-005](../artifacts/design/DES-005.yaml) keeps links tied to the selected snapshot and resolves legacy references. See [comparison requirements](requirements.md#comparison) and [revision acceptance](acceptance.md#revision-comparison).
 
 ## Browser workspace
 

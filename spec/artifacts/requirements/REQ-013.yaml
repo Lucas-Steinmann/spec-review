@@ -3,12 +3,12 @@ type: requirement
 title: Star categories containing changes
 category: comparison
 status: specified
-statement: Show a star next to each bottom-panel category that contains changed, added, or deleted items.
-  A type change affects both the old and new categories.
+statement: Show a star next to each category containing changed, added, or deleted items. A type change affects
+  both the old and new categories.
 derived_from:
-- UC-006
+- UC-008
 related: []
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Initial request"
+- type: conversation
+  file: spec/sources/chat.md
+  section: Initial request

@@ -1,35 +1,9 @@
 id: DES-001
 type: design
-title: Reusable review backend and frontend boundary
-description: |
-  The backend owns repository snapshots, canonical document models, typed source-reference normalization, relationship/link resolution, computed incoming relationships for backlinks, field comparisons, and diagram rendering. The terminal frontend owns layout, focus, selection, colors, dialogs, and Kitty image presentation. The WebUI uses the same backend services without importing Textual into the backend.
-
-  ```mermaid
-  flowchart LR
-    TUI[Textual frontend] --> Backend[Review services]
-    Web[WebUI] --> Backend
-    Backend --> Snapshots[Working tree and Git snapshots]
-    Backend --> Links[Snapshot-specific link resolution]
-    Backend --> Diff[Artifact and overview comparison]
-    Backend --> Diagrams[Local renderer and PNG cache]
-  ```
-
-  The following sequence shows a commit comparison through the same boundary.
-
-  ```plantuml
-  @startuml
-  actor Reviewer
-  participant "TUI" as TUI
-  participant "Backend" as Backend
-  participant "Git objects" as Git
-  Reviewer -> TUI: choose base and target
-  TUI -> Backend: load snapshots and compare
-  Backend -> Git: read base and target blobs
-  Git --> Backend: YAML and Markdown
-  Backend --> TUI: documents, differences, provenance
-  TUI --> Reviewer: categories, statuses, content diff
-  @enduml
-  ```
+title: Review services and browser boundary
+description: The Python backend owns repository snapshots, document models, source-reference normalization, link
+  resolution, backlinks, comparisons, and diagram rendering. The Svelte browser consumes these services through
+  the HTTP API and owns presentation and interaction.
 addresses:
 - REQ-016
 - REQ-022
@@ -40,6 +14,9 @@ addresses:
 decisions:
 - ADR-001
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Approved implementation plan"
+- type: conversation
+  file: spec/sources/chat.md
+  section: Approved implementation plan
+- type: conversation
+  file: spec/sources/chat.md
+  section: Removal of terminal interface, November 2, 2026

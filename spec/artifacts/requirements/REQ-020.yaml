@@ -3,13 +3,13 @@ type: requirement
 title: Compare stored overview Markdown
 category: comparison
 status: specified
-statement: Compare the maintained Markdown views stored at each selected revision. Mark changed, added, and
-  deleted overview rows and star the Overviews category. Read a historical generated overview only when that
-  revision has no matching maintained view; never generate during review.
+statement: Compare the maintained Markdown views stored at each selected revision. Mark changed, added, and deleted
+  overview rows and star the Overviews category. Read a historical generated overview only when that revision has
+  no matching maintained view; never generate during review.
 derived_from:
-- UC-006
+- UC-008
 related: []
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Show maintained views directly, October 10, 2026"
+- type: conversation
+  file: spec/sources/chat.md
+  section: Show maintained views directly, October 10, 2026

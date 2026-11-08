@@ -5,9 +5,8 @@ description: 'Read selected Git revisions without changing the checkout. Match Y
 
   typed field values; compare maintained Markdown views as text. Include documents present on either side,
 
-  retain deletions, and count a type change in both categories. Produce field and prose hunks for inline
-
-  presentation and aligned rows for two-panel presentation. Carry snapshot provenance through content and
+  retain deletions, and count a type change in both categories. Produce field and prose hunks and aligned comparison
+  rows. Carry snapshot provenance through content and
 
   links. The interface arrangement and mockup are specified by UI-001.
 
@@ -20,8 +19,6 @@ addresses:
 - REQ-011
 - REQ-012
 - REQ-013
-- REQ-014
-- REQ-015
 - REQ-018
 - REQ-020
 - REQ-022

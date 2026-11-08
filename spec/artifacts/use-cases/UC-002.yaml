@@ -5,19 +5,21 @@ actors:
 - ACTOR-001
 goal_refs:
 - GOAL-001
-description: Navigate between related artifacts and document links in the terminal or browser interface, using the input methods each interface supports.
+description: Navigate between related artifacts and document links in the browser.
 preconditions:
 - The selected repository contains a specification, or selected historical revisions are available locally.
-main_flow: |-
-  1. Read an artifact or overview containing links.
+main_flow: '1. Read an artifact or overview containing links.
+
   2. Click a link, or select it using keyboard navigation and activate it.
+
   3. If a legacy source reference matches several artifacts, choose the intended artifact.
-  4. Read the destination and return to the previous document when needed.
+
+  4. Read the destination and return to the previous document when needed.'
 postconditions: Navigation uses canonical artifacts and preserves the relevant document version.
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Initial request"
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Scope, journey overlap, and computed backlinks, October 12, 2026"
+- type: conversation
+  file: spec/sources/chat.md
+  section: Initial request
+- type: conversation
+  file: spec/sources/chat.md
+  section: Scope, journey overlap, and computed backlinks, October 12, 2026

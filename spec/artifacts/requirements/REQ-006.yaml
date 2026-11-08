@@ -3,13 +3,12 @@ type: requirement
 title: Highlight links and headings
 category: presentation
 status: specified
-statement: Use terminal styling to highlight links and render headings in bold. Render Markdown prose
-  as readable terminal content.
+statement: Render Markdown prose and headings readably and make links visually identifiable in the browser.
 derived_from:
 - UC-001
 - UC-002
 related: []
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Initial request"
+- type: conversation
+  file: spec/sources/chat.md
+  section: Initial request

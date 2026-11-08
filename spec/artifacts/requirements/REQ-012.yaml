@@ -3,12 +3,12 @@ type: requirement
 title: Color changed, added, and deleted items
 category: comparison
 status: specified
-statement: Mark changed artifact rows orange, added rows green, and deleted rows red. Retain deleted items
-  in the list and include textual markers so color is not the only status signal.
+statement: Mark changed artifact rows orange, added rows green, and deleted rows red. Retain deleted items in the
+  list and include textual markers so color is not the only status signal.
 derived_from:
-- UC-006
+- UC-008
 related: []
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Initial request"
+- type: conversation
+  file: spec/sources/chat.md
+  section: Initial request

@@ -3,17 +3,17 @@ type: requirement
 title: Keep navigation responsive during diagram rendering
 category: diagrams
 status: specified
-statement: Diagram rendering must not block document navigation. A failed or timed-out render leaves
-  the diagram source readable and reports a local diagnostic. Reopening an unchanged diagram reuses
-  an available render result. The rendering timeout defaults to 30 seconds and is configurable.
+statement: Diagram rendering must not block document navigation. A failed or timed-out render leaves the diagram
+  source readable and reports a local diagnostic. Reopening an unchanged diagram reuses an available render result.
+  The rendering timeout defaults to 30 seconds and is configurable.
 derived_from:
 - UC-003
-- UC-004
+- UC-008
 related: []
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Approved implementation plan"
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Targeted artifact taxonomy cleanup, October 11, 2026"
+- type: conversation
+  file: spec/sources/chat.md
+  section: Approved implementation plan
+- type: conversation
+  file: spec/sources/chat.md
+  section: Targeted artifact taxonomy cleanup, October 11, 2026

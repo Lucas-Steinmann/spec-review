@@ -6,11 +6,9 @@ verifies:
 - REQ-009
 - REQ-024
 - REQ-028
-description: Review DES-001 in Kitty. Its description contains prose, a Mermaid diagram, more prose, and
-  a PlantUML diagram. Confirm local renderers produce both images and preserve their surrounding text
-  and source. Resize and scroll, then select another artifact and confirm image cleanup. Also review diagram
-  fences in the generated architecture overview.
+description: Open a browser document containing multiple diagrams and prose. Confirm local renderers produce images
+  alongside source and surrounding text; failures retain readable source and diagnostics.
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Approved implementation plan"
+- type: conversation
+  file: spec/sources/chat.md
+  section: Approved implementation plan

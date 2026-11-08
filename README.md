@@ -1,6 +1,6 @@
 # spec-review
 
-A read-only terminal and browser application for reviewing and comparing specifications stored as YAML artifacts and maintained Markdown views, from local folders or repositories accessible through `gh`.
+A read-only browser application for reviewing and comparing specifications stored as YAML artifacts and maintained Markdown views, from local folders or repositories accessible through `gh`.
 
 ## Installation
 
@@ -32,13 +32,13 @@ cd spec-review
 npm ci --prefix frontend
 npm run build --prefix frontend
 uv sync --locked
-uv run spec-review --repo ..
+uv run spec-review
 ```
 
 Run the browser interface, then use **Add repository → Local folder** to select a folder:
 
 ```sh
-uv run spec-review --web
+uv run spec-review
 ```
 
 It listens on `127.0.0.1:8765` by default. The WebUI saves multiple local folders and GitHub repositories. Its folder browser starts at the server user’s home and supports parent navigation and direct path entry, with a relative spec directory defaulting to `spec`. Plain folders support current-file review. Local Git repositories show worktree cards like PRs: choose a base branch, then open a card to compare committed and uncommitted specification changes without switching branches. Ordinary comparisons default to the default branch (local `origin/HEAD`, then `main`, `master`, `HEAD`); explicit PR comparisons keep their base/head. Use Refresh to rediscover worktrees and Apply revision to reread current files. The WebUI is read-only. To expose it on another interface, pass `--host` and `--port`.
@@ -49,7 +49,7 @@ Install [GitHub CLI](https://cli.github.com/) and sign in on the machine running
 
 The server uses the signed-in `gh` account for every browser visitor. Keep this version on a trusted local interface; a hosted multiuser version needs a separate access model.
 
-The browser frontend is implemented in Svelte. Its compiled static assets are served by the Python server; the document API reuses the TUI's field formatting, link resolver, and local diagram renderer. Markdown links and relationship IDs navigate within the selected snapshot, while source metadata and pre/postcondition lists keep their TUI formatting.
+The browser frontend is implemented in Svelte. Its compiled static assets are served by the Python server; the document API provides field formatting, link resolution, and local diagram rendering. Markdown links and relationship IDs navigate within the selected snapshot, while source metadata and pre/postcondition lists retain their formatting.
 
 ### Frontend development
 
@@ -59,17 +59,11 @@ Start the component catalog with `npm run storybook --prefix frontend`; it previ
 Install frontend dependencies once with `npm ci --prefix frontend`. Run the Python API and Vite in separate terminals from the project root:
 
 ```sh
-uv run spec-review --web
+uv run spec-review
 cd frontend && npm run dev
 ```
 
 Open `http://127.0.0.1:5173`. Vite proxies `/api` requests to the Python server on port 8765 and reloads Svelte and CSS changes as you edit. To run browser regression tests, install Playwright Chromium with `cd frontend && npx playwright install chromium`, then run `npm run test:e2e`. For production assets, run `npm run build` in `frontend`; Vite writes ignored output to `frontend/dist`, which the Python server serves. Build frontend assets before building a Python wheel.
-
-The private submodule requires GitHub authentication. For the TUI, the CLI uses the current directory as the repository and `./spec/` as the specification directory. For the TUI, override the spec folder with `--spec-dir`, or select another repository with `--repo`. Browser mode selects folders through Add and rejects these flags:
-
-```sh
-uv run --project /path/to/spec-review spec-review --repo /path/to/project --spec-dir spec
-```
 
 Live GitHub checks are opt-in and read-only. Authenticate a dedicated test account into an isolated config directory, then run the checks with the expected login. Set `SPEC_REVIEW_LIVE_GH_REPO` to a dedicated repository to exercise branch, pull request, commit, snapshot, and comparison routes:
 
@@ -85,7 +79,7 @@ uv run pytest -m live_github
 
 These tests reject token environment overrides, use only GitHub reads and Git fetches, bind the test server to loopback, and place the Git mirror cache under pytest's temporary directory. Ordinary test runs skip them.
 
-Use `--repo` when invoking an installed command outside the specification repository.
+Kit commands accept `--repo` when invoked outside the specification repository.
 
 ## Add a specification to another project
 
@@ -110,10 +104,10 @@ See [setup and update instructions](spec/docs/spec-review/setup.md).
 
 The tool's own [specification](spec/README.md) captures the original requirements and decisions from the project conversation, with linked artifacts, acceptance scenarios, and maintained views.
 
-From the `spec-review` directory, select this repository explicitly:
+Start the server, then add the `spec-review` directory through the browser:
 
 ```sh
-uv run spec-review --repo .
+uv run spec-review
 ```
 
 Regenerate its visual previews and overviews after changing canonical artifacts with:
@@ -158,48 +152,21 @@ Bob --> Alice: Response
 
 Standalone `@startuml` / `@enduml` blocks are also supported. Diagram source stays readable alongside images. Historical `rendered_diagram` fields are displayed as plain source, with no special rendering behavior. JSON descriptions identified by `source.file` are displayed as code.
 
-## Navigation
-
-| Control | Action |
-|---|---|
-| Mouse | Select categories/artifacts, click links and buttons |
-| Tab / Shift+Tab | Move focus between controls |
-| F6 | Cycle content, artifact list, and categories |
-| Arrow keys | Navigate the focused list/categories; scroll focused content |
-| Page Up / Page Down | Scroll focused content |
-| `/` | Search the current artifact list by ID/title |
-| `]` / `[` | Select next/previous content link; highlight its block and show its target |
-| Enter | Follow the selected content link when content has focus |
-| Alt+Left | Return to the previous artifact, version, and scroll position |
-| `d` | Open commit comparison |
-| `o` | Open Options |
-| Ctrl+B | Return to working-tree browsing |
-| Ctrl+R | Reload current browsing/comparison snapshots |
-| `q` | Quit |
-
-Categories include empty artifact types and Overviews. Diff and Options are available in the bottom tabs and toolbar. Small terminals retain horizontal category scrolling.
-
 ## Git comparisons
 
-The Diff modal lists commit SHA, date, and subject. Search subjects or enter a SHA, select a row, then use **Set base** (`b`) and **Set target** (`t`). Enter assigns base, then target. Previous/Next page through history. **Compare** activates the selection; Escape/Cancel keeps the current view.
-
-Default revisions are `HEAD^` and `HEAD` (or `HEAD` twice for a repository with one commit). Reversed selections and identical commits are supported. A commit before the specification was introduced represents an empty specification.
+Choose **Compare**, select base and target revisions, and apply the selection. Identical and reversed revisions are supported. A commit before the specification was introduced represents an empty specification.
 
 The artifact list retains deleted artifacts. Additions are green `+`, changes orange `~`, and deletions red `−`. Use **Changes only** to hide unchanged artifacts during a comparison. Changed categories have a star. A type change is visible under both categories. YAML formatting, mapping order, and file relocation do not count as changes; field types, list order, and field content do. Generated Markdown uses textual comparisons.
 
-Inline diffs show line hunks within named fields with unchanged context. Two-panel diffs align base and target rows in one shared scroll viewport. Links use the version from which they appear; following a removed link shows the base artifact explicitly. Alt+Left returns to the comparison.
-
-Inline diagram images use only target blocks, while removed diagrams remain source text. Two-panel mode shows each side's diagrams. Diagram source changes stay visible in both modes.
+Comparison panes align base and target content. Links retain the revision from which they appear.
 
 Local Git objects and worktree files are read directly. Local review does not check out commits, change branches, fetch, or write specification files. GitHub review may fetch into its cache mirror.
 
 ## Diagrams and settings
 
-Image display requires [Kitty](https://sw.kovidgoyal.net/kitty/). Unsupported terminals show source instead. Images use the terminal graphics protocol through [textual-image](https://github.com/lnqs/textual-image); rendering does not use a remote server.
-
 Install `plantuml` (including Java and Graphviz as required by your diagrams) and the [Mermaid CLI](https://github.com/mermaid-js/mermaid-cli) (`mmdc`) locally. Mermaid needs Chromium: the tool honors a configured executable or `PUPPETEER_EXECUTABLE_PATH`, otherwise detects system `chromium`, `chromium-browser`, or `google-chrome`. If none is found, `mmdc` uses its own browser installation. PlantUML runs with Java's headless mode enabled.
 
-Options persist rendering, diff layout, executable paths, Chromium selection, and renderer timeout. Defaults are rendering enabled, inline diff, and a 30-second timeout. Disabling rendering cancels active jobs and prevents new renderer invocations and image display. Renderer failures show source and an error without blocking other documents.
+Renderer failures show source and an error without blocking other documents.
 
 Settings: `$XDG_CONFIG_HOME/spec-review/settings.json`, default `~/.config/spec-review/settings.json`.
 
@@ -207,7 +174,7 @@ Diagram PNG cache: `$XDG_CACHE_HOME/spec-review/diagrams/`, default `~/.cache/sp
 
 ## Backend API
 
-The backend imports independently of Textual. A small read-only HTTP server is available with `--web`; frontend code can also adapt these services directly:
+A read-only HTTP server serves the browser by default; frontend code can also adapt these services directly:
 
 ```python
 from pathlib import Path
@@ -226,7 +193,7 @@ sections = document_blocks(document)
 result = LinkResolver(working).resolve(document, "UC-001")
 ```
 
-`DiagramRenderer.render(Block)` asynchronously returns a local PNG path or diagnostic. Models carry snapshot provenance, fields, content blocks, and change statuses; frontend code owns terminal colors and widgets.
+`DiagramRenderer.render(Block)` asynchronously returns a local PNG path or diagnostic. Models carry snapshot provenance, fields, content blocks, and change statuses; the browser owns presentation and interaction.
 
 ## Development
 
@@ -245,6 +212,6 @@ npm ci
 npm run build
 ```
 
-Tests use temporary Git repositories, Textual Pilot, and renderer doubles. For image QA, launch in Kitty and inspect multi-diagram descriptions and maintained views while scrolling, resizing, following links, opening dialogs, disabling rendering, and switching diff layouts. Verify that removed inline diagrams have source only, and that images disappear when navigating away.
+Tests use temporary Git repositories, browser tests, and renderer doubles.
 
 To update a consuming project, pull a committed release inside the submodule, then commit its gitlink in the parent repository. Fresh clones can use `git clone --recurse-submodules`.

@@ -658,39 +658,23 @@ def test_commit_history_and_discovery(history):
         Repository(repo.root, "../design")
 
 
-def test_cli_tui_defaults_and_add_only_browser(repo, monkeypatch):
+def test_cli_launches_browser_and_rejects_review_repo_flags(monkeypatch):
     import sys
 
     from spec_review import cli, web
-    from spec_review.tui import app
 
-    selected = []
-
-    class App:
-        def __init__(self, repository):
-            selected.append(repository)
-
-        def run(self):
-            pass
-
-    monkeypatch.setattr(app, "SpecReviewApp", App)
-    monkeypatch.chdir(repo.root)
-    monkeypatch.setattr(sys, "argv", ["spec-review"])
-    cli.main()
-    assert selected[-1].root == repo.root
-    assert selected[-1].spec_dir == "spec"
-    monkeypatch.setattr(
-        sys, "argv", ["spec-review", "--repo", ".", "--spec-dir", "other-spec"]
-    )
-    cli.main()
-    assert selected[-1].spec_dir == "other-spec"
-    browser = []
-    monkeypatch.setattr(web, "serve", lambda **kwargs: browser.append(kwargs))
-    monkeypatch.setattr(sys, "argv", ["spec-review", "--web"])
-    cli.main()
-    assert browser == [{"host": "127.0.0.1", "port": 8765}]
+    calls = []
+    monkeypatch.setattr(web, "serve", lambda **kwargs: calls.append(kwargs))
+    for args in ([], ["--web"], ["--host", "localhost", "--port", "9000"]):
+        monkeypatch.setattr(sys, "argv", ["spec-review", *args])
+        cli.main()
+    assert calls == [
+        {"host": "127.0.0.1", "port": 8765},
+        {"host": "127.0.0.1", "port": 8765},
+        {"host": "localhost", "port": 9000},
+    ]
     for args in (["--repo", "."], ["--spec-dir", "spec"]):
-        monkeypatch.setattr(sys, "argv", ["spec-review", "--web", *args])
+        monkeypatch.setattr(sys, "argv", ["spec-review", *args])
         with pytest.raises(SystemExit) as error:
             cli.main()
         assert error.value.code == 2
@@ -703,15 +687,3 @@ def test_settings_roundtrip(tmp_path):
     assert asdict(Settings.load(path)) == asdict(settings)
     path.write_text('{"timeout": -1}')
     assert Settings.load(path).timeout == 30
-
-
-def test_no_terminal_dependency_in_backend():
-    output = subprocess.check_output(
-        [
-            __import__("sys").executable,
-            "-c",
-            "import sys; import spec_review.repository,spec_review.content,spec_review.links,spec_review.diagrams; "
-            "assert not any(k == 'textual' or k.startswith('textual.') for k in sys.modules)",
-        ]
-    )
-    assert output == b""

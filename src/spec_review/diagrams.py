@@ -1,4 +1,4 @@
-"""Local renderer service. Does not depend on terminal graphics libraries."""
+"""Local diagram renderer service."""
 
 import asyncio
 import hashlib

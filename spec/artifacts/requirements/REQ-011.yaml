@@ -1,18 +1,17 @@
 id: REQ-011
 type: requirement
-title: Select two Git commits in a modal
+title: Select revisions for comparison
 category: comparison
 status: specified
-statement: Selecting Diff opens a modal where the reviewer can choose two commits from the repository’s
-  history. Default the selections to HEAD^ and HEAD, or HEAD twice when no parent exists. Activate the
-  selection only after the reviewer chooses Compare, then show the document comparison.
+statement: In browser Compare mode, select base and target revisions and apply the selection to show a comparison.
+  Default bases are specified by REQ-050.
 derived_from:
-- UC-005
+- UC-008
 related: []
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Initial request"
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Targeted artifact taxonomy cleanup, October 11, 2026"
+- type: conversation
+  file: spec/sources/chat.md
+  section: Initial request
+- type: conversation
+  file: spec/sources/chat.md
+  section: Targeted artifact taxonomy cleanup, October 11, 2026

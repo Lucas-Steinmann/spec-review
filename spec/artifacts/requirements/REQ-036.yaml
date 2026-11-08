@@ -1,9 +1,11 @@
 id: REQ-036
 type: requirement
-title: Preserve TUI document rendering in the WebUI
+title: Render browser documents and diagrams
 category: browsing
 status: specified
-statement: Render browser documents with the same field formatting and content semantics as the TUI, including navigable crosslinks, Markdown and code blocks, and Mermaid and PlantUML source with locally rendered images. Apply REQ-004's formatting for source metadata and list-valued preconditions and postconditions.
+statement: Render browser documents with navigable crosslinks, Markdown and code blocks, and Mermaid and PlantUML
+  source with locally rendered images. Apply REQ-004 formatting for source metadata and list-valued preconditions
+  and postconditions.
 derived_from:
 - UC-008
 related:
@@ -13,6 +15,6 @@ related:
 - REQ-004
 - REQ-034
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Svelte frontend"
+- type: conversation
+  file: spec/sources/chat.md
+  section: Svelte frontend

@@ -1,13 +1,12 @@
 id: REQ-031
 type: requirement
-title: Use the current directory and spec folder by default
+title: Start browser review without selecting a repository
 category: cli
 status: specified
-statement: In the terminal interface, when --repo is omitted, use the current working directory and ./spec/ as the
-  specification directory. Allow --repo and --spec-dir to override these TUI defaults. Browser sources are selected
-  through Add as specified by REQ-035.
+statement: Launch the browser server by default; select local folders and their specification directories through
+  Add. Keep --web as a compatible launch option. Kit commands accept --repo and --spec-dir.
 derived_from:
-- UC-007
+- UC-008
 related: []
 source:
 - type: conversation
@@ -19,3 +18,6 @@ source:
 - type: conversation
   file: spec/sources/chat.md
   section: Local folder addition and worktree review, October 12, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Removal of terminal interface, November 2, 2026

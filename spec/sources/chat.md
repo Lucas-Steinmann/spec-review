@@ -402,3 +402,7 @@ The user requested rendered Markdown tables with colored diff backgrounds and vi
 ## Browser reload restoration, November 2, 2026
 
 The user requested that F5 or Ctrl+R keep the current repository and document, revision, or comparison instead of returning to the landing page.
+
+## Removal of terminal interface, November 2, 2026
+
+The user requested complete removal of the TUI implementation and its specifications, and redesign of architecture where necessary. Browser review is the sole review interface; the CLI starts its server by default and retains --web for compatibility. Existing kit maintenance commands remain available. Earlier terminal-specific requests above are historical provenance.

@@ -1,13 +1,11 @@
 id: TEST-017
 type: test
-title: Review the current directory and formatted fields
+title: Launch browser review and format fields
 verifies:
 - REQ-031
 - REQ-004
-description: Launch the TUI from a temporary repository without --repo and confirm ./spec/ is selected; explicit
-  --repo and --spec-dir override these defaults. Launch --web without repository arguments and confirm no local
-  source is automatically registered; --web with --repo or --spec-dir explains using Add instead. Open an artifact
-  in terminal and browser with source metadata and list-valued preconditions/postconditions and confirm the specified
+description: Launch without arguments and with --web; confirm the browser server starts. Confirm review --repo and
+  --spec-dir flags are rejected. Open an artifact and verify source metadata and precondition and postcondition
   formatting.
 source:
 - type: conversation

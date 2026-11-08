@@ -4,9 +4,9 @@ spec-review helps a specification author or reviewer explore structured plans an
 
 ## The principal artifacts
 
-Start with the three goals. [GOAL-001](../artifacts/goals/GOAL-001.yaml) defines navigation across terminal and browser. [GOAL-002](../artifacts/goals/GOAL-002.yaml) defines revision comparison. [GOAL-003](../artifacts/goals/GOAL-003.yaml) requires the tool to review its own specification.
+Start with the three goals. [GOAL-001](../artifacts/goals/GOAL-001.yaml) defines navigation across browser. [GOAL-002](../artifacts/goals/GOAL-002.yaml) defines revision comparison. [GOAL-003](../artifacts/goals/GOAL-003.yaml) requires the tool to review its own specification.
 
-The main user journeys are [browsing](../artifacts/use-cases/UC-001.yaml), [comparing revisions](../artifacts/use-cases/UC-006.yaml), [reviewing in the browser](../artifacts/use-cases/UC-008.yaml), and [reviewing GitHub repositories through gh](../artifacts/use-cases/UC-009.yaml). The [reviewer](../artifacts/actors/ACTOR-001.yaml) is the actor for these journeys.
+The main user journeys are [browsing](../artifacts/use-cases/UC-001.yaml), [reviewing in the browser](../artifacts/use-cases/UC-008.yaml), and [reviewing GitHub repositories through gh](../artifacts/use-cases/UC-009.yaml). The [reviewer](../artifacts/actors/ACTOR-001.yaml) is the actor for these journeys.
 
 ## Follow your topic
 
@@ -14,8 +14,8 @@ The main user journeys are [browsing](../artifacts/use-cases/UC-001.yaml), [comp
 |---|---|
 | The intended workflows | [Use case guide](use-cases.md) |
 | Observable behavior | [Requirement guide](requirements.md) |
-| The terminal, browser, and service boundaries | [Design guide](architecture.md) |
-| The screen layouts and interaction states | [UI design route](architecture.md#terminal-workspace) |
+| The browser and service boundaries | [Design guide](architecture.md) |
+| The screen layouts and interaction states | [UI design route](architecture.md#browser-workspace) |
 | How revision comparison works | [Comparison route](use-cases.md#compare-revisions) and [design](architecture.md#comparison-and-links) |
 | Product and integration limits | [Constraint guide](constraints.md) |
 | Why an approach was selected | [Decision guide](decisions.md) |

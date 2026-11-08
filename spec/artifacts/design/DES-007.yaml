@@ -7,9 +7,8 @@ description: 'The Svelte WebUI consumes snapshot, comparison, content-block, lin
 
   The browser holds repository selection and review workspace state while metadata or comparison requests
 
-  are pending, so an in-flight response cannot replace a newer selection. Render the same document blocks
-
-  and snapshot-aware links used by the terminal client. Store shared browser filter preferences in local storage,
+  are pending, so an in-flight response cannot replace a newer selection. Render document blocks and snapshot-aware
+  links. Store shared browser filter preferences in local storage,
 
   defaulting Hide superseded to true and Changes only to false. Store the System, Paper, or Dark appearance
 
@@ -23,22 +22,22 @@ description: 'The Svelte WebUI consumes snapshot, comparison, content-block, lin
 
 
 
-  Persist the applied review location in tab session storage, including source identity, revision selections,
-  category, selected document and linked-document context. On reload, retrieve fresh metadata and content for that
-  location; returning to the repository overview clears it. Unapplied selector changes do not replace the applied location.
+  Persist the applied review location in tab session storage, including source identity, revision selections, category,
+  selected document and linked-document context. On reload, retrieve fresh metadata and content for that location;
+  returning to the repository overview clears it. Unapplied selector changes do not replace the applied location.
 
   Browser startup is independent of a selected Repository. Persist the saved source list and selected source in
-  repositories.json beside user settings under the user configuration directory; expose GET and POST source
-  endpoints, and migrate an existing browser-local list only when the server has no saved sources. Local discovery endpoints list readable folders, validate
-  canonical absolute roots and relative specification directories, and report Git capability, branches, default
-  base, and worktrees. Saved sources use browser local storage, with local identity based on canonical root plus
-  spec directory; migrate browser-local source lists when server storage is empty, including GitHub entries that lack
-  a source discriminator. Keep unavailable sources saved. Local
-  requests carry root and spec_dir; snapshot/document/link/asset requests may carry worktree, and compare requests
-  carry base_worktree and target_worktree separately. Validate worktree membership against freshly discovered git
-  worktree list --porcelain -z data. Snapshot refs are immutable commit SHAs or working tree. Image URLs carry their
-  source context, with historical assets read from Git blobs and current assets contained inside the selected spec
-  directory. Default branch detection and overview base persistence realize REQ-050. Git operations remain read-only.
+  repositories.json beside user settings under the user configuration directory; expose GET and POST source endpoints,
+  and migrate an existing browser-local list only when the server has no saved sources. Local discovery endpoints
+  list readable folders, validate canonical absolute roots and relative specification directories, and report Git
+  capability, branches, default base, and worktrees. Saved sources use browser local storage, with local identity
+  based on canonical root plus spec directory; migrate browser-local source lists when server storage is empty,
+  including GitHub entries that lack a source discriminator. Keep unavailable sources saved. Local requests carry
+  root and spec_dir; snapshot/document/link/asset requests may carry worktree, and compare requests carry base_worktree
+  and target_worktree separately. Validate worktree membership against freshly discovered git worktree list --porcelain
+  -z data. Snapshot refs are immutable commit SHAs or working tree. Image URLs carry their source context, with
+  historical assets read from Git blobs and current assets contained inside the selected spec directory. Default
+  branch detection and overview base persistence realize REQ-050. Git operations remain read-only.
 
 
   Reusable Button, Dialog, and FormField components own scoped appearance and interaction layout. Text inputs and

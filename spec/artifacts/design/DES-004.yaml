@@ -1,29 +1,12 @@
 id: DES-004
 type: design
 title: Description blocks and local diagram images
-description: |
-  Extract interleaved prose, code, fenced Mermaid/PlantUML blocks, and raw standalone PlantUML
-  blocks from descriptions. Read overview fences in the same way. Run local executables asynchronously
-  without a shell, with configurable timeouts, and cache PNG results by source, language, renderer
-  identity/version, and rendering configuration. Present
-  them through Kitty graphics support and release uploaded images when content leaves the view. Disabled
-  rendering shows source and invokes no renderers. Failed or unsupported rendering produces local diagnostics
-  instead of stopping navigation. Persist rendering preferences in the user configuration directory and
-  keep generated image caches outside the repository.
-
-  ```mermaid
-  flowchart LR
-    Source[Description blocks] --> Parse[Parse prose, code, and diagrams]
-    Parse --> Render[Local Mermaid or PlantUML renderer]
-    Render --> Cache[PNG cache outside repository]
-    Cache --> Present[Terminal or browser presentation]
-    Render --> Failure[Local diagnostic on failure]
-  ```
+description: Extract interleaved prose, code, and Mermaid and PlantUML blocks from descriptions and overviews. Run
+  local renderers asynchronously without a shell, cache PNG results outside the repository, and present images or
+  diagnostics in the browser.
 addresses:
 - REQ-008
 - REQ-009
-- REQ-010
-- REQ-015
 - REQ-021
 - REQ-024
 - REQ-028
@@ -31,9 +14,9 @@ decisions:
 - ADR-001
 - ADR-006
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Approved implementation plan"
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Targeted artifact taxonomy cleanup, October 11, 2026"
+- type: conversation
+  file: spec/sources/chat.md
+  section: Approved implementation plan
+- type: conversation
+  file: spec/sources/chat.md
+  section: Targeted artifact taxonomy cleanup, October 11, 2026

@@ -1,9 +1,9 @@
 [project]
 name = "spec-review"
 version = "0.1.0"
-description = "Browse and compare YAML specifications in a terminal or browser"
+description = "Browse and compare YAML specifications in a browser"
 requires-python = ">=3.12"
-dependencies = ["PyYAML>=6.0.3,<7", "textual>=8.2.8,<9", "textual-image>=0.14.1,<0.15", "rich>=15,<16", "markdown-it-py>=4,<5"]
+dependencies = ["PyYAML>=6.0.3,<7", "markdown-it-py>=4,<5"]
 
 [project.scripts]
 spec-review = "spec_review.cli:main"

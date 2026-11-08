@@ -4,11 +4,9 @@ title: Browse separate design categories
 verifies:
 - REQ-002
 - REQ-044
-description: Load a specification with technical design and UI design artifacts in terminal and browser.
-  Confirm distinct Technical Design and UI Design categories, including empty-category navigation. Open a UI design
-  with a mockup and follow its link to technical design. Compare a revision that reclassifies an artifact
-  while retaining its ID; confirm the change appears in both categories and links still resolve.
+description: Load a specification in the browser and confirm distinct Technical Design and UI Design categories.
+  Follow a UI design link to technical design and compare a reclassified artifact with a stable ID.
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Artifact authoring and UI design separation, October 10, 2026"
+- type: conversation
+  file: spec/sources/chat.md
+  section: Artifact authoring and UI design separation, October 10, 2026

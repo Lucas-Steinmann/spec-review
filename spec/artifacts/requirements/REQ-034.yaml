@@ -4,13 +4,13 @@ title: Browse and compare specifications in a WebUI
 category: browsing
 status: specified
 statement: 'Provide a browser overview with the selected local repository in a left sidebar and an action to open
-  its detailed review. Use the same snapshot and comparison services as the terminal interface. In the detailed
-  view, let the reviewer choose Review or Compare before selecting a target revision, and retain that choice across
-  page reloads. In Review mode, hide the base revision selector; in Compare mode, show it. Apply the chosen mode
-  and revisions only when the reviewer confirms, then display the selected revision''s documents or the comparison.
-  Allow comparisons between any selected local revisions, including the working tree, and mark each category that
-  contains changed, added, or deleted documents. Reloading the browser restores the open repository, applied
-  revision or comparison, and selected document, including a document followed from a comparison.
+  its detailed review. In the detailed view, let the reviewer choose Review or Compare before selecting a target
+  revision, and retain that choice across page reloads. In Review mode, hide the base revision selector; in Compare
+  mode, show it. Apply the chosen mode and revisions only when the reviewer confirms, then display the selected
+  revision''s documents or the comparison. Allow comparisons between any selected local revisions, including the
+  working tree, and mark each category that contains changed, added, or deleted documents. Reloading the browser
+  restores the open repository, applied revision or comparison, and selected document, including a document followed
+  from a comparison.
 
 
   Support current-file review for folders without Git, with comparison controls unavailable. Default bases for Git

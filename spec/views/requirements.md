@@ -1,6 +1,6 @@
 # Requirements by question
 
-Requirements state observable behavior. For exact wording, status, and relationships, open the linked YAML. [REQ-003](../artifacts/requirements/REQ-003.yaml) is superseded; the current terminal placement is [REQ-029](../artifacts/requirements/REQ-029.yaml).
+Requirements state observable behavior. For exact wording, status, and relationships, open the linked YAML. [REQ-003](../artifacts/requirements/REQ-003.yaml) is superseded; the current placement is [REQ-029](../artifacts/requirements/REQ-029.yaml).
 
 ## Browsing and content
 
@@ -12,13 +12,13 @@ What can the reviewer read? [Canonical artifacts and overviews](../artifacts/req
 
 ## Comparison
 
-[Revision selection](../artifacts/requirements/REQ-011.yaml) and [checkout safety](../artifacts/requirements/REQ-023.yaml) precede [stable-ID comparison](../artifacts/requirements/REQ-018.yaml). [Statuses](../artifacts/requirements/REQ-012.yaml), [changed categories](../artifacts/requirements/REQ-013.yaml), [diff layouts](../artifacts/requirements/REQ-014.yaml), and [stored overview comparison](../artifacts/requirements/REQ-020.yaml) make changes visible. [Snapshot provenance](../artifacts/requirements/REQ-022.yaml) keeps followed links in the right revision.
+[Revision selection](../artifacts/requirements/REQ-011.yaml) and [checkout safety](../artifacts/requirements/REQ-023.yaml) precede [stable-ID comparison](../artifacts/requirements/REQ-018.yaml). [Statuses](../artifacts/requirements/REQ-012.yaml), [changed categories](../artifacts/requirements/REQ-013.yaml), and [stored overview comparison](../artifacts/requirements/REQ-020.yaml) make changes visible. [Snapshot provenance](../artifacts/requirements/REQ-022.yaml) keeps followed links in the right revision.
 
 [REQ-037](../artifacts/requirements/REQ-037.yaml) defines browser text and image diff markers, including rendered tables, code and diagram source changes, markers alongside images, and no highlighted empty Markdown rows.
 
 ## Diagrams and options
 
-[Local image rendering](../artifacts/requirements/REQ-008.yaml) supports [multiple diagrams](../artifacts/requirements/REQ-009.yaml); [responsive rendering](../artifacts/requirements/REQ-028.yaml) and [renderer failure tolerance](../artifacts/requirements/REQ-024.yaml) keep navigation and source readable. [Options](../artifacts/requirements/REQ-010.yaml) and [persistent settings](../artifacts/requirements/REQ-021.yaml) govern presentation.
+[Local image rendering](../artifacts/requirements/REQ-008.yaml) supports [multiple diagrams](../artifacts/requirements/REQ-009.yaml); [responsive rendering](../artifacts/requirements/REQ-028.yaml) and [renderer failure tolerance](../artifacts/requirements/REQ-024.yaml) keep navigation and source readable. [Persistent preferences](../artifacts/requirements/REQ-021.yaml) are stored outside the reviewed repository.
 
 ## Browser and repositories
 
@@ -26,7 +26,7 @@ What can the reviewer read? [Canonical artifacts and overviews](../artifacts/req
 
 [REQ-045](../artifacts/requirements/REQ-045.yaml) adds a default-on filter for superseded artifacts and persistence for both browser sidebar filters.
 
-[REQ-038](../artifacts/requirements/REQ-038.yaml) also keeps WebUI artifact categories in the terminal interface's order.
+[REQ-038](../artifacts/requirements/REQ-038.yaml) also keeps WebUI artifact categories in a consistent order.
 
 [REQ-047](../artifacts/requirements/REQ-047.yaml) defines the cohesive browser review workbench and its System, Paper, and Dark appearance modes, including saved overrides and accessible presentation.
 

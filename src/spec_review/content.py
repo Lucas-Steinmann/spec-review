@@ -1,4 +1,4 @@
-"""Document presentation data, shared by terminal and future web frontends."""
+"""Document presentation data for browser review."""
 
 import json
 import re

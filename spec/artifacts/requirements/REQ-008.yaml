@@ -1,14 +1,13 @@
 id: REQ-008
 type: requirement
-title: Render diagram images in the terminal
+title: Render diagram images in the browser
 category: diagrams
 status: specified
-statement: Display Mermaid and PlantUML diagrams as images in the terminal, using locally installed
-  renderers to produce images from their source.
+statement: Display Mermaid and PlantUML diagrams as images in the browser, using locally installed renderers.
 derived_from:
 - UC-003
 related: []
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Initial request"
+- type: conversation
+  file: spec/sources/chat.md
+  section: Initial request

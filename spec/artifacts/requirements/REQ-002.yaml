@@ -1,14 +1,14 @@
 id: REQ-002
 type: requirement
-title: Browse categories in the bottom panel
+title: Browse artifact categories
 category: browsing
 status: specified
-statement: Offer bottom-panel navigation by artifact category, including Goals and Use Cases. Include
-  the known artifact types even when empty and allow additional types.
+statement: Offer navigation by artifact category, including Goals and Use Cases, known empty categories, and additional
+  types.
 derived_from:
 - UC-001
 related: []
 source:
-  - type: conversation
-    file: "spec/sources/chat.md"
-    section: "Initial request"
+- type: conversation
+  file: spec/sources/chat.md
+  section: Initial request
