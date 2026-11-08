@@ -58,9 +58,14 @@ def serve(repository: Repository | None = None, host="127.0.0.1", port=8765):
                     isinstance(item.get(key), str) and item[key]
                     for key in ("root", "spec_dir")
                 ):
-                    raise ValueError("Local repositories require a root and spec directory")
+                    raise ValueError(
+                        "Local repositories require a root and spec directory"
+                    )
             elif item.get("source") == "gh":
-                if not isinstance(item.get("full_name"), str) or "/" not in item["full_name"]:
+                if (
+                    not isinstance(item.get("full_name"), str)
+                    or "/" not in item["full_name"]
+                ):
                     raise ValueError("GitHub repositories require an owner/name")
             else:
                 raise ValueError("Unknown repository source")

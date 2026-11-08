@@ -123,7 +123,9 @@ def test_web_local_compare_accepts_working_tree_as_target_and_base(
         b"GET /api/status HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n"
     )
     handler(status_connection, ("127.0.0.1", 12345), None)
-    status = json.loads(status_connection.response.buffer.getvalue().split(b"\r\n\r\n", 1)[1])
+    status = json.loads(
+        status_connection.response.buffer.getvalue().split(b"\r\n\r\n", 1)[1]
+    )
     assert set(status) == {"repo", "spec_dir"}
 
 
@@ -191,15 +193,34 @@ def test_gh_cli_uses_gh_commands_for_metadata_and_reports_missing_login(monkeypa
         if path == "/user":
             result = {"login": "reviewer"}
         elif path.startswith("/user/repos?"):
-            result = [{"full_name": "owner/project", "default_branch": "main", "private": True}]
+            result = [
+                {
+                    "full_name": "owner/project",
+                    "default_branch": "main",
+                    "private": True,
+                }
+            ]
         elif path.endswith("/branches?per_page=100"):
             result = [{"name": "main", "commit": {"sha": "a" * 40}}]
         elif "/pulls?" in path:
-            result = [{"number": 7, "title": "Review", "state": "open", "head": {"sha": "b" * 40}, "base": {"sha": "a" * 40}}]
+            result = [
+                {
+                    "number": 7,
+                    "title": "Review",
+                    "state": "open",
+                    "head": {"sha": "b" * 40},
+                    "base": {"sha": "a" * 40},
+                }
+            ]
         elif "/check-runs?" in path:
             result = {"check_runs": [{"conclusion": "success"}]}
         elif "/commits?" in path:
-            result = [{"sha": "a" * 40, "commit": {"message": "Review", "author": {"date": "2026-10-07"}}}]
+            result = [
+                {
+                    "sha": "a" * 40,
+                    "commit": {"message": "Review", "author": {"date": "2026-10-07"}},
+                }
+            ]
         else:
             raise AssertionError(path)
         return subprocess.CompletedProcess(args, 0, json.dumps(result), "")
@@ -214,7 +235,9 @@ def test_gh_cli_uses_gh_commands_for_metadata_and_reports_missing_login(monkeypa
     assert client.check_runs("owner", "project", "a" * 40)["check_runs"]
     assert client.commits("owner", "project")[0].subject == "Review"
     assert all(args[:2] == ["gh", "api"] for args in calls[1:])
-    assert not any("openssl" in args or "app/installations" in str(args) for args in calls)
+    assert not any(
+        "openssl" in args or "app/installations" in str(args) for args in calls
+    )
 
     unauthenticated = github_module.GitHubCLI()
     monkeypatch.setattr(unauthenticated, "_gh_token", lambda: "")
@@ -222,7 +245,9 @@ def test_gh_cli_uses_gh_commands_for_metadata_and_reports_missing_login(monkeypa
         unauthenticated.repos()
 
 
-def test_gh_snapshot_uses_complete_local_mirror_and_cached_objects(history, monkeypatch, tmp_path):
+def test_gh_snapshot_uses_complete_local_mirror_and_cached_objects(
+    history, monkeypatch, tmp_path
+):
     from spec_review import github as github_module
 
     repo, _, base, target = history
@@ -252,20 +277,28 @@ def test_gh_snapshot_uses_complete_local_mirror_and_cached_objects(history, monk
     assert len(fetches) == fetched
     assert all("--refetch" in call for call in fetches)
 
-    marker = next((tmp_path / "cache" / "spec-review" / "github").glob("*.git/spec-review-complete-objects-v1"))
+    marker = next(
+        (tmp_path / "cache" / "spec-review" / "github").glob(
+            "*.git/spec-review-complete-objects-v1"
+        )
+    )
     marker.unlink()
     client.snapshot("owner", "project", target)
     assert len(fetches) == fetched + 1
     assert marker.exists()
 
 
-def test_cached_gh_revision_diff_takes_under_one_second_after_fetch(history, monkeypatch, tmp_path):
+def test_cached_gh_revision_diff_takes_under_one_second_after_fetch(
+    history, monkeypatch, tmp_path
+):
     from spec_review import github as github_module
 
     repo, _, base, _ = history
     for index in range(100):
         write_artifact(
-            repo, f"REQ-{index + 1000}", "requirement",
+            repo,
+            f"REQ-{index + 1000}",
+            "requirement",
             statement=f"Requirement {index} with representative content and relationships",
         )
     expanded = commit(repo, "Add representative specification")
@@ -310,18 +343,42 @@ def test_web_gh_routes_review_revisions_and_pull_checks(history, monkeypatch):
             return "reviewer"
 
         def repos(self):
-            return [{"full_name": "owner/project", "default_branch": "main", "private": True}]
+            return [
+                {
+                    "full_name": "owner/project",
+                    "default_branch": "main",
+                    "private": True,
+                }
+            ]
 
         def branches(self, owner, name):
             return [{"name": "main", "commit": {"sha": base}}]
 
         def pull_requests(self, owner, name):
-            return [{"number": 7, "title": "Review", "state": "open", "head": {"sha": target}, "base": {"sha": base}}]
+            return [
+                {
+                    "number": 7,
+                    "title": "Review",
+                    "state": "open",
+                    "head": {"sha": target},
+                    "base": {"sha": base},
+                }
+            ]
 
         def open_pull_requests(self, owner, name):
             return [
-                {"number": 7, "title": "Review", "head": {"sha": target, "ref": "feature"}, "base": {"sha": base, "ref": "main"}},
-                {"number": 8, "title": "Checks hidden", "head": {"sha": "c" * 40, "ref": "other"}, "base": {"sha": base, "ref": "main"}},
+                {
+                    "number": 7,
+                    "title": "Review",
+                    "head": {"sha": target, "ref": "feature"},
+                    "base": {"sha": base, "ref": "main"},
+                },
+                {
+                    "number": 8,
+                    "title": "Checks hidden",
+                    "head": {"sha": "c" * 40, "ref": "other"},
+                    "base": {"sha": base, "ref": "main"},
+                },
             ]
 
         def check_runs(self, owner, name, ref):
@@ -350,7 +407,9 @@ def test_web_gh_routes_review_revisions_and_pull_checks(history, monkeypatch):
 
     class Connection:
         def __init__(self, path):
-            self.request = io.BytesIO(f"GET {path} HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n".encode())
+            self.request = io.BytesIO(
+                f"GET {path} HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n".encode()
+            )
             self.response = io.BytesIO()
 
         def makefile(self, mode, buffering=None):
@@ -379,12 +438,21 @@ def test_web_gh_routes_review_revisions_and_pull_checks(history, monkeypatch):
     assert get(f"/api/gh/branches?{query}")[0]["sha"] == base
     assert get(f"/api/gh/pulls?{query}")[0]["number"] == 7
     assert get(f"/api/gh/commits?{query}")[0]["sha"]
-    assert [row["checks"] for row in get(f"/api/gh/overview?{query}")] == ["success", "unavailable"]
-    comparison = get(f"/api/gh/compare?{query}&{urlencode({'base': base, 'target': target})}")
+    assert [row["checks"] for row in get(f"/api/gh/overview?{query}")] == [
+        "success",
+        "unavailable",
+    ]
+    comparison = get(
+        f"/api/gh/compare?{query}&{urlencode({'base': base, 'target': target})}"
+    )
     assert comparison["changes"]["GOAL-001"]["status"] == "changed"
-    document = get(f"/api/gh/document?{query}&{urlencode({'ref': target, 'id': 'GOAL-001'})}")
+    document = get(
+        f"/api/gh/document?{query}&{urlencode({'ref': target, 'id': 'GOAL-001'})}"
+    )
     assert document["document"]["id"] == "GOAL-001"
-    link = get(f"/api/gh/link?{query}&{urlencode({'ref': target, 'id': 'GOAL-001', 'href': 'UC-001'})}")
+    link = get(
+        f"/api/gh/link?{query}&{urlencode({'ref': target, 'id': 'GOAL-001', 'href': 'UC-001'})}"
+    )
     assert link["kind"] == "document"
     assert snapshots == [base, target]
 
@@ -517,8 +585,16 @@ def test_typed_source_list_renders_as_readable_markdown(repo):
         "design",
         description='{"hello": 1}',
         source=[
-            {"type": "document", "file": "design/schema/example.json", "section": "Schema"},
-            {"type": "conversation", "file": "spec/sources/chat.md", "section": "Initial request"},
+            {
+                "type": "document",
+                "file": "design/schema/example.json",
+                "section": "Schema",
+            },
+            {
+                "type": "conversation",
+                "file": "spec/sources/chat.md",
+                "section": "Initial request",
+            },
         ],
     )
     doc = repo.load().documents["DES-001"]
@@ -531,7 +607,9 @@ def test_typed_source_list_renders_as_readable_markdown(repo):
 
 
 def test_description_images_are_content_blocks():
-    result = blocks("Before. ![Workspace mockup](../../mockups/rendered/workspace.png) After.")
+    result = blocks(
+        "Before. ![Workspace mockup](../../mockups/rendered/workspace.png) After."
+    )
     assert [(block.kind, block.text, block.language) for block in result] == [
         ("markdown", "Before. ", ""),
         ("image", "../../mockups/rendered/workspace.png", "Workspace mockup"),
@@ -600,13 +678,25 @@ def test_typed_source_list_keeps_migrated_links_navigable(repo):
         repo,
         "DES-001",
         "design",
-        source=[{"type": "conversation", "file": "requirements/architecture.md", "section": "Intro"}],
+        source=[
+            {
+                "type": "conversation",
+                "file": "requirements/architecture.md",
+                "section": "Intro",
+            }
+        ],
     )
     write_artifact(
         repo,
         "DES-002",
         "design",
-        source=[{"type": "document", "file": "requirements/architecture.md", "section": "Ownership"}],
+        source=[
+            {
+                "type": "document",
+                "file": "requirements/architecture.md",
+                "section": "Ownership",
+            }
+        ],
     )
     resolver = LinkResolver(repo.load())
     origin = resolver.snapshot.documents["DES-001"]

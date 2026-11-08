@@ -133,7 +133,9 @@ def live_github_api(live_github_environment, tmp_path_factory):
             process.wait(timeout=5)
 
 
-def test_live_github_account_and_repository_listing(live_github_api, live_github_environment):
+def test_live_github_account_and_repository_listing(
+    live_github_api, live_github_environment
+):
     get_json = live_github_api
     _, expected_login = live_github_environment
 
@@ -142,7 +144,9 @@ def test_live_github_account_and_repository_listing(live_github_api, live_github
 
     repositories = get_json("/api/gh/repos")
     assert isinstance(repositories, list)
-    assert all({"full_name", "default_branch", "private"} <= row.keys() for row in repositories)
+    assert all(
+        {"full_name", "default_branch", "private"} <= row.keys() for row in repositories
+    )
 
 
 def test_live_github_repository_read_routes(live_github_api, live_github_environment):

@@ -91,9 +91,10 @@ class LinkResolver:
             source_location(record)[1]
             for record in source_records(doc.fields.get("source"))
         ]
-        if any(slug(section) == anchor.lower() for section in sections) or slug(
-            doc.title
-        ) == anchor.lower():
+        if (
+            any(slug(section) == anchor.lower() for section in sections)
+            or slug(doc.title) == anchor.lower()
+        ):
             return True
         # Legacy UC-01 anchors map to migrated UC-001; do not guess arbitrary sections.
         match = re.match(

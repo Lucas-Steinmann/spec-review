@@ -199,10 +199,13 @@ result = LinkResolver(working).resolve(document, "UC-001")
 
 ```sh
 uv sync --locked
+uv run pre-commit install
 uv run pytest
-uv run ruff check src tests
-uv run ruff format --check src tests
+uv run pre-commit run --all-files
 ```
+
+The pre-commit hooks run Ruff lint fixes and formatting on staged Python files.
+If they modify files, review and stage the changes before committing again.
 
 Rebuild the bundled Svelte frontend after changing `frontend/`:
 

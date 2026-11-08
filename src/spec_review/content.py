@@ -81,11 +81,14 @@ def _markdown_images(text: str) -> list[Block]:
 def field_text(key: str, value, document: Document) -> str:
     if key == "source":
         records = source_records(value)
-        return "\n".join(
-            f"- **{record['type']}:** {record['file']}"
-            + (f"#{record['section']}" if record["section"] else "")
-            for record in records
-        ) or "—"
+        return (
+            "\n".join(
+                f"- **{record['type']}:** {record['file']}"
+                + (f"#{record['section']}" if record["section"] else "")
+                for record in records
+            )
+            or "—"
+        )
     if key.casefold().replace("_", "").replace("-", "") in {
         "precondition",
         "preconditions",
@@ -117,9 +120,7 @@ def field_blocks(key: str, value, doc: Document) -> list[Block]:
         return blocks(text)
     if key == "description":
         records = source_records(doc.fields.get("source"))
-        if any(
-            source_location(record)[0].endswith(".json") for record in records
-        ):
+        if any(source_location(record)[0].endswith(".json") for record in records):
             return blocks(text, "json")
     if isinstance(value, (dict, list)) and key not in RELATION_FIELDS:
         return blocks(text, "json")

@@ -30,7 +30,12 @@ packages = ["src/spec_review"]
 path = "scripts/build_hook.py"
 
 [dependency-groups]
-dev = ["pytest>=8", "pytest-asyncio>=0.24", "ruff>=0.9"]
+dev = [
+    "pre-commit>=4.7.0",
+    "pytest>=8",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.9",
+]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

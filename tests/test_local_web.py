@@ -49,9 +49,7 @@ def request_api(monkeypatch):
 
     def request(endpoint, method="GET", body=None, **params):
         payload = json.dumps(body).encode() if body is not None else b""
-        request_line = (
-            f"{method} {endpoint + ('?' + urlencode(params) if params else '')} HTTP/1.1\r\n"
-        )
+        request_line = f"{method} {endpoint + ('?' + urlencode(params) if params else '')} HTTP/1.1\r\n"
         conn = Connection(endpoint)
         conn.reader = io.BytesIO(
             (
