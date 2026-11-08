@@ -7,8 +7,12 @@ verifies:
 - REQ-024
 - REQ-028
 description: Open a browser document containing multiple diagrams and prose. Confirm local renderers produce images
-  alongside source and surrounding text; failures retain readable source and diagnostics.
+  alongside source and surrounding text. Verify both renderer commands produce SVG and the render API
+  returns image/svg+xml data URLs; open large diagrams in the viewer and enlarge them without raster pixelation; failures retain readable source and diagnostics.
 source:
 - type: conversation
   file: spec/sources/chat.md
   section: Approved implementation plan
+- type: conversation
+  file: spec/sources/chat.md
+  section: Scalable diagrams and wheel zoom, November 8, 2026

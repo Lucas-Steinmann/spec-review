@@ -8,7 +8,7 @@ What can the reviewer read? [Canonical artifacts and overviews](../artifacts/req
 
 [REQ-046](../artifacts/requirements/REQ-046.yaml) adds computed, navigable backlinks to artifacts that reference the current artifact in the selected snapshot.
 
-[REQ-048](../artifacts/requirements/REQ-048.yaml) keeps browser specification images within the document pane and provides an accessible zoom viewer.
+[REQ-048](../artifacts/requirements/REQ-048.yaml) keeps browser specification images within the document pane and provides an accessible viewer with wheel panning, Shift+wheel horizontal panning, and toolbar or Ctrl/Cmd+wheel zoom from 25% to 2000%. The default 100% fits the viewer area, enlarging small images. Mermaid and PlantUML diagrams stay sharp when enlarged ([REQ-008](../artifacts/requirements/REQ-008.yaml)).
 
 ## Comparison
 

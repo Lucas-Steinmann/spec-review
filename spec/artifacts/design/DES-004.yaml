@@ -2,8 +2,10 @@ id: DES-004
 type: design
 title: Description blocks and local diagram images
 description: Extract interleaved prose, code, and Mermaid and PlantUML blocks from descriptions and overviews. Run
-  local renderers asynchronously without a shell, cache PNG results outside the repository, and present images or
-  diagnostics in the browser.
+  local renderers asynchronously without a shell, cache SVG results outside the repository, and present images or
+  diagnostics in the browser. Request SVG output from both renderers, validate the SVG root,
+  and use a versioned SVG cache key to avoid reusing earlier raster results. Serve SVG as
+  image/svg+xml data URLs displayed through image elements in both document and modal viewer.
 addresses:
 - REQ-008
 - REQ-009
@@ -20,3 +22,6 @@ source:
 - type: conversation
   file: spec/sources/chat.md
   section: Targeted artifact taxonomy cleanup, October 11, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Scalable diagrams and wheel zoom, November 8, 2026

@@ -2,7 +2,7 @@
 
 Start with [DES-001](../artifacts/design/DES-001.yaml): shared review services own snapshots, parsed documents, link resolution, comparison, and diagram rendering. The browser uses those services. Technical designs and UI designs are separate: the former explain mechanisms, while the latter describe screens, interaction states, and mockups.
 
-[DES-004](../artifacts/design/DES-004.yaml) defines description blocks and local diagram images.
+[DES-004](../artifacts/design/DES-004.yaml) defines description blocks and locally rendered SVG diagrams, cached outside the repository and served as image data URLs.
 
 ## Comparison and links
 

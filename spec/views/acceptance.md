@@ -24,7 +24,7 @@ Reload restoration of review locations is covered by [TEST-011](../artifacts/tes
 
 [TEST-026](../artifacts/tests/TEST-026.yaml) covers system-following and saved appearance modes across the browser workbench and its narrow layout.
 
-[TEST-012](../artifacts/tests/TEST-012.yaml) also verifies responsive browser specification images, keyboard access to the modal viewer, zoom controls, and focus return.
+[TEST-012](../artifacts/tests/TEST-012.yaml) also verifies responsive browser specification images, keyboard access to the modal viewer, wheel panning, Shift+wheel horizontal panning, and toolbar or Ctrl/Cmd+wheel zoom proportional to scroll distance, including small deltas and event-count independence, with 25%–2000% bounds, small-image enlargement at the fitted 100% baseline, and fit reset, and focus return. Both Mermaid and PlantUML are checked as SVG images through the render API and browser viewer.
 
 ## Self-specification
 

@@ -4,7 +4,7 @@ title: Use XDG locations for settings and render caches
 status: accepted
 context: Settings and rendered diagrams must survive review sessions without adding generated files
   to the repository being reviewed.
-decision: Persist options in the XDG configuration directory and PNGs in the XDG cache directory.
+decision: Persist options in the XDG configuration directory and rendered images in the XDG cache directory.
 rationale: User-scoped directories keep preferences and derived image data available across sessions
   while leaving the specification tree free of local cache files.
 addresses:
@@ -17,3 +17,6 @@ source:
   - type: conversation
     file: "spec/sources/chat.md"
     section: "Targeted artifact taxonomy cleanup, October 11, 2026"
+  - type: conversation
+    file: spec/sources/chat.md
+    section: Scalable diagrams and wheel zoom, November 8, 2026

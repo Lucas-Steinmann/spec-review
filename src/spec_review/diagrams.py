@@ -8,6 +8,7 @@ import shutil
 import signal
 import tempfile
 from pathlib import Path
+from xml.etree import ElementTree
 
 from .models import Block, RenderResult
 from .settings import Settings, cache_path
@@ -83,7 +84,7 @@ class DiagramRenderer:
                     "version": self.versions[executable],
                     "language": block.language,
                     "source": block.text,
-                    "format": "png-v1",
+                    "format": "svg-v1",
                 }
                 browser = None
                 if block.language == "mermaid":
@@ -120,7 +121,7 @@ class DiagramRenderer:
                 digest = hashlib.sha256(
                     json.dumps(config, sort_keys=True).encode()
                 ).hexdigest()
-                destination = self.cache / f"{digest}.png"
+                destination = self.cache / f"{digest}.svg"
                 if destination.is_file():
                     return RenderResult(str(destination))
                 self.cache.mkdir(parents=True, exist_ok=True)
@@ -129,13 +130,13 @@ class DiagramRenderer:
                 ) as temp:
                     directory = Path(temp)
                     if block.language == "plantuml":
-                        png = await self._run(
-                            [executable, "-tpng", "-pipe", "-failfast2"],
+                        svg = await self._run(
+                            [executable, "-tsvg", "-pipe", "-failfast2"],
                             block.text.encode(),
                         )
                     else:
                         source = directory / "diagram.mmd"
-                        output = directory / "diagram.png"
+                        output = directory / "diagram.svg"
                         source.write_text(block.text, encoding="utf-8")
                         args = [
                             executable,
@@ -153,11 +154,17 @@ class DiagramRenderer:
                             )
                             args += ["-p", str(puppeteer)]
                         await self._run(args)
-                        png = output.read_bytes()
-                    if not png.startswith(b"\x89PNG\r\n\x1a\n"):
-                        raise RuntimeError("Renderer did not produce a PNG image")
-                    temporary = directory / "result.png"
-                    temporary.write_bytes(png)
+                        svg = output.read_bytes()
+                    try:
+                        root = ElementTree.fromstring(svg)
+                    except ElementTree.ParseError as exc:
+                        raise RuntimeError(
+                            "Renderer did not produce an SVG image"
+                        ) from exc
+                    if root.tag != "{http://www.w3.org/2000/svg}svg":
+                        raise RuntimeError("Renderer did not produce an SVG image")
+                    temporary = directory / "result.svg"
+                    temporary.write_bytes(svg)
                     temporary.replace(destination)
                 return RenderResult(str(destination))
         except (OSError, RuntimeError, asyncio.TimeoutError) as exc:

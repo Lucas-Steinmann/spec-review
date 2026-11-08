@@ -42,7 +42,11 @@ description: 'Present the browser app as a focused developer review workbench. T
 
   its height. Leave surrounding whitespace-only Markdown rows unhighlighted.
 
-  Keep specification images within the document pane. Open them in a modal viewer with fit-to-window, zoom,
+  Allow plain wheel vertical panning, native horizontal wheel panning, and Shift+wheel horizontal panning.
+  Define 100% as fitting the actual viewer viewport with preserved aspect ratio, upscaling small images;
+  use this baseline on opening and fit reset.
+  Apply continuous wheel-distance-based zoom without discrete per-event steps or rounding the scale.
+  Keep specification images within the document pane. Open them in a modal viewer with fit-to-window, toolbar and Ctrl/Cmd+wheel zoom (25% to 2000%),
 
   reset, and close controls; opening and closing images must remain keyboard accessible.
 
@@ -147,3 +151,15 @@ source:
 - type: conversation
   file: spec/sources/chat.md
   section: Image diff markers, October 17, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Scalable diagrams and wheel zoom, November 8, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Wheel panning and zoom modifiers, November 8, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Viewer fit baseline and extended zoom, November 8, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Continuous wheel zoom, November 8, 2026

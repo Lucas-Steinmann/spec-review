@@ -474,7 +474,7 @@ def serve(repository: Repository | None = None, host="127.0.0.1", port=8765):
                 if result.error:
                     return self.send_json({"error": result.error}, 400)
                 data = base64.b64encode(Path(result.path).read_bytes()).decode("ascii")
-                return self.send_json({"data_url": f"data:image/png;base64,{data}"})
+                return self.send_json({"data_url": f"data:image/svg+xml;base64,{data}"})
             except (KeyError, ValueError, OSError, TypeError) as exc:
                 return self.send_json({"error": str(exc)}, 400)
 

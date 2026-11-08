@@ -22,19 +22,25 @@ async def test_renderer_cache_and_arguments(tmp_path, monkeypatch):
         if args[-1] in {"--version", "-version"}:
             return b"version 1"
         if "-pipe" in args:
-            return b"\x89PNG\r\n\x1a\nexample"
-        Path(args[args.index("-o") + 1]).write_bytes(b"\x89PNG\r\n\x1a\nmermaid")
+            return (
+                b'<svg xmlns="http://www.w3.org/2000/svg" width="4000" height="2000"/>'
+            )
+        Path(args[args.index("-o") + 1]).write_bytes(
+            b'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4000 2000"/>'
+        )
         return b""
 
     monkeypatch.setattr(renderer, "_run", run)
     block = Block("diagram", "@startuml\nA->B\n@enduml", "plantuml")
     first = await renderer.render(block)
     assert not first.error and Path(first.path).exists()
+    assert Path(first.path).suffix == ".svg"
     assert (await renderer.render(block)).path == first.path
     assert len(calls) == 2 and calls[1][1] == block.text.encode()
-    assert "-pipe" in calls[1][0] and "-tpng" in calls[1][0]
+    assert "-pipe" in calls[1][0] and "-tsvg" in calls[1][0]
     await renderer.render(Block("diagram", "flowchart LR\nA-->B", "mermaid"))
     assert "-i" in calls[-1][0] and "-o" in calls[-1][0]
+    assert Path(calls[-1][0][calls[-1][0].index("-o") + 1]).suffix == ".svg"
     settings.rendering = False
     assert (await renderer.render(block)).error == "Diagram rendering disabled"
     assert len(calls) == 4
@@ -69,3 +75,23 @@ async def test_subprocess_timeout_and_cancel(tmp_path):
     task.cancel()
     with pytest.raises(asyncio.CancelledError):
         await task
+
+
+@pytest.mark.parametrize("language", ["mermaid", "plantuml"])
+@pytest.mark.parametrize("output", [b"not SVG", b"<html/>"])
+async def test_rejects_non_svg_output(tmp_path, monkeypatch, language, output):
+    renderer = DiagramRenderer(Settings(), tmp_path)
+    monkeypatch.setattr("spec_review.diagrams.shutil.which", lambda _: "/bin/renderer")
+
+    async def run(args, data=None):
+        if args[-1] in {"--version", "-version"}:
+            return b"version 1"
+        if "-pipe" in args:
+            return output
+        Path(args[args.index("-o") + 1]).write_bytes(output)
+        return b""
+
+    monkeypatch.setattr(renderer, "_run", run)
+    result = await renderer.render(Block("diagram", "source", language))
+    assert result.error == "Renderer did not produce an SVG image"
+    assert not list(tmp_path.glob("*.svg"))

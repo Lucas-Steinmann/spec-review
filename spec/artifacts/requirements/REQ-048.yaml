@@ -5,8 +5,12 @@ category: browsing
 status: specified
 statement: |
   In the browser review workspace, constrain specification images to the available document width. Let the
-  reviewer open an image in a focused viewer, fit it to the window, zoom in and out, and close the viewer
-  with keyboard-accessible controls.
+  reviewer open an image in a focused viewer, fit it to the window, zoom in and out with Ctrl/Cmd+wheel or the toolbar, and close the viewer
+  with keyboard-accessible controls. Plain wheel input pans vertically, horizontal wheel input pans
+  horizontally, and Shift+wheel pans horizontally. At opening and fit reset, 100% fills the available
+  viewer area while preserving aspect ratio, enlarging small images when needed. Allow zoom from 25%
+  to 2000% relative to the fitted size. Wheel zoom responds continuously to scroll distance;
+  equal scroll distances produce equal scale changes regardless of event count.
 derived_from:
 - UC-008
 addresses:
@@ -18,3 +22,15 @@ source:
   - type: conversation
     file: "spec/sources/chat.md"
     section: "Responsive specification images and image viewer, October 12, 2026"
+  - type: conversation
+    file: spec/sources/chat.md
+    section: Scalable diagrams and wheel zoom, November 8, 2026
+  - type: conversation
+    file: spec/sources/chat.md
+    section: Wheel panning and zoom modifiers, November 8, 2026
+  - type: conversation
+    file: spec/sources/chat.md
+    section: Viewer fit baseline and extended zoom, November 8, 2026
+  - type: conversation
+    file: spec/sources/chat.md
+    section: Continuous wheel zoom, November 8, 2026

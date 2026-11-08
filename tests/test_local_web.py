@@ -1,5 +1,6 @@
 """HTTP boundary regressions for saved folders and worktree comparisons."""
 
+import base64
 import io
 import json
 import shutil
@@ -390,3 +391,28 @@ def test_git_timeout_is_a_boundary_diagnostic(request_api, repo, monkeypatch):
     status, result = request_api("/api/local/overview", root=repo.root)
     assert status == 400
     assert "Timed out" in result["error"]
+
+
+@pytest.mark.parametrize("language", ["mermaid", "plantuml"])
+def test_render_api_returns_scalable_svg(request_api, monkeypatch, tmp_path, language):
+    from spec_review.models import RenderResult
+
+    svg = b'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4000 2000"/>'
+    image = tmp_path / "diagram.svg"
+    image.write_bytes(svg)
+
+    async def render(self, block):
+        assert block.language == language
+        assert block.text == "large diagram"
+        return RenderResult(str(image))
+
+    monkeypatch.setattr(web.DiagramRenderer, "render", render)
+    status, result = request_api(
+        "/api/render",
+        method="POST",
+        body={"language": language, "text": "large diagram"},
+    )
+    assert status == 200
+    prefix, data = result["data_url"].split(",", 1)
+    assert prefix == "data:image/svg+xml;base64"
+    assert base64.b64decode(data) == svg

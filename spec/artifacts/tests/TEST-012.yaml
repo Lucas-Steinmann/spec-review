@@ -8,9 +8,10 @@ description: Open artifacts and maintained views in the Svelte WebUI. Confirm re
   through the snapshot-aware resolver, ambiguous links present choices, unresolved links explain the target, and
   external links open externally. Confirm fenced and standalone diagrams retain readable source and show locally
   rendered images or diagnostics. Confirm specification images fit within the document pane at desktop and narrow
-  widths. Open an image by mouse and keyboard, verify it opens in a modal fitted to the window, exercise zoom in,
-  zoom out, and fit-to-window controls, then close it and confirm keyboard focus returns to the image. Confirm source
+  widths. Open an image by mouse and keyboard, verify it opens in a modal at 100% filling the actual viewer area while preserving aspect ratio, including a small SVG that must enlarge. Reopen the same image and confirm the fit baseline resets. Then exercise zoom in,
+  zoom out, plain wheel vertical panning, native horizontal and Shift+wheel horizontal panning without zooming, Ctrl/Cmd+wheel zoom in both directions with 25% and 2000% bounds, and fit-to-window controls, then close it and confirm keyboard focus returns to the image. Confirm source
   metadata is displayed on one line and list-valued preconditions and postconditions appear as bullets.
+  Confirm small wheel deltas change image size immediately and equally sized scroll gestures produce the same zoom when split across events.
 source:
 - type: conversation
   file: spec/sources/chat.md
@@ -18,3 +19,15 @@ source:
 - type: conversation
   file: spec/sources/chat.md
   section: Responsive specification images and image viewer, October 12, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Scalable diagrams and wheel zoom, November 8, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Wheel panning and zoom modifiers, November 8, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Viewer fit baseline and extended zoom, November 8, 2026
+- type: conversation
+  file: spec/sources/chat.md
+  section: Continuous wheel zoom, November 8, 2026

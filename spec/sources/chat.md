@@ -406,3 +406,19 @@ The user requested that F5 or Ctrl+R keep the current repository and document, r
 ## Removal of terminal interface, November 2, 2026
 
 The user requested complete removal of the TUI implementation and its specifications, and redesign of architecture where necessary. Browser review is the sole review interface; the CLI starts its server by default and retains --web for compatibility. Existing kit maintenance commands remain available. Earlier terminal-specific requests above are historical provenance.
+
+## Scalable diagrams and wheel zoom, November 8, 2026
+
+The user reported pixelated large Mermaid diagrams and requested dynamic resolution or SVG output, including other diagram renderers, and mouse-wheel zoom. Render Mermaid and PlantUML as SVG and let the image viewer zoom with the wheel.
+
+## Wheel panning and zoom modifiers, November 8, 2026
+
+The user requested conventional wheel combinations for zoom and vertical and horizontal panning. Plain wheel pans vertically, native horizontal wheel input pans horizontally, Shift+wheel pans horizontally, and Ctrl/Cmd+wheel zooms.
+
+## Viewer fit baseline and extended zoom, November 8, 2026
+
+The user reported that the default image view was tiny and requested filling the available area by default and at least 2000% maximum zoom. Define 100% as fitting the viewer area while preserving aspect ratio, including enlarging small images, and allow zoom from 25% to 2000% of that fitted size.
+
+## Continuous wheel zoom, November 8, 2026
+
+The user reported delayed and chunky wheel zoom and requested simpler scrolling behavior. Apply wheel zoom continuously in proportion to scroll distance rather than a fixed step per event; small deltas must respond without rounding away scale changes, and equal scroll distances should give equal zoom regardless of event count.

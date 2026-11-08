@@ -13,12 +13,14 @@
   const dispatch = createEventDispatcher();
   let body;
   let imageViewer;
+  let viewerViewport;
+  let viewerImage;
   let viewerSource = '';
   let viewerAlt = '';
   let fitWidth = 0;
   let zoom = 1;
   let imageReturnFocus;
-  $: viewerWidth = fitWidth ? Math.round(fitWidth * zoom) : 0;
+  $: viewerWidth = fitWidth ? fitWidth * zoom : 0;
 
   function otherMarkdown(sectionIndex, blockIndex) {
     if (!diffAgainst) return null;
@@ -85,25 +87,41 @@
     }
   }
 
-  function openImage(image) {
+  async function openImage(image) {
     viewerSource = image.currentSrc || image.src;
     viewerAlt = image.alt || 'Specification image';
     imageReturnFocus = image;
     fitWidth = 0;
     zoom = 1;
-    imageViewer?.showModal();
+    await imageViewer?.showModal();
+    fitViewerImage();
   }
 
-  function fitViewerImage(event) {
-    const image = event.currentTarget;
-    if (!image.naturalWidth || !image.naturalHeight) return;
-    const availableWidth = Math.max(240, window.innerWidth - 100);
-    const availableHeight = Math.max(180, window.innerHeight - 180);
-    fitWidth = Math.round(Math.min(image.naturalWidth, availableWidth, availableHeight * image.naturalWidth / image.naturalHeight));
+  function fitViewerImage() {
+    const image = viewerImage;
+    if (!image?.naturalWidth || !image.naturalHeight || !viewerViewport) return;
+    const bounds = viewerViewport.getBoundingClientRect();
+    const availableWidth = Math.min(viewerViewport.clientWidth, bounds.width);
+    const availableHeight = Math.min(viewerViewport.clientHeight, bounds.height);
+    if (!availableWidth || !availableHeight) return;
+    fitWidth = Math.floor(Math.min(availableWidth, availableHeight * image.naturalWidth / image.naturalHeight));
   }
 
   function changeZoom(factor) {
-    zoom = Math.min(5, Math.max(0.25, Math.round(zoom * factor * 100) / 100));
+    zoom = Math.min(20, Math.max(0.25, zoom * factor));
+  }
+
+  function handleWheel(event) {
+    if (event.ctrlKey || event.metaKey) {
+      event.preventDefault();
+      const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? event.currentTarget.clientHeight : 1;
+      changeZoom(Math.exp(-event.deltaY * unit * 0.002));
+    } else if (event.shiftKey) {
+      event.preventDefault();
+      const viewport = event.currentTarget;
+      const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? viewport.clientWidth : 1;
+      viewport.scrollLeft += (event.deltaX || event.deltaY) * unit;
+    }
   }
 
   function closeImageViewer() {
@@ -157,12 +175,12 @@
     <div class="image-viewer-actions">
       <Button variant="icon" compact aria-label="Zoom out" title="Zoom out" disabled={zoom <= 0.25} on:click={() => changeZoom(1 / 1.25)}><ZoomOut size={17} aria-hidden="true" /></Button>
       <output aria-live="polite">{Math.round(zoom * 100)}%</output>
-      <Button variant="icon" compact aria-label="Zoom in" title="Zoom in" disabled={zoom >= 5} on:click={() => changeZoom(1.25)}><ZoomIn size={17} aria-hidden="true" /></Button>
-      <Button variant="icon" compact aria-label="Fit to window" title="Fit to window" on:click={() => zoom = 1}><Maximize size={16} aria-hidden="true" /></Button>
+      <Button variant="icon" compact aria-label="Zoom in" title="Zoom in" disabled={zoom >= 20} on:click={() => changeZoom(1.25)}><ZoomIn size={17} aria-hidden="true" /></Button>
+      <Button variant="icon" compact aria-label="Fit to window" title="Fit to window" on:click={() => { zoom = 1; fitViewerImage(); }}><Maximize size={16} aria-hidden="true" /></Button>
       <Button variant="icon" compact aria-label="Close image viewer" title="Close image viewer" on:click={closeImageViewer}><X size={18} aria-hidden="true" /></Button>
     </div>
   </div>
-  <div class="image-viewer-viewport">
-    <img class="image-viewer-image" src={viewerSource} alt={viewerAlt} width={viewerWidth || undefined} on:load={fitViewerImage} />
+  <div class="image-viewer-viewport" bind:this={viewerViewport} on:wheel|nonpassive={handleWheel}>
+    <img bind:this={viewerImage} class="image-viewer-image" src={viewerSource} alt={viewerAlt} width={viewerWidth || undefined} on:load={fitViewerImage} />
   </div>
 </Dialog>

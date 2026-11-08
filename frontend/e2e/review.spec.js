@@ -542,6 +542,15 @@ test('browser document formatting, links, and diagram fallback', async ({ page }
   await expect.poll(async () => (await viewerImage.boundingBox()).width).toBeGreaterThan(fitImageWidth);
   await viewer.getByRole('button', { name: 'Zoom out' }).click();
   await expect(viewer.locator('output')).toHaveText('100%');
+  await viewer.locator('.image-viewer-viewport').hover();
+  await page.keyboard.down('Control');
+  await page.mouse.wheel(0, -100);
+  await page.keyboard.up('Control');
+  await expect(viewer.locator('output')).toHaveText('122%');
+  await page.keyboard.down('Control');
+  await page.mouse.wheel(0, 100);
+  await page.keyboard.up('Control');
+  await expect(viewer.locator('output')).toHaveText('100%');
   await viewer.getByRole('button', { name: 'Fit to window' }).click();
   await viewer.getByRole('button', { name: 'Close image viewer' }).click();
   await expect(viewer).not.toBeVisible();
@@ -718,3 +727,91 @@ test('image diff markers span the image without highlighting empty Markdown rows
     await page.keyboard.press('Escape');
   }
 });
+
+for (const language of ['mermaid', 'plantuml']) {
+  test(`${language} SVG diagrams support mouse wheel zoom in the image viewer`, async ({ page }) => {
+    await mockApi(page, (url, request) => {
+      if (url.pathname === '/api/status') return { repo: '/tmp/sample', spec_dir: 'spec' };
+      if (url.pathname === '/api/local/commits') return { branches: [], commits: [] };
+      if (url.pathname === '/api/local/snapshot') return snapshot('working tree');
+      if (url.pathname === '/api/local/document') return {
+        document: newGoal, revision: 'working tree',
+        sections: [{ heading: 'Diagram', blocks: [{ kind: 'diagram', text: 'large diagram', language }] }],
+      };
+      if (url.pathname === '/api/render') {
+        expect(request.postDataJSON()).toEqual({ language, text: 'large diagram' });
+        return { data_url: wideImage.replace(encodeURIComponent('width="2400" height="1200"'), encodeURIComponent('width="240" height="120"')) };
+      }
+    });
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Open review' }).click();
+    await page.locator('.document-item', { hasText: 'GOAL-001' }).click();
+    const diagram = page.locator('.diagram img');
+    await expect(diagram).toHaveJSProperty('naturalWidth', 240);
+    await diagram.click();
+    const viewer = page.getByRole('dialog', { name: 'Image viewer' });
+    const viewport = viewer.locator('.image-viewer-viewport');
+    const image = viewer.locator('img');
+    await expect(viewer.locator('output')).toHaveText('100%');
+    const fitWidth = (await image.boundingBox()).width;
+    expect(fitWidth).toBeGreaterThan(240);
+    const area = await viewport.boundingBox();
+    const fitted = await image.boundingBox();
+    expect(fitted.width).toBeLessThanOrEqual(area.width);
+    expect(fitted.height).toBeLessThanOrEqual(area.height);
+    expect(Math.min(area.width - fitted.width, area.height - fitted.height)).toBeLessThan(2);
+    await viewport.hover();
+    await page.keyboard.down('Control');
+    await page.mouse.wheel(0, -100);
+    await page.keyboard.up('Control');
+    await expect(viewer.locator('output')).toHaveText('122%');
+    await expect.poll(async () => (await image.boundingBox()).width).toBeGreaterThan(fitWidth);
+    await page.keyboard.down('Control');
+    await page.mouse.wheel(0, 100);
+    await page.keyboard.up('Control');
+    await expect(viewer.locator('output')).toHaveText('100%');
+    // Small deltas respond immediately; splitting a gesture into events keeps the same scale.
+    let previousWidth = (await image.boundingBox()).width;
+    for (let i = 0; i < 5; i++) {
+      await viewport.dispatchEvent('wheel', { deltaY: -1, ctrlKey: true });
+      const currentWidth = (await image.boundingBox()).width;
+      expect(currentWidth).toBeGreaterThan(previousWidth);
+      expect(currentWidth / previousWidth).toBeLessThan(1.01);
+      previousWidth = currentWidth;
+    }
+    await viewer.getByRole('button', { name: 'Fit to window' }).click();
+    await viewport.dispatchEvent('wheel', { deltaY: -100, ctrlKey: true });
+    const singleEventWidth = (await image.boundingBox()).width;
+    await viewer.getByRole('button', { name: 'Fit to window' }).click();
+    for (let i = 0; i < 10; i++) await viewport.dispatchEvent('wheel', { deltaY: -10, ctrlKey: true });
+    expect(Math.abs((await image.boundingBox()).width - singleEventWidth)).toBeLessThan(1);
+    await viewer.getByRole('button', { name: 'Fit to window' }).click();
+    // Wheel zoom shares the toolbar bounds and fit reset.
+    await viewport.dispatchEvent('wheel', { deltaY: -100, ctrlKey: true });
+    await viewer.getByRole('button', { name: 'Fit to window' }).click();
+    await expect(viewer.locator('output')).toHaveText('100%');
+    for (let i = 0; i < 20; i++) await viewport.dispatchEvent('wheel', { deltaY: -100, ctrlKey: true });
+    await expect(viewer.locator('output')).toHaveText('2000%');
+    await viewport.hover();
+    await page.mouse.wheel(0, 150);
+    await expect.poll(() => viewport.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+    await expect(viewer.locator('output')).toHaveText('2000%');
+    await page.mouse.wheel(150, 0);
+    await expect.poll(() => viewport.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0);
+    await viewport.evaluate((element) => { element.scrollLeft = 0; });
+    await page.keyboard.down('Shift');
+    await page.mouse.wheel(0, 150);
+    await page.keyboard.up('Shift');
+    await expect.poll(() => viewport.evaluate((element) => element.scrollLeft)).toBeGreaterThan(0);
+    await expect(viewer.locator('output')).toHaveText('2000%');
+    await viewport.dispatchEvent('wheel', { deltaY: 100, metaKey: true });
+    await expect(viewer.locator('output')).toHaveText('1637%');
+    for (let i = 0; i < 30; i++) await viewport.dispatchEvent('wheel', { deltaY: 100, ctrlKey: true });
+    await expect(viewer.locator('output')).toHaveText('25%');
+    await page.keyboard.press('Escape');
+    await expect(diagram).toBeFocused();
+    await diagram.click();
+    await expect(viewer.locator('output')).toHaveText('100%');
+    await expect.poll(async () => (await image.boundingBox()).width).toBe(fitWidth);
+  });
+}

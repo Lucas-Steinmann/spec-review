@@ -4,6 +4,7 @@ title: Render diagram images in the browser
 category: diagrams
 status: specified
 statement: Display Mermaid and PlantUML diagrams as images in the browser, using locally installed renderers.
+  Large diagrams remain sharp when enlarged in the image viewer.
 derived_from:
 - UC-003
 related: []
@@ -11,3 +12,6 @@ source:
 - type: conversation
   file: spec/sources/chat.md
   section: Initial request
+- type: conversation
+  file: spec/sources/chat.md
+  section: Scalable diagrams and wheel zoom, November 8, 2026
